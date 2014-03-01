@@ -10,6 +10,3 @@ We discussed the API that our clients will use to communicate with the server.
 We decided on a messaging format to use when sending messages to and from the server (We will be using JSON)
 We decided on some of the methods that will be used between the various classes of the UML diagram. This is not yet complete.
 We developed a class hierarchy that allows our design to expand to fit the needs of the next iterations.
-
-
-
