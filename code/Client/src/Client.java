@@ -3,7 +3,7 @@ import java.net.*;
 public class Client {
 
 	public static void main(String[] args) throws Exception {
-		private final int SERVER_PORT = 3000;
+		final int SERVER_PORT = 3000;
 
 		/*** TEMP READER FOR TESTING ***/
 		BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
