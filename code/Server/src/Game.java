@@ -39,6 +39,11 @@ public class Game {
 		board.initBoard(numPlayers, 0, 1);
 		
 	}
+	
+	// Moves the specefied player in the specified direction
+	public void playerMoved(int playerID, String direction){
+		
+	}
 
 	/**
 	 * @return the over

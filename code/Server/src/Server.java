@@ -10,7 +10,7 @@ public class Server {
 		while(!game.isOver()){
 			DatagramPacket recPacket = new DatagramPacket(recData, recData.length);
 			serverSocket.receive(recPacket);
-			(new Controller((new String(recPacket.getData())), game)).start();
+			(new Controller(recPacket, game)).start();
 		}	
 	}
 }
