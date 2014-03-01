@@ -71,3 +71,6 @@ Notes
 ===
 #####From the project description:
 - The sending of the periodic update must proceed concurrently with ongoingprocessing of player controls. The game state must be double-buffered.
+
+
+####Double Buffered
