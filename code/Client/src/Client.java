@@ -15,6 +15,7 @@ public class Client {
 		byte[] sendData = new byte[1024];
 		byte[] receiveData = new byte[1024];
 
+
 		while(true){
 			String msg = userInput.readLine();
 			sendData = msg.getBytes();

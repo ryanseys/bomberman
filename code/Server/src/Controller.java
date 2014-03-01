@@ -8,10 +8,28 @@ public class Controller extends Thread{
 	private JSONObject msg;
 	
 	
-	public Controller(DatagramPacket recPacket, Game game) {
+	public Controller(DatagramPacket recPacket, Game game) throws JSONException {
 		this.recPacket = recPacket;
 		this.game = game;
 		this.msg = new JSONObject((new String(recPacket.getData())));
+	}
+	
+	public String getStringFromKey(String s) {
+		try {
+			return msg.get(s).toString();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			return null;
+		}
+	}
+	
+	public int getIntFromKey(String s) {
+		try {
+			return msg.getInt(s);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			return -1;
+		}
 	}
 	
 	/*
@@ -21,18 +39,18 @@ public class Controller extends Thread{
 	 */
 	public void run(){
 		System.out.println(msg.toString());
-		String command = msg.get("command").toString();
+		String command = getStringFromKey("command");
 		if(command == "join"){
 			joinGame(recPacket.getAddress(), recPacket.getPort());
 		}
 		else{
-			int playerID = msg.getInt("pID");
+			int playerID = getIntFromKey("pID");
 			
 			if(command == "move"){
-				game.playerMoved(playerID, msg.getString("Direction"));
+				game.playerMoved(playerID, getStringFromKey("Direction"));
 			}
 			else if(command == "button"){
-				handleButton(msg.getString("button"));
+				handleButton(getStringFromKey("button"));
 			}
 			else{
 				System.out.println("Unknown command: " + command);

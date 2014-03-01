@@ -1,5 +1,6 @@
 *target*
 *.jar
+!json.jar
 *.war
 *.ear
 *.class
