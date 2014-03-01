@@ -9,4 +9,8 @@ public class ClientSender extends Thread {
 		// TODO Auto-generated method stub
 		super.run();
 	}
+	
+	public synchronized void addMessage(String s) {
+		
+	}
 }
