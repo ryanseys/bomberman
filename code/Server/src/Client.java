@@ -1,14 +1,15 @@
 import java.net.*;
 
 public class Client {
+	private static int curr_id = 1;
 	private InetAddress IPaddr;
 	private int port;
 	private int id;
 	
-	public Client(InetAddress IP, int port, int id) {
+	public Client(InetAddress IP, int port) {
 		this.IPaddr = IP;
 		this.port = port;
-		this.id = id;
+		this.id = curr_id++;
 	}
 
 	/**
