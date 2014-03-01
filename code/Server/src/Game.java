@@ -40,7 +40,7 @@ public class Game {
 		
 	}
 	
-	// Moves the specefied player in the specified direction
+	// Moves the specified player in the specified direction
 	public void playerMoved(int playerID, String direction){
 		
 	}
