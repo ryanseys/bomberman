@@ -7,11 +7,14 @@ public class Server {
 		
 		
 		Game game = new Game();
+		DatagramSocket serverSocket = new DatagramSocket(port);
+		ServerSender sender = new ServerSender(serverSocket);
 		CommandQueue commands = new CommandQueue();
-		(new Controller(game, commands)).start();
+		
+		(new Controller(game, sender, commands)).start();
 		
 		byte[] recData = new byte[1024];
-		DatagramSocket serverSocket = new DatagramSocket(port);
+		
 		System.out.println("Server started listening on port: " + port);
 		
 		while(!game.isFinished()){

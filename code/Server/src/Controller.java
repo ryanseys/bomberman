@@ -5,12 +5,12 @@ import org.json.*;
 public class Controller extends Thread{
 	private Game game;
 	private CommandQueue commandQueue;
-	private JSONObject msg;
+	private ServerSender sender;
 	
-	public Controller(Game game, CommandQueue commandQueue){
+	public Controller(Game game, ServerSender sender, CommandQueue commandQueue){
 		this.game = game;
 		this.commandQueue = commandQueue;
-		//this.msg = new JSONObject((new String(recPacket.getData())));
+		this.sender = sender;
 	}
 	
 	/*
@@ -44,7 +44,7 @@ public class Controller extends Thread{
 				game.playerMoved(playerID, msg.getString("Direction"));
 			}
 			else if(command == "button"){
-				handleButton(msg.getString("button"));
+				handleButton(playerID, msg.getString("button"));
 			}
 			else{
 				System.out.println("Unknown command: " + command);
@@ -60,17 +60,25 @@ public class Controller extends Thread{
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		game.addPlayer((new Client(addr, port)));
-	}
-	private void handleButton(String buttonPressed){
-		if(buttonPressed == "start"){
+		JSONObject response = new JSONObject();
+		Client client = new Client(addr, port);
+		if(game.addPlayer(client)){
 			
+		}
+		else{
+			
+		}
+		sender.sendClientMsg(client, response.toString());
+	}
+	private void handleButton(int playerID, String buttonPressed){
+		if(buttonPressed == "start"){
+			game.startGame();
 		}
 		else if(buttonPressed == "end"){
-			
+			game.endGame();
 		}
 		else if(buttonPressed == "reset"){
-			
+			game.resetPlayer(playerID);
 		}
 		else if(buttonPressed == "deploy"){
 			

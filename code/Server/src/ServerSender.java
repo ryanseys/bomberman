@@ -1,15 +1,20 @@
+import java.net.DatagramSocket;
+
 
 public class ServerSender extends Thread {
-	Game game;
-	public ServerSender(Game game) {
-		this.game = game;
+	private DatagramSocket serverSocket;
+	public ServerSender(DatagramSocket serverSocket) {
+		this.serverSocket = serverSocket;
 	}
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		
 		super.run();
 	}
-	private void braodcast(){
+	public void sendClientMsg(Client client, String msg){
+		
+	}
+	public void braodcastGameState(Game game){
 		
 	}
 

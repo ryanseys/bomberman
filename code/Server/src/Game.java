@@ -52,4 +52,19 @@ public class Game {
 		return isFinished;
 	}
 
+	public void endGame() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void resetPlayer(int playerID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void dropBomb(int playerID) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
