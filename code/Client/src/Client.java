@@ -1,5 +1,9 @@
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
+
+import javax.swing.JFrame;
 
 public class Client {
 
@@ -17,6 +21,9 @@ public class Client {
 		byte[] receiveData = new byte[1024];
 		
 		System.out.println("Client Started");
+		
+		JFrame frame = new ClientView();
+	    frame.setVisible(true);
 
 
 		while(true){
