@@ -38,6 +38,7 @@ Json Message
 |"button"|Button *(optional)*|What non direction button the client just pressed|
 |"direction"| Direction *(optional)*| Direction that the player just moved|
 |"bomb"|Bomb *(optional)*| Location that the player just dropped the bomb|
+|"clientInfo"|ClientInfo *(optional)*|Has the connection information for the client so that we can send them messages|
 
 
 |Command *(String)*|Description|Outcome|
@@ -64,8 +65,13 @@ Json Message
 
 |Bomb *(Object)*|key|value|
 |---|---|---|
-|---|"x"|int|
-|---|"y"|int|
+||"x"|int|
+||"y"|int|
+
+|ClientInfo *(Object)*|key|value|
+|---|---|---|
+||"IP"|String|
+||"port"|int|
 
 Notes
 ===
