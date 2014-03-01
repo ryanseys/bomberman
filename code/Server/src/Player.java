@@ -2,13 +2,18 @@
 public class Player extends MovingObject {
 	private int maxBombs;
 	private int currentBombs;
+	private int bombRange;
 	private int lives;
+	
+	
+	
 	
 	public Player(int x, int y) {
 		super(GameObjectType.PLAYER, x, y);
 		this.maxBombs = 1;
 		this.currentBombs = 1;
 		this.lives = 1;
+		this.bombRange = 1;
 	}
 
 	/**
@@ -51,6 +56,20 @@ public class Player extends MovingObject {
 	 */
 	public void setLives(int lives) {
 		this.lives = lives;
+	}
+
+	/**
+	 * @return the bombRange
+	 */
+	public int getBombRange() {
+		return bombRange;
+	}
+
+	/**
+	 * @param bombRange the bombRange to set
+	 */
+	public void setBombRange(int bombRange) {
+		this.bombRange = bombRange;
 	}
 
 }

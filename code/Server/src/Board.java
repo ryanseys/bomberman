@@ -21,5 +21,11 @@ public class Board {
 	public void setBoard(GameObject[][] board) {
 		this.board = board;
 	}
+	
+	// TODO initialize the board objects
+	// pass in # of players, # of enemies, # of powerups
+	public void initBoard(int players, int enemies, int powerups){
+		
+	}
 
 }
