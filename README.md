@@ -77,9 +77,22 @@ Json Message
 Server -> Client: Message Specification
 ===
 Json Message
+
 |Key|Value|Description|
-|---|-----|---|
+|---|---|---|
 |"type"|String|Indicates the type of message|
+|"game" *(optional)*|GameBoard|An object containing the current state of the game board|
+
+
+|type *(String)*|Description|
+|---|---|
+|"broadcast"|This message was broadcast to all players, indicting there is also a GameBoard object in the message.
+
+|GameBoard *(object)*|Key|Value|Description|
+|---|-----|---|---|
+||width|int|width of the board|
+||height|int|height of the board|
+||board|[(GameObjectType)int][(GameObjectType)int]|A two dimensional integer array of GameObjectType defined in GameObjectType enum|
 
 
 Notes
