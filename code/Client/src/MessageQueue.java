@@ -7,13 +7,13 @@ public class MessageQueue {
 	public MessageQueue() {
 		messageQueue = new LinkedList<String>();
 	}
-	public synchronized void addCommand(String command){
+	public synchronized void add(String command) {
 		messageQueue.add(command);
 	}
-	public synchronized String popCommand(){
+	public synchronized String pop() {
 		return messageQueue.pop();
 	}
-	public synchronized boolean isEmpty(){
+	public synchronized boolean isEmpty() {
 		return messageQueue.isEmpty();
 	}
 }
