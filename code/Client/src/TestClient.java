@@ -1,8 +1,20 @@
+import java.net.DatagramSocket;
+import java.net.SocketException;
+
 
 public class TestClient {
-	ClientSender cs;
+	MessageQueue toSendMsgs = new MessageQueue();
+	MessageQueue receivedMsgs = new MessageQueue();
 	ClientReceiver cr;
-	public TestClient() {
+	ClientSender cs;
+	public TestClient(String IPAddress, int port) {
+		DatagramSocket socket;
+		try {
+			socket = new DatagramSocket();
+		} catch (SocketException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		cs = new ClientSender();
 		cr = new ClientReceiver();
 		cs.start();
@@ -18,6 +30,7 @@ public class TestClient {
 	}
 
 	public void runAllTests() {
+		toSendMsgs.add("up");
 		System.out.println("TODO: Add tests here.");
 	}
 }
