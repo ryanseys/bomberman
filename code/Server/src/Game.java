@@ -48,7 +48,7 @@ public class Game {
 	/**
 	 * @return the isFinished
 	 */
-	public boolean isFinished() {
+	public synchronized boolean isFinished() {
 		return isFinished;
 	}
 

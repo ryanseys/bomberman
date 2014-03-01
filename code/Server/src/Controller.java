@@ -3,33 +3,14 @@ import java.net.*;
 import org.json.*;
 
 public class Controller extends Thread{
-	DatagramPacket recPacket;
 	private Game game;
+	private CommandQueue commandQueue;
 	private JSONObject msg;
 	
-	
-	public Controller(DatagramPacket recPacket, Game game) throws JSONException {
-		this.recPacket = recPacket;
+	public Controller(Game game, CommandQueue commandQueue){
 		this.game = game;
-		this.msg = new JSONObject((new String(recPacket.getData())));
-	}
-	
-	public String getStringFromKey(String s) {
-		try {
-			return msg.get(s).toString();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			return null;
-		}
-	}
-	
-	public int getIntFromKey(String s) {
-		try {
-			return msg.getInt(s);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			return -1;
-		}
+		this.commandQueue = commandQueue;
+		//this.msg = new JSONObject((new String(recPacket.getData())));
 	}
 	
 	/*
@@ -38,19 +19,32 @@ public class Controller extends Thread{
 	 * This will parse out the message and run the operations against game 
 	 */
 	public void run(){
-		System.out.println(msg.toString());
-		String command = getStringFromKey("command");
+		synchronized (commandQueue) {
+			while(commandQueue.isEmpty()){
+				try {
+					commandQueue.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		String message = commandQueue.popCommand();
+		System.out.println(message.toString());
+		
+		JSONObject msg = new JSONObject(message);
+		String command = msg.getString("command");
+		
 		if(command == "join"){
-			joinGame(recPacket.getAddress(), recPacket.getPort());
+			joinGame(msg.getJSONObject("clientInfo").getString("IP"), msg.getJSONObject("clientInfo").getInt("port"));
 		}
 		else{
-			int playerID = getIntFromKey("pID");
+			int playerID = msg.getInt("pID");
 			
 			if(command == "move"){
-				game.playerMoved(playerID, getStringFromKey("Direction"));
+				game.playerMoved(playerID, msg.getString("Direction"));
 			}
 			else if(command == "button"){
-				handleButton(getStringFromKey("button"));
+				handleButton(msg.getString("button"));
 			}
 			else{
 				System.out.println("Unknown command: " + command);
@@ -59,8 +53,14 @@ public class Controller extends Thread{
 	}
 
 	/******* Helper functions to handle incoming message*******/
-	private void joinGame(InetAddress IP, int port){
-		game.addPlayer((new Client(IP, port)));
+	private void joinGame(String IP, int port){
+		InetAddress addr = null;
+		try {
+			addr = InetAddress.getByName(IP);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		game.addPlayer((new Client(addr, port)));
 	}
 	private void handleButton(String buttonPressed){
 		if(buttonPressed == "start"){
