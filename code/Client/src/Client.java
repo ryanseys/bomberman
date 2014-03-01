@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 public class Client {
 
 	public static void main(String[] args) throws Exception {
-		final int SERVER_PORT = 3000;
+		final int SERVER_PORT = 5000;
 
 		/*** TEMP READER FOR TESTING ***/
 		BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
