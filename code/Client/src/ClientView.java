@@ -28,4 +28,14 @@ public class ClientView extends JFrame{
 		frame.pack();
 	    frame.setVisible(true);
 	}
+	
+	public void update(String update){
+		
+		render();
+	}
+	
+	public void render(){
+		
+	}
+	
 }
