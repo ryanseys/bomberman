@@ -15,7 +15,7 @@ public class TestClient {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		cs = new ClientSender();
+		cs = new ClientSender(toSendMsgs, socket);
 		cr = new ClientReceiver();
 		cs.start();
 		cr.start();
@@ -29,8 +29,15 @@ public class TestClient {
 		}
 	}
 
-	public void runAllTests() {
+	public void runAllTests() throws InterruptedException {
 		toSendMsgs.add("up");
+		synchronized(receivedMsgs) {
+			while(receivedMsgs.isEmpty()) {
+				receivedMsgs.wait();
+			}
+			// check that the message received is correct
+			
+		}
 		System.out.println("TODO: Add tests here.");
 	}
 }
