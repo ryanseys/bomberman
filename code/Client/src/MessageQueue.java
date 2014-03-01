@@ -13,4 +13,7 @@ public class MessageQueue {
 	public synchronized String popCommand(){
 		return messageQueue.pop();
 	}
+	public synchronized boolean isEmpty(){
+		return messageQueue.isEmpty();
+	}
 }
