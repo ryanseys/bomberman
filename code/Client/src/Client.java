@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+
 public class Client {
 
 	public static void main(String[] args) throws Exception {
@@ -14,6 +15,8 @@ public class Client {
 		InetAddress IPAddress = InetAddress.getByName("localhost");
 		byte[] sendData = new byte[1024];
 		byte[] receiveData = new byte[1024];
+		
+		System.out.println("Client Started");
 
 
 		while(true){
