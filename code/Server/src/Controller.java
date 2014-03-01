@@ -6,6 +6,7 @@ public class Controller extends Thread{
 	private Game game;
 	private CommandQueue commandQueue;
 	private ServerSender sender;
+	private Client[] clients;
 	
 	public Controller(Game game, ServerSender sender, CommandQueue commandQueue){
 		this.game = game;
@@ -60,9 +61,12 @@ public class Controller extends Thread{
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		JSONObject response = new JSONObject();
+		
 		Client client = new Client(addr, port);
-		if(game.addPlayer(client)){
+		JSONObject response = new JSONObject();
+		
+		if(game.addPlayer()){
+			clients[clients.length-1] = client;
 			
 		}
 		else{
@@ -81,7 +85,7 @@ public class Controller extends Thread{
 			game.resetPlayer(playerID);
 		}
 		else if(buttonPressed == "deploy"){
-			
+			game.dropBomb(playerID);
 		}
 	}
 

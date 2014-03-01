@@ -33,12 +33,12 @@ Json Message
 
 |Key|Value|Description|
 |---|-----|---|
-|"pID"|int *(optional)*|Unique id of the client that sent the message *(Not necessary for register)*|
+|"pid"|int *(optional)*|Unique id of the client that sent the message *(Not necessary for register)*|
 |"command"|Command|What command the player just entered|
 |"button"|Button *(optional)*|What non direction button the client just pressed|
 |"direction"| Direction *(optional)*| Direction that the player just moved|
 |"bomb"|Bomb *(optional)*| Location that the player just dropped the bomb|
-|"clientInfo"|ClientInfo *(optional)*|Has the connection information for the client so that we can send them messages|
+|"client_info"|ClientInfo *(optional)*|Has the connection information for the client so that we can send them messages|
 
 
 |Command *(String)*|Description|Outcome|
@@ -70,8 +70,17 @@ Json Message
 
 |ClientInfo *(Object)*|key|value|
 |---|---|---|
-||"IP"|String|
+||"ip"|String|
 ||"port"|int|
+
+
+Server -> Client: Message Specification
+===
+Json Message
+|Key|Value|Description|
+|---|-----|---|
+|"type"|String|Indicates the type of message|
+
 
 Notes
 ===
