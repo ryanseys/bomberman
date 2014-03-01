@@ -1,5 +1,3 @@
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.*;
 import java.net.*;
 
@@ -24,7 +22,6 @@ public class Client {
 		
 		JFrame frame = new ClientView();
 	    frame.setVisible(true);
-
 
 		while(true){
 			String msg = userInput.readLine();
