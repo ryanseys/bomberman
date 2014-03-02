@@ -38,7 +38,6 @@ Json Message
 |"button"|Button *(optional)*|What non direction button the client just pressed|
 |"direction"| Direction *(optional)*| Direction that the player just moved|
 |"bomb"|Bomb *(optional)*| Location that the player just dropped the bomb|
-|"client_info"|ClientInfo *(optional)*|Has the connection information for the client so that we can send them messages|
 
 
 |Command *(String)*|Description|Outcome|
@@ -68,10 +67,6 @@ Json Message
 ||"x"|int|
 ||"y"|int|
 
-|ClientInfo *(Object)*|key|value|
-|---|---|---|
-||"ip"|String|
-||"port"|int|
 
 
 Server -> Client: Message Specification
@@ -81,12 +76,17 @@ Json Message
 |Key|Value|Description|
 |---|---|---|
 |"type"|String|Indicates the type of message|
+|"resp" *(optional)*|String|This will be either "Success" or "Failure", indicating the Servers response to their message|
 |"game" *(optional)*|GameBoard|An object containing the current state of the game board|
+|"pid" *(optional)*|int|Integer indicating the player id of for the client, will be -1 on failure.|
 
 
 |type *(String)*|Description|
 |---|---|
-|"broadcast"|This message was broadcast to all players, indicting there is also a GameBoard object in the message.
+|"join"|This message will only be sent when a client tries to join. Response will include parameter pid which indicates their player id|
+|"response"|This is a message for a single client that indicates an aditional parameter, "resp", which will indicate the success or failure of the request|
+|"broadcast"|This message was broadcast to all players, indicting there is also a GameBoard object in the message.|
+|"game_over"|Indicates the game is over, will be accompanied by ending game state|
 
 |GameBoard *(object)*|Key|Value|Description|
 |---|-----|---|---|
