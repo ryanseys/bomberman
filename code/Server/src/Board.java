@@ -33,7 +33,7 @@ public class Board {
 	/**
 	 * @param set the board to configured width/height
 	 */
-	public void initBoard() {
+	private void initBoard() {
 		this.board = new GameObject[this.width][this.height];
 	}
 
@@ -49,13 +49,14 @@ public class Board {
 	private void placeDoor(){
 		Point emptySpot = getEmptySpot();
 		door = new GameObject(GameObjectType.DOOR, emptySpot.getLocation().x, emptySpot.getLocation().y);
+		board[emptySpot.getLocation().x][emptySpot.getLocation().y] = door;
 	}
 	private void initPlayers(Player[] players){
 		Point emptySpot;
-		
 		for (int i=0;i < players.length; i++) {
 			emptySpot = getEmptySpot();
 			players[i] = new Player(i, emptySpot.getLocation().x, emptySpot.getLocation().y);
+			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = players[i];
 		}
 	}
 	
@@ -64,6 +65,7 @@ public class Board {
 		for (int i=0;i < enemies.length; i++) {
 			emptySpot = getEmptySpot();
 			enemies[i] = new Enemy(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = enemies[i];
 		}
 	}
 	private void initPowerups(Powerup[] powerups){
@@ -71,6 +73,7 @@ public class Board {
 		for (int i=0;i < powerups.length; i++) {
 			emptySpot = getEmptySpot();
 			powerups[i] = new Powerup(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = powerups[i];
 		}
 	}
 	private Point getEmptySpot(){
@@ -129,5 +132,34 @@ public class Board {
 		boolean xValid = (x >= 0) && (x <= this.width);
 		boolean yValid = (y >= 0) && (y <= this.height);
 		return xValid && yValid;
+	}
+
+	/**
+	 * @return the width
+	 */
+	public int getWidth() {
+		return width;
+	}
+
+	/**
+	 * @return the height
+	 */
+	public int getHeight() {
+		return height;
+	}
+	
+	public int[][] toIntArr(){
+		int[][] intArr = new int[this.width][this.height];
+		for (int x = 0; x < this.width; x++) {
+			for (int y = 0; y < this.height; y++) {
+				if(this.board[x][y] != null){
+					intArr[x][y] = this.board[x][y].getType().ordinal();
+				}
+				else{
+					intArr[x][y] = GameObjectType.EMPTY.ordinal();
+				}
+			}
+		}
+		return intArr;
 	}
 }
