@@ -7,13 +7,20 @@ public class Board {
 	private static final int MAX_HEIGHT = 25;
 	private GameObject[][] board;
 	private GameObject door;
+	private int width;
+	private int height;
 
 	public Board(){
-		this.setBoard(new GameObject[MAX_WIDTH][MAX_HEIGHT]);
+		this.width = MAX_WIDTH;
+		this.height = MAX_HEIGHT;
+		this.initBoard();
+		
 	}
 
 	public Board(int height, int width){
-		this.setBoard(new GameObject[height][width]);
+		this.width = width;
+		this.height = height;
+		this.initBoard();
 	}
 
 	/**
@@ -24,10 +31,10 @@ public class Board {
 	}
 
 	/**
-	 * @param board the board to set
+	 * @param set the board to configured width/height
 	 */
-	public void setBoard(GameObject[][] board) {
-		this.board = board;
+	public void initBoard() {
+		this.board = new GameObject[this.width][this.height];
 	}
 
 	// TODO initialize the board objects
@@ -71,12 +78,56 @@ public class Board {
 		int x, y;
 		Random r = new Random();
 		do{
-			x = r.nextInt(MAX_WIDTH);
-			y = r.nextInt(MAX_HEIGHT);
+			x = r.nextInt(this.width);
+			y = r.nextInt(this.height);
 			if(board[x][y] == null){
 				emptySpot = true;
 			}else{emptySpot = false;}
 		}while(!emptySpot);
 		return new Point(x,y);
+	}
+
+	public void moveUp(MovingObject obj) {
+		int x = obj.x();
+		int y = obj.y();
+		if(onBoard(x, y + 1)){
+			obj.move(x, y + 1);
+			board[x][y] = null;
+			board[x][y + 1] = obj;
+		}
+	}
+	public void moveDown(MovingObject obj) {
+	    int x = obj.x();
+	    int y = obj.y();
+	    if(onBoard(x, y - 1)){
+	      obj.move(x, y - 1);
+	      board[x][y] = null;
+	      board[x][y - 1] = obj;
+	    }
+	}
+	public void moveLeft(MovingObject obj) {
+	    int x = obj.x();
+	    int y = obj.y();
+	    if(onBoard(x - 1, y)){
+	      obj.move(x - 1, y);
+	      board[x][y] = null;
+	      board[x - 1][y] = obj;
+	    }
+	}
+	public void moveRight(MovingObject obj) {
+	    int x = obj.x();
+	    int y = obj.y();
+	    if(onBoard(x + 1, y)){
+	      obj.move(x + 1, y);
+	      board[x][y] = null;
+	      board[x + 1][y] = obj;
+	    }
+	}
+	
+	// Returns whether the new location is on the board
+	private boolean onBoard(int x, int y){
+		boolean xValid = (x >= 0) && (x <= this.width);
+		boolean yValid = (y >= 0) && (y <= this.height);
+		return xValid && yValid;
 	}
 }

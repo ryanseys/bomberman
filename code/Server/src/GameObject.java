@@ -10,11 +10,13 @@ public class GameObject {
 		this.coord = new Point(x,y);
 	}
 
-	/**
-	 * @return the coord
-	 */
-	public Point getCoord() {
-		return coord;
+	// return x position
+	public int x(){
+		return coord.x;
+	}
+	// return y position
+	public int y(){
+		return coord.y;
 	}
 
 	/**

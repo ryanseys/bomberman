@@ -1,3 +1,5 @@
+import org.json.*;
+
 
 public class Game {
 	// Currently we need to limit number of players to 2
@@ -39,7 +41,6 @@ public class Game {
 		this.players = new Player[numPlayers]; // Create array to store players in
 		this.enemies = new Enemy[0];
 		this.powerups = new Powerup[0];
-		
 		this.started = true;
 		this.board = new Board(); // TODO decide on size of board
 		
@@ -48,6 +49,22 @@ public class Game {
 
 	// Moves the specified player in the specified direction
 	public void playerMoved(int playerID, String direction){
+		Player player = getPlayer(playerID);
+		if(direction == "up"){
+			board.moveUp(player);
+		}
+		else if(direction == "down"){
+			board.moveDown(player);
+		}
+		else if(direction == "left"){
+			board.moveLeft(player);
+		}
+		else if(direction == "right"){
+			board.moveRight(player);
+		}
+		else{
+			System.out.println("Invalid direction submitted by client!");
+		}
 		
 	}
 
@@ -60,7 +77,6 @@ public class Game {
 
 	public void endGame() {
 		this.isFinished = true;
-		
 	}
 
 	public void resetPlayer(int playerID) {
@@ -71,5 +87,13 @@ public class Game {
 	public void dropBomb(int playerID) {
 		// TODO Auto-generated method stub
 		
+	}
+	public JSONObject toJSON(){
+		// TODO
+		return null;
+		
+	}
+	private Player getPlayer(int clientID){
+		return players[clientID-1];
 	}
 }
