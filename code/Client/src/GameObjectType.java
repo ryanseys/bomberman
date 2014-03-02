@@ -1,6 +1,6 @@
 /********************************************************
  * 
- * MAKE SURE THAT THIS DEFINITION MATCHES ENUM ON CLIENT
+ * MAKE SURE THAT THIS DEFINITION MATCHES ENUM ON SERVER
  *
  ********************************************************/
 public enum GameObjectType{

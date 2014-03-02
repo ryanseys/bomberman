@@ -5,8 +5,8 @@ public class Player extends MovingObject {
 	private int bombRange;
 	private int lives;
 	
-	public Player(int x, int y) {
-		super(GameObjectType.PLAYER, x, y);
+	public Player(int player_number, int x, int y) {
+		super(GameObjectType.values()[player_number], x, y);
 		this.maxBombs = 1;
 		this.currentBombs = 1;
 		this.lives = 1;

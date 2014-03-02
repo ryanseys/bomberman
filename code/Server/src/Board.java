@@ -48,7 +48,7 @@ public class Board {
 		
 		for (int i=0;i < players.length; i++) {
 			emptySpot = getEmptySpot();
-			players[i] = new Player(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			players[i] = new Player(i, emptySpot.getLocation().x, emptySpot.getLocation().y);
 		}
 	}
 	
