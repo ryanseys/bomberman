@@ -8,13 +8,15 @@ public class MessageQueue {
 		messageQueue = new LinkedList<DatagramPacket>();
 	}
 	public synchronized void add(DatagramPacket message){
+		System.out.println("MessageQueue: adding a message");
 		messageQueue.add(message);
-		this.notify();
+		notify();
 	}
-	public synchronized DatagramPacket pop(){
+	public synchronized DatagramPacket pop() throws InterruptedException{
+		while(messageQueue.isEmpty()){
+			System.out.println("Controller waiting in MessageQueue");
+			wait();
+		}
 		return messageQueue.pop();
-	}
-	public synchronized boolean isEmpty(){
-		return messageQueue.isEmpty();
 	}
 }
