@@ -90,8 +90,8 @@ Json Message
 
 |GameBoard *(object)*|Key|Value|Description|
 |---|-----|---|---|
-||width|int|width of the board|
-||height|int|height of the board|
+||"width"|int|width of the board|
+||"height"|int|height of the board|
 ||board|[(GameObjectType)int][(GameObjectType)int]|A two dimensional integer array of GameObjectType defined in GameObjectType enum|
 
 
