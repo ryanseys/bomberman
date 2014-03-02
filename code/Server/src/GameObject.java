@@ -2,7 +2,7 @@ import java.awt.Point;
 
 public class GameObject {
 
-	GameObjectType type;
+	private GameObjectType type;
 	private Point coord;
 
 	GameObject(GameObjectType type, int x, int y){
@@ -26,5 +26,12 @@ public class GameObject {
 	 */
 	public void setCoord(int x, int y) {
 		coord.setLocation(x, y);
+	}
+
+	/**
+	 * @return the type
+	 */
+	public GameObjectType getType() {
+		return type;
 	}
 }
