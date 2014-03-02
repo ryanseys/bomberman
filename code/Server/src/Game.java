@@ -3,7 +3,7 @@ import org.json.*;
 
 public class Game {
 	// Currently we need to limit number of players to 2
-	private static int MAX_PLAYERS = 2;
+	public static int MAX_PLAYERS = 2;
 
 	private Player[] players;
 	private Enemy[] enemies;
@@ -25,11 +25,17 @@ public class Game {
 	 *  return false on failure.
 	 */
 	public synchronized boolean addPlayer(){
-		if((this.numPlayers == MAX_PLAYERS) || (this.started)){
+		if((this.numPlayers == MAX_PLAYERS)){
+			System.out.println("Player cannot join, the game is full");
+			return false;
+		}
+		else if(this.started){
+			System.out.println("Player cannot join, the game has started");
 			return false;
 		}
 		else {
 			numPlayers++;
+			System.out.println("Player succesfully joined the game");
 			return true;
 		}
 	}
@@ -43,23 +49,22 @@ public class Game {
 		this.powerups = new Powerup[0];
 		this.started = true;
 		this.board = new Board(); // TODO decide on size of board
-		
 		board.initBoard(players, enemies, powerups);
 	}
 
 	// Moves the specified player in the specified direction
 	public void playerMoved(int playerID, String direction){
 		Player player = getPlayer(playerID);
-		if(direction == "up"){
+		if(direction.equals("up")){
 			board.moveUp(player);
 		}
-		else if(direction == "down"){
+		else if(direction.equals("down")){
 			board.moveDown(player);
 		}
-		else if(direction == "left"){
+		else if(direction.equals("left")){
 			board.moveLeft(player);
 		}
-		else if(direction == "right"){
+		else if(direction.equals("right")){
 			board.moveRight(player);
 		}
 		else{
@@ -89,11 +94,20 @@ public class Game {
 		
 	}
 	public JSONObject toJSON(){
-		// TODO
-		return null;
+		JSONObject game = new JSONObject();
+		game.put("width", this.board.getWidth());
+		game.put("height", this.board.getHeight());
+		int[][] intBoard = board.toIntArr();
+		JSONArray arr = new JSONArray();
+		for(int i = 0; i < intBoard.length; i++){
+			arr.put(i, new JSONArray(intBoard[i]));
+		}
+		game.put("board", arr);
+		return game;
 		
 	}
 	private Player getPlayer(int clientID){
 		return players[clientID-1];
 	}
+	
 }
