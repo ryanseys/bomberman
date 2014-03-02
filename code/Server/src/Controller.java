@@ -33,7 +33,13 @@ public class Controller extends Thread{
 		System.out.println(message.toString());
 		
 		JSONObject msg = new JSONObject(message);
-		String command = msg.getString("command");
+		String command = null;
+		try {
+			command = msg.getString("command");	
+		} catch (Exception e) {
+			System.out.println("Improperly formatted request from client, no \"command\" key found");
+			return;
+		}
 		
 		if(command == "join"){
 			joinGame(msg.getJSONObject("clientInfo").getString("IP"), msg.getJSONObject("clientInfo").getInt("port"));
