@@ -12,6 +12,7 @@ public class Controller extends Thread{
 		this.game = game;
 		this.commandQueue = commandQueue;
 		this.sender = sender;
+		this.clients = new Client[Game.MAX_PLAYERS];
 	}
 	
 	/*
@@ -19,54 +20,57 @@ public class Controller extends Thread{
 	 * This will parse out the message and run the operations against game 
 	 */
 	public void run(){
-		synchronized (commandQueue) {
-			while(commandQueue.isEmpty()){
-				try {
-					commandQueue.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		DatagramPacket datagramMsg = commandQueue.pop();
-		String message = new String(datagramMsg.getData()); 
-		System.out.println(message.toString());
-		
-		JSONObject msg = new JSONObject(message);
-		String command = null;
-		try {
-			command = msg.getString("command");	
-		} catch (Exception e) {
-			System.out.println("Improperly formatted request from client, no \"command\" key found");
-			return;
-		}
-		
-		if(command == "join"){
-			joinGame(datagramMsg.getAddress(), datagramMsg.getPort());
-		}
-		
-		else{
-			int playerID = msg.getInt("pID");
+		while(true){
+			DatagramPacket datagramMsg = null;
+			JSONObject msg = null;
 			
-			if(command == "move"){
-				game.playerMoved(playerID, msg.getString("Direction"));
+			try {
+				datagramMsg = commandQueue.pop();
+			} catch (Exception e) {
+				System.out.println("Error in controller retreiving message from command queue");
 			}
-			else if(command == "button"){
-				handleButton(playerID, msg.getString("button"));
+			 
+			String message = new String(datagramMsg.getData()); 
+			
+			try {
+				msg = new JSONObject(message);	
+			} catch (Exception e) {
+				System.out.println("Improperly formmated JSON: " + message.toString());
+			}
+			String command = null;
+			try {
+				command = msg.getString("command");	
+			} catch (Exception e) {
+				System.out.println("Improperly formatted request from client, no \"command\" key found");
+				return;
+			}
+			System.out.println("Controller handling command: \"" + command + "\"");
+			if(command.equals("join")){
+				joinGame(datagramMsg.getAddress(), datagramMsg.getPort());
 			}
 			else{
-				System.out.println("Improperly formatted JSON. Unknown command: " + command);
+				int playerID = msg.getInt("pid");
+				if(command.equals("move")){
+					game.playerMoved(playerID, msg.getString("Direction"));
+				}
+				else if(command.equals("button")){
+					handleButton(playerID, msg.getString("button"));
+				}
+				else{
+					System.out.println("Improperly formatted JSON. Unknown command: " + command);
+				}
 			}
 		}
 	}
 
 	/******* Helper functions to handle incoming message*******/
 	private void joinGame(InetAddress addr, int port){
-	
+		System.out.println("Client requested to join game");
 		Client client = new Client(addr, port);
-		boolean status = true;
+		boolean status;
 		if(game.addPlayer()){
-			clients[clients.length-1] = client;
+			clients[client.getId()-1] = client;
+			status = true;
 		}
 		else{
 			status = false;
@@ -79,17 +83,17 @@ public class Controller extends Thread{
 	}
 	
 	private void handleButton(int playerID, String buttonPressed){
-		if(buttonPressed == "start"){
+		if(buttonPressed.equals("start")){
 			game.startGame();
-			sender.broadcastMessage (clients, game.toString());
+			sender.broadcastMessage(clients, game.toJSON().toString());
 		}
-		else if(buttonPressed == "end"){
+		else if(buttonPressed.equals("end")){
 			game.endGame();
 		}
-		else if(buttonPressed == "reset"){
+		else if(buttonPressed.equals("reset")){
 			game.resetPlayer(playerID);
 		}
-		else if(buttonPressed == "deploy"){
+		else if(buttonPressed.equals("deploy")){
 			game.dropBomb(playerID);
 		}
 		else{
