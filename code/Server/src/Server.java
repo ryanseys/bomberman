@@ -9,7 +9,7 @@ public class Server {
 		Game game = new Game();
 		DatagramSocket serverSocket = new DatagramSocket(port);
 		ServerSender sender = new ServerSender(serverSocket);
-		CommandQueue commands = new CommandQueue();
+		MessageQueue commands = new MessageQueue();
 		
 		(new Controller(game, sender, commands)).start();
 		
@@ -21,8 +21,7 @@ public class Server {
 			DatagramPacket recPacket = new DatagramPacket(recData, recData.length);
 			serverSocket.receive(recPacket);
 			System.out.println("Server received a packet!");
-			String command = new String(recPacket.getData());
-			commands.addCommand(command);
+			commands.add(recPacket);
 		}
 		serverSocket.close();
 	}
