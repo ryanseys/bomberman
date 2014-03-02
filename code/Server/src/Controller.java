@@ -4,18 +4,17 @@ import org.json.*;
 
 public class Controller extends Thread{
 	private Game game;
-	private CommandQueue commandQueue;
+	private MessageQueue commandQueue;
 	private ServerSender sender;
 	private Client[] clients;
 	
-	public Controller(Game game, ServerSender sender, CommandQueue commandQueue){
+	public Controller(Game game, ServerSender sender, MessageQueue commandQueue){
 		this.game = game;
 		this.commandQueue = commandQueue;
 		this.sender = sender;
 	}
 	
 	/*
-	 * TODO
 	 * @see java.lang.Thread#run()
 	 * This will parse out the message and run the operations against game 
 	 */
@@ -29,7 +28,8 @@ public class Controller extends Thread{
 				}
 			}
 		}
-		String message = commandQueue.popCommand();
+		DatagramPacket datagramMsg = commandQueue.pop();
+		String message = new String(datagramMsg.getData()); 
 		System.out.println(message.toString());
 		
 		JSONObject msg = new JSONObject(message);
@@ -42,8 +42,9 @@ public class Controller extends Thread{
 		}
 		
 		if(command == "join"){
-			joinGame(msg.getJSONObject("clientInfo").getString("IP"), msg.getJSONObject("clientInfo").getInt("port"));
+			joinGame(datagramMsg.getAddress(), datagramMsg.getPort());
 		}
+		
 		else{
 			int playerID = msg.getInt("pID");
 			
@@ -54,35 +55,33 @@ public class Controller extends Thread{
 				handleButton(playerID, msg.getString("button"));
 			}
 			else{
-				System.out.println("Unknown command: " + command);
+				System.out.println("Improperly formatted JSON. Unknown command: " + command);
 			}
 		}
 	}
 
 	/******* Helper functions to handle incoming message*******/
-	private void joinGame(String IP, int port){
-		InetAddress addr = null;
-		try {
-			addr = InetAddress.getByName(IP);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		
+	private void joinGame(InetAddress addr, int port){
+	
 		Client client = new Client(addr, port);
-		JSONObject response = new JSONObject();
-		
+		boolean status = true;
 		if(game.addPlayer()){
 			clients[clients.length-1] = client;
-			
 		}
 		else{
-			
+			status = false;
 		}
-		sender.sendClientMsg(client, response.toString());
+		JSONObject response = new JSONObject();
+		response.put("type", "join");
+		int id = status ? client.getId() : -1;
+		response.put("pid", id);
+		sender.sendMsg(response.toString(), addr, port);
 	}
+	
 	private void handleButton(int playerID, String buttonPressed){
 		if(buttonPressed == "start"){
 			game.startGame();
+			sender.broadcastMessage (clients, game.toString());
 		}
 		else if(buttonPressed == "end"){
 			game.endGame();
@@ -93,6 +92,20 @@ public class Controller extends Thread{
 		else if(buttonPressed == "deploy"){
 			game.dropBomb(playerID);
 		}
+		else{
+			System.out.println("Invalid JSON object sent from the client.");
+		}
 	}
-
+	
+	// isSuccess indicates success/failure.
+	// IP is address to respond to.
+	// port is the port at that address.
+	@SuppressWarnings("unused") // If we want to ack messages later...
+	private void serverResp(boolean isSuccess, InetAddress addr, int port){
+		JSONObject response = new JSONObject();
+		response.put("type", "response");
+		String resp = isSuccess?"Success":"Failure";
+		response.put("resp", resp);
+		sender.sendMsg(response.toString(), addr, port);
+	}
 }
