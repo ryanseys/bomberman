@@ -9,17 +9,20 @@ public class Board {
 	private GameObject door;
 	private int width;
 	private int height;
+	private GameObject[] boxes;
 
-	public Board(){
+	public Board(int numBoxes){
 		this.width = MAX_WIDTH;
 		this.height = MAX_HEIGHT;
+		this.boxes = new GameObject[numBoxes];
 		this.initBoard();
 		
 	}
 
-	public Board(int height, int width){
+	public Board(int height, int width, int numBoxes){
 		this.width = width;
 		this.height = height;
+		this.boxes = new GameObject[numBoxes];
 		this.initBoard();
 	}
 
@@ -40,16 +43,18 @@ public class Board {
 	// TODO initialize the board objects
 	// pass in # of players, # of enemies, # of powerups
 	public void initBoard(Player[] players, Enemy[] enemies, Powerup[] powerups){
+		initBoxes();
+		placeDoor();
 		initPlayers(players);
 		initEnemies(enemies);
 		initPowerups(powerups);
-		//placeBlocks();
-		placeDoor();
 	}
 	private void placeDoor(){
-		Point emptySpot = getEmptySpot();
-		door = new GameObject(GameObjectType.DOOR, emptySpot.getLocation().x, emptySpot.getLocation().y);
-		board[emptySpot.getLocation().x][emptySpot.getLocation().y] = door;
+		if(door == null){
+			Point emptySpot = getEmptySpot();
+			door = new GameObject(GameObjectType.DOOR, emptySpot.getLocation().x, emptySpot.getLocation().y);
+		}
+		board[door.x()][door.y()] = door;
 	}
 	private void initPlayers(Player[] players){
 		Point emptySpot;
@@ -59,8 +64,8 @@ public class Board {
 			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = players[i];
 		}
 	}
-	
 	private void initEnemies(Enemy[] enemies){
+		//TODO - Match place boxes
 		Point emptySpot;		
 		for (int i=0;i < enemies.length; i++) {
 			emptySpot = getEmptySpot();
@@ -71,9 +76,22 @@ public class Board {
 	private void initPowerups(Powerup[] powerups){
 		Point emptySpot;
 		for (int i=0;i < powerups.length; i++) {
-			emptySpot = getEmptySpot();
-			powerups[i] = new Powerup(emptySpot.getLocation().x, emptySpot.getLocation().y);
-			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = powerups[i];
+			if(powerups[i] == null){
+				emptySpot = getEmptySpot();
+				powerups[i] = new Powerup(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			}
+			board[powerups[i].x()][powerups[i].y()] = powerups[i];
+		}
+	}
+	private void initBoxes(){
+		Point emptySpot;
+		for (int i=0;i < boxes.length; i++) {
+			System.out.println("BOX");
+			if(boxes[i] == null){
+				emptySpot = getEmptySpot();
+				boxes[i] = new GameObject(GameObjectType.BOX, emptySpot.getLocation().x, emptySpot.getLocation().y);
+			}
+			board[boxes[i].x()][boxes[i].y()] = boxes[i];
 		}
 	}
 	private Point getEmptySpot(){

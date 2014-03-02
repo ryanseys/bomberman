@@ -23,9 +23,7 @@ We decided to use JSON as our communication protocol.
 In order to use JSON with Java we needed to include a
 library, in this case [org.json](http://www.json.org/java/index.html).
 
-The jar file with the included classes for it are in [project]/lib/JSON.jar.
-You may need to include the jar file in your build path (right click on it >
-  build path > add to build path).
+The jar file with the included classes for it are included in both projects under [project]/lib/JSON.jar. You will need to include the jar file in your build path. In Eclipse, expand the lib/ directory, right click on the jar file > Build Path > Add to Build Path.
 
 Client -> Server: Message Specification
 ===
@@ -38,6 +36,7 @@ Json Message
 |"button"|Button *(optional)*|What non direction button the client just pressed|
 |"direction"| Direction *(optional)*| Direction that the player just moved|
 |"bomb"|Bomb *(optional)*| Location that the player just dropped the bomb|
+|"game" *(optional)*|GameBoard|An object containing the state of a board to be loaded|
 
 
 |Command *(String)*|Description|Outcome|
@@ -45,6 +44,7 @@ Json Message
 |"join"|Registers client for the game|Returns player ID on success, -1 on failure|
 |"move"|Indicates the player just moved, expect "direction" in JSON object as well|Update players position|
 |"button"|Indicates the player just pressed button (other than direction)| Calls relevant button handler|
+|"load"|Indicates that we want to load a board state|
 
 
 
@@ -98,7 +98,8 @@ Json Message
 Notes
 ===
 #####From the project description:
-- The sending of the periodic update must proceed concurrently with ongoingprocessing of player controls. The game state must be double-buffered.
+- The sending of the periodic update must proceed concurrently with ongoing
+processing of player controls. The game state must be double-buffered.
 
 
 ####Double Buffered

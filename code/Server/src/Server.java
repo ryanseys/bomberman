@@ -13,7 +13,7 @@ public class Server {
 		System.out.print("Test");
 		(new Controller(game, sender, messages)).start();
 		
-		byte[] recData = new byte[1024];
+		byte[] recData = new byte[2048];
 		
 		System.out.println("Server started listening on port: " + port);
 		

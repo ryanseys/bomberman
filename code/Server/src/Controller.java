@@ -48,6 +48,9 @@ public class Controller extends Thread{
 			if(command.equals("join")){
 				joinGame(datagramMsg.getAddress(), datagramMsg.getPort());
 			}
+			else if(command.equals("load")){
+				game.loadBoard(msg.getJSONObject("game"));
+			}
 			else{
 				int playerID = msg.getInt("pid");
 				if(command.equals("move")){
@@ -85,15 +88,22 @@ public class Controller extends Thread{
 	private void handleButton(int playerID, String buttonPressed){
 		if(buttonPressed.equals("start")){
 			game.startGame();
-			sender.broadcastMessage(clients, game.toJSON().toString());
+			JSONObject msg = new JSONObject();
+			msg.put("type", "broadcast");
+			msg.put("game", game.toJSON());
+					
+			sender.broadcastMessage(clients, msg.toString());
 		}
 		else if(buttonPressed.equals("end")){
+			//TODO
 			game.endGame();
 		}
 		else if(buttonPressed.equals("reset")){
+			//TODO
 			game.resetPlayer(playerID);
 		}
 		else if(buttonPressed.equals("deploy")){
+			//TODO
 			game.dropBomb(playerID);
 		}
 		else{

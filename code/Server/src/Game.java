@@ -46,9 +46,10 @@ public class Game {
 	public void startGame(){
 		this.players = new Player[numPlayers]; // Create array to store players in
 		this.enemies = new Enemy[0];
-		this.powerups = new Powerup[0];
+		this.powerups = new Powerup[1];
 		this.started = true;
-		this.board = new Board(); // TODO decide on size of board
+		if(board == null)
+			this.board = new Board(5); // TODO decide on size of board and # boxes
 		board.initBoard(players, enemies, powerups);
 	}
 
@@ -108,6 +109,22 @@ public class Game {
 	}
 	private Player getPlayer(int clientID){
 		return players[clientID-1];
+	}
+
+	public void loadBoard(JSONObject board) {
+		int width = board.getInt("width");
+		int height = board.getInt("height");
+		JSONArray boardArray = board.getJSONArray("board");
+		int [][] intBoard = new int[width][height];
+		
+		for (int i = 0; i < boardArray.length(); i++) {
+			JSONArray currArr = boardArray.getJSONArray(i);
+			for(int j = 0; j < currArr.length(); j++){
+				intBoard[i][j] = currArr.getInt(j);
+				System.out.println(intBoard[i][j]);
+			}
+		}
+		System.out.println(intBoard);
 	}
 	
 }
