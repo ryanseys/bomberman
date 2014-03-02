@@ -6,7 +6,7 @@ public class Player extends MovingObject {
 	private int lives;
 	
 	public Player(int player_number, int x, int y) {
-		super(GameObjectType.values()[player_number], x, y);
+		super(playerNumToGameObj(player_number), x, y);
 		this.maxBombs = 1;
 		this.currentBombs = 1;
 		this.lives = 1;
@@ -67,6 +67,16 @@ public class Player extends MovingObject {
 	 */
 	public void setBombRange(int bombRange) {
 		this.bombRange = bombRange;
+	}
+	private static GameObjectType playerNumToGameObj(int playerNum){
+		GameObjectType gameObj = null;
+		switch(playerNum){
+		case 0: gameObj = GameObjectType.PLAYER_1;
+		case 1: gameObj = GameObjectType.PLAYER_2;
+		case 2: gameObj = GameObjectType.PLAYER_3;
+		case 3: gameObj = GameObjectType.PLAYER_4;
+		}
+		return gameObj;
 	}
 
 }
