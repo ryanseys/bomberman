@@ -12,8 +12,10 @@ public class ServerSender {
 	}
 	
 	public void broadcastMessage(Client[] clients, String message){	
+		System.out.println("Broadcast Message: " + message);
 		for (Client client : clients) {
-			sendClientMsg(client, message);
+			if(client != null)
+				sendClientMsg(client, message);
 		}
 	}
 	public void sendMsg(String message, InetAddress IP, int port){
