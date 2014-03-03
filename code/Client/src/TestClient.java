@@ -7,17 +7,10 @@ public class TestClient {
 	MessageQueue receivedMsgs = new MessageQueue();
 	ClientReceiver cr;
 	ClientSender cs;
-	public TestClient(String IPAddress, int port) {
-		DatagramSocket socket;
-		try {
-			socket = new DatagramSocket();
-		} catch (SocketException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		//TODO CODE BREAKS HERE......
-//		cs = new ClientSender(toSendMsgs, socket);
-//		cr = new ClientReceiver();
+	public TestClient(String IPAddress, int port) throws SocketException {
+		DatagramSocket socket = new DatagramSocket();
+		cs = new ClientSender(toSendMsgs, socket);
+		cr = new ClientReceiver(receivedMsgs, socket);
 		cs.start();
 		cr.start();
 

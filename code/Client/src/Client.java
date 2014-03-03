@@ -1,50 +1,84 @@
 import java.io.*;
 import java.net.*;
 
-import javax.swing.JFrame;
+//import javax.swing.JFrame;
 
 import org.json.*;
 
 public class Client {
+	MessageQueue toSendMsgs;
+	MessageQueue receivedMsgs;
+	ClientReceiver cr;
+	ClientSender cs;
+	DatagramSocket dsocket;
+	
+	
+	public Client(InetAddress IPAddress, int port) throws SocketException {
+		this.toSendMsgs = new MessageQueue();
+		this.receivedMsgs = new MessageQueue();
+		dsocket = new DatagramSocket();
+		
+		// sender and receiver must use the same socket!
+		cs = new ClientSender(toSendMsgs, IPAddress, port, dsocket);
+		cr = new ClientReceiver(receivedMsgs, dsocket);
+		
+		// start the threads for receiving and sending
+		cs.start();
+		cr.start();
+//		ClientView cv = new ClientView();
+	}
+	
+	public void send(String msg) {
+		System.out.println("Sending message: " + msg);
+		synchronized(toSendMsgs) {
+			toSendMsgs.add(msg);
+			toSendMsgs.notify();
+		}
+	}
+	
+	public String receive() {
+		String s;
+		synchronized(receivedMsgs) {
+			while(receivedMsgs.isEmpty()) {
+				try {
+					receivedMsgs.wait();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			s = receivedMsgs.pop();
+		}
+		System.out.println("Received message: " + s);
+		return s;
+	}
 
 	public static void main(String[] args) throws Exception {
 		final int SERVER_PORT = 5000;
-
-		/*** TEMP READER FOR TESTING ***/
+		
+		Client client = new Client(InetAddress.getByName("localhost"), SERVER_PORT);
+		System.out.println("Client started...");
 		BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-
-		DatagramSocket clientSocket = new DatagramSocket();
-
-		// For now localhost, prompt later for external host
-		InetAddress IPAddress = InetAddress.getByName("localhost");
-		byte[] sendData;
-		byte[] receiveData;
 		
-		System.out.println("Client Started");
-		
-//		JFrame frame = new ClientView();
-//	    frame.setVisible(true);
 		boolean gameOn = true;
-		while(gameOn){
-			sendData = new byte[2048];
-			receiveData = new byte[2048];
+		while(gameOn) {
+			System.out.print("> ");
 			String msg = userInput.readLine();
-			sendData = msg.getBytes();
-			// Send message to the Server
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, SERVER_PORT);
-			clientSocket.send(sendPacket);
-			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-
-			// Get message from the Server
-			clientSocket.receive(receivePacket);
-			String serverMsg = new String(receivePacket.getData());
+			
+			// send a message
+			client.send(msg);
+			
+			// wait for the response...
+			String serverMsg = client.receive();
+			
+			// update view here
 
 			JSONObject resp = new JSONObject(serverMsg);
+		
 			JSONObject game = null;
-			if(resp.getString("type").equals("game_over"))
+			if(resp.getString("type").equals("game_over")) {
 				gameOn = false;
-			System.out.println("Resp from SERVER:" + resp.toString());
-			if(resp.keySet().contains("game")){
+			}
+			if(resp.keySet().contains("game")) {
 				game=resp.getJSONObject("game");
 				
 				JSONArray boardArray = game.getJSONArray("board");
@@ -57,7 +91,8 @@ public class Client {
 				}
 			}
 		}
-		//clientSocket.close();
+//		clientSocket.close();
 	}
 
 }
+//

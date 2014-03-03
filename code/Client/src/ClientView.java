@@ -1,34 +1,43 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
+//import javax.swing.border.EmptyBorder;
+//import javax.swing.border.EtchedBorder;
 
-public class ClientView extends JFrame{
+public class ClientView implements ActionListener, Observer {
 	
+	/**
+	 * 
+	 */
 	Font font = new Font("LucidaSans", Font.PLAIN, 20);
 	
-	public ClientView()
-	{ 
-		super("Bomberman");
-	    JPanel panel = (JPanel) this.getContentPane();
-	    setSize(700,500);
-	    Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-	    setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
+	public ClientView() { 
+		JFrame frame = new JFrame("Bomberman");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+	    JButton button = new JButton("Connect to server...");
+	    JTextField field = new JTextField();
+
+	    button.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    button.addActionListener(this);
+	    field.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+	    Container panel = frame.getContentPane();
+	    panel.setLayout( new BoxLayout( panel, BoxLayout.Y_AXIS ) );
+	    field.setEditable(false);
+	    panel.add( field );
+	    panel.add( button );
+	    frame.pack();
+	    frame.setVisible(true);
 	    
-	    JPanel contentPane = (JPanel)this.getContentPane();
-        contentPane.setLayout(new BorderLayout(10, 10));
-        contentPane.setBorder(new EmptyBorder(20, 20, 20, 20));
-        
-	    JPanel mainDisplay = new JPanel(new GridLayout(0,2, 100, 100));
-	    mainDisplay.setBackground(Color.WHITE);
-	    mainDisplay.setFont(font);
-	    contentPane.add(mainDisplay, BorderLayout.CENTER);
-	    
-	    InputMap im = panel.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
-	    ActionMap am = panel.getActionMap();
+	    JPanel view = ((JPanel) panel);
+	    InputMap im = view.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
+	    ActionMap am = view.getActionMap();
 	    
 	    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "RightArrow");
 	    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "LeftArrow");
@@ -39,11 +48,16 @@ public class ClientView extends JFrame{
 	    am.put("LeftArrow", new ArrowAction("LeftArrow"));
 	    am.put("UpArrow", new ArrowAction("UpArrow"));
 	    am.put("DownArrow", new ArrowAction("DownArrow"));
+	    
 	}
 	
 	public class ArrowAction extends AbstractAction {
 
-	    private String cmd;
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private String cmd;
 
 	    public ArrowAction(String cmd) {
 	        this.cmd = cmd;
@@ -62,20 +76,15 @@ public class ClientView extends JFrame{
 	        }
 	    }
 	}
-	
-	public void update(String update){
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		System.out.println("Connecting...");
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
 		
-		render();
-	}
-	
-	public void render(){
 		
 	}
-	
-	public static void main(String[] args)
-	{
-		JFrame f = new ClientView();
-	    f.show();
-	}
-	
 }
