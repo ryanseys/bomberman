@@ -1,4 +1,5 @@
 import java.net.*;
+import java.util.ArrayList;
 
 import org.json.*;
 
@@ -6,15 +7,15 @@ public class Controller extends Thread{
 	private Game game;
 	private MessageQueue commandQueue;
 	private ServerSender sender;
-	private Client[] clients;
-	private int numClients;
+	private ArrayList<Client> clients;
+	private int numPlayers;
 	
 	public Controller(Game game, ServerSender sender, MessageQueue commandQueue){
 		this.game = game;
 		this.commandQueue = commandQueue;
 		this.sender = sender;
-		this.clients = new Client[Game.MAX_PLAYERS];
-		this.numClients = 0;
+		this.clients = new ArrayList<Client>();
+		this.numPlayers = 0;
 	}
 	
 	/*
@@ -52,38 +53,40 @@ public class Controller extends Thread{
 			if(command != null && msg != null){
 				System.out.println("Controller handling command: \"" + command + "\"");
 				if(command.equals("join")){
-					joinGame(datagramMsg.getAddress(), datagramMsg.getPort());
+					joinGame(msg.getString("type"), datagramMsg.getAddress(), datagramMsg.getPort());	
 				}
 				else if(command.equals("load")){
 					game.loadBoard(msg.getJSONObject("game"));
 					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
 				}
 				else{
-					if(numClients == 0){
+					if(numPlayers == 0){
 						System.out.println("No clients have \"join\"(ed) yet, cannot press buttons");
 						serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
 					}
-					int playerID = -1;
-					try{
-						playerID = msg.getInt("pid");
-					}catch(Exception e){
-						System.out.println("Did not pass in playerID");
-						serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
-					}
-					if(command.equals("move")){
-						if(game.isStarted()){
-							game.playerMoved(playerID, msg.getString("direction"));
-							broadcastGameState();
+					else{
+						int playerID = -1;
+						try{
+							playerID = msg.getInt("pid");
+						}catch(Exception e){
+							System.out.println("Did not pass in playerID");
+							serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
+						}
+						if(command.equals("move")){
+							if(game.isStarted()){
+								game.playerMoved(playerID, msg.getString("direction"));
+								broadcastGameState();
+							}
+							else{
+								System.out.println("Cannot move, game has not started yet");
+							}
+						}
+						else if(command.equals("button")){
+							handleButton(playerID, msg.getString("button"));
 						}
 						else{
-							System.out.println("Cannot move, game has not started yet");
+							System.out.println("Improperly formatted JSON. Unknown command: " + command);
 						}
-					}
-					else if(command.equals("button")){
-						handleButton(playerID, msg.getString("button"));
-					}
-					else{
-						System.out.println("Improperly formatted JSON. Unknown command: " + command);
 					}
 				}
 			}
@@ -98,22 +101,37 @@ public class Controller extends Thread{
 	}
 
 	/******* Helper functions to handle incoming message*******/
-	private void joinGame(InetAddress addr, int port){
-		System.out.println("Client requested to join game");
-		Client client = new Client(addr, port);
-		boolean status;
-		if(game.addPlayer()){
-			clients[numClients++] = client;
-			status = true;
-		}
-		else{
-			status = false;
-		}
+	private void joinGame(String type, InetAddress addr, int port){
+		System.out.println("Client["+type+"] requested to join game");
+		Client client = null;
 		JSONObject response = new JSONObject();
-		response.put("type", "join");
-		int id = status ? client.getId() : -1;
-		response.put("pid", id);
-		sender.sendClientMsg(client, response.toString());
+		boolean status = true;
+		
+		if(type.equals("player")){
+			if(game.addPlayer()){
+				status = true;
+				client = new Client(addr, port, true);
+				response.put("pid", client.getId());
+				clients.add(client);
+				numPlayers++;
+			}
+			else{
+				status = false;
+			}
+		}
+		else if(type.equals("spectator")){
+			status = true;
+			client = new Client(addr, port, false);
+			clients.add(client);
+		}
+
+		response.put("type", type + "_join");
+//		int id = status ? client.getId() : -1;
+		String resp = status ? "Success" : "Failure";
+//		response.put("pid", id);
+		response.put("resp", resp);
+		sender.sendMsg(response.toString(), addr, port);
+//		sender.sendClientMsg(client, response.toString());
 	}
 	
 	private void handleButton(int playerID, String buttonPressed){
@@ -130,7 +148,7 @@ public class Controller extends Thread{
 				System.out.println("Cannot start the game, it has already finished");
 				serverResp(false, client.getIPaddr(), client.getPort());
 			}
-			else if(numClients == 0){
+			else if(numPlayers == 0){
 				System.out.println("Cannot start the game, client has not joined");
 				serverResp(false, client.getIPaddr(), client.getPort());
 			}
@@ -179,10 +197,9 @@ public class Controller extends Thread{
 		sender.broadcastMessage(clients, msg.toString());
 	}
 	private Client getClient(int id){
-		for(int i = 0; i < numClients; i++){
-			if(clients[i].getId() == id){
-				return clients[i];
-			}
+		for(Client client : clients){
+			if(client.getId() == id)
+				return client;
 		}
 		return null;
 	}

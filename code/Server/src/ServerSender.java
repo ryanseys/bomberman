@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 
 
 public class ServerSender {
@@ -7,11 +8,10 @@ public class ServerSender {
 	public ServerSender(DatagramSocket serverSocket) {
 		this.serverSocket = serverSocket;
 	}		
-	public void broadcastMessage(Client[] clients, String message){	
+	public void broadcastMessage(ArrayList<Client> clients, String message){	
 		System.out.println("Broadcast Message: " + message);
 		for (Client client : clients) {
-			if(client != null)
-				sendClientMsg(client, message);
+			sendClientMsg(client, message);
 		}
 	}
 	public void sendClientMsg(Client client, String message){

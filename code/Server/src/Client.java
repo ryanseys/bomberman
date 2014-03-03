@@ -15,10 +15,10 @@ public class Client {
 	private int port;
 	private int id;
 	
-	public Client(InetAddress IP, int port) {
+	public Client(InetAddress IP, int port, boolean isPlayer) {
 		this.IPaddr = IP;
 		this.port = port;
-		this.id = curr_id++;
+		this.id = isPlayer ? curr_id++ : -1;
 	}
 
 	/**

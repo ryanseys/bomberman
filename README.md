@@ -37,6 +37,7 @@ Json Message
 |"direction"| Direction *(optional)*| Direction that the player just moved|
 |"bomb"|Bomb *(optional)*| Location that the player just dropped the bomb|
 |"game" *(optional)*|GameBoard|An object containing the state of a board to be loaded|
+|"type" *(optional)*|String|Will indicate whether the joining client is a Player or Spectator|
 
 
 |Command *(String)*|Description|Outcome|
@@ -44,7 +45,7 @@ Json Message
 |"join"|Registers client for the game|Returns player ID on success, -1 on failure|
 |"move"|Indicates the player just moved, expect "direction" in JSON object as well|Update players position|
 |"button"|Indicates the player just pressed button (other than direction)| Calls relevant button handler|
-|"load"|Indicates that we want to load a board state|
+|"load"|Indicates that we want to load a board state|Parses passed in JSONArray of board and stores the data in board for when the game gets started|
 
 
 
@@ -61,6 +62,11 @@ Json Message
 |"down"|
 |"left"|
 |"right"|
+
+|type *(String)*|
+|---|
+|"player"|
+|"spectator"|
 
 |Bomb *(Object)*|key|value|
 |---|---|---|
@@ -83,7 +89,8 @@ Json Message
 
 |type *(String)*|Description|
 |---|---|
-|"join"|This message will only be sent when a client tries to join. Response will include parameter pid which indicates their player id|
+|"player_join"|This message will only be sent when a client tries to join as a Player. Response will include resp parameter which will indicate "Success" or "Failure", "Success" (ful) joins will include parameter pid which indicates their player id|
+|"spectator_join"|This message will only be sent when a client tries to join as a Spectator. Response will include resp parameter which will indicate "Success" or "Failure"|
 |"response"|This is a message for a single client that indicates an aditional parameter, "resp", which will indicate the success or failure of the request|
 |"broadcast"|This message was broadcast to all players, indicting there is also a GameBoard object in the message.|
 |"game_over"|Indicates the game is over, will be accompanied by ending game state|
