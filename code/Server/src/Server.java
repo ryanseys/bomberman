@@ -16,8 +16,10 @@ public class Server {
 		System.out.println("Server started listening on port: " + port);
 		
 		while(!game.isFinished()){
-			if(!controller.isAlive())
+			if(!controller.isAlive()){
+				System.out.println("Starting controller thread");
 				controller.start();
+			}
 			DatagramPacket recPacket = new DatagramPacket(recData, recData.length);
 			serverSocket.receive(recPacket);
 			System.out.println("Server received a packet!");

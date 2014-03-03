@@ -122,6 +122,7 @@ public class Game {
 	}
 
 	public void loadBoard(JSONObject board) {
+		System.out.println("Loading board from JSON:");
 		int width = board.getInt("width");
 		int height = board.getInt("height");
 		int numPowerups = 0;

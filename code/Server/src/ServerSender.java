@@ -15,7 +15,6 @@ public class ServerSender {
 		}
 	}
 	public void sendClientMsg(Client client, String message){
-		System.out.println("Client: " + client.toString());
 		sendMsg(message, client.getIPaddr(), client.getPort());
 	}
 	public void sendMsg(String message, InetAddress IP, int port){
@@ -25,7 +24,7 @@ public class ServerSender {
 			serverSocket.send(packet);
 		} catch (IOException e) {
 			System.out.println("Error broadcasting message");
-			e.printStackTrace();
+			return;
 		}
 	}
 }
