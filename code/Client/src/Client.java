@@ -7,16 +7,11 @@ public class Client {
 	ClientReceiver cr;
 	ClientSender cs;
 	DatagramSocket dsocket;
-	MessageQueue toView;
-	MessageQueue fromView;
-	
 	String state; // state of the game
 	
 	public Client(String IPAddress, int port) throws SocketException, UnknownHostException {
 		this.toSendMsgs = new MessageQueue();
 		this.receivedMsgs = new MessageQueue();
-		this.toView = new MessageQueue();
-		this.fromView = new MessageQueue();
 		this.state = "<< initial state >>";
 		dsocket = new DatagramSocket();
 		
@@ -59,6 +54,11 @@ public class Client {
 		}
 		System.out.println("Received message: " + s);
 		return s;
+	}
+	
+	public void connect() {
+		send("{\"command\":\"join\", \"type\":\"player\"}");
+		setState("Connecting...");
 	}
 	
 	/**

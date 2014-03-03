@@ -72,6 +72,8 @@ public class ClientView implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("Connecting...");
+		client.connect();
+		render();
 	}
 	
 	public void render() {
