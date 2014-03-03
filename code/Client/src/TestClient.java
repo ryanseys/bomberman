@@ -15,8 +15,9 @@ public class TestClient {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		//TODO CODE BREAKS HERE......
 //		cs = new ClientSender(toSendMsgs, socket);
-		cr = new ClientReceiver();
+//		cr = new ClientReceiver();
 		cs.start();
 		cr.start();
 
