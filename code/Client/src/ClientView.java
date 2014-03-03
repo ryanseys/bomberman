@@ -8,7 +8,7 @@ public class ClientView implements ActionListener {
 	
 	Font font = new Font("LucidaSans", Font.PLAIN, 20);
 	Client client;
-	JTextField field;
+	JTextArea textarea;
 	JButton button;
 	
 	public ClientView (Client c) {
@@ -17,16 +17,16 @@ public class ClientView implements ActionListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 	    button = new JButton("Connect to server...");
-	    field = new JTextField();
+	    textarea = new JTextArea();
 
 	    button.setAlignmentX(Component.CENTER_ALIGNMENT);
 	    button.addActionListener(this);
-	    field.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    textarea.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 	    Container panel = frame.getContentPane();
 	    panel.setLayout( new BoxLayout( panel, BoxLayout.Y_AXIS ) );
-	    field.setEditable(false);
-	    panel.add( field );
+	    textarea.setEditable(false);
+	    panel.add( textarea );
 	    panel.add( button );
 
 	    frame.setSize(500, 500);
@@ -73,19 +73,26 @@ public class ClientView implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		button.setText("Connecting...");
-		button.setEnabled(false);
-		client.connect();
-		render();
+		if(client.getPlayerID() > 0) {
+			client.startGame();
+		}
+		else {
+			button.setText("Connecting...");
+			button.setEnabled(false);
+			client.connect();
+			render();
+		}
 	}
 	
 	public void render() {
 		int playerid = client.getPlayerID();
-		if(playerid > 0) {
-			button.setText("Connected as Player " + playerid);
+		if(playerid > 0 && !client.isGameOn()) {
+			button.setText("Connected as Player " + playerid + ". Click to Start Game!");
+			button.setEnabled(true);
 		}
 		
 		// get state from client and render state
-		field.setText(client.getGameBoard());
+		textarea.setText(client.getGameBoard());
+		textarea.setFont(font);
 	}
 }

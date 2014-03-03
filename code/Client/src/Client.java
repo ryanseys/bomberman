@@ -92,10 +92,10 @@ public class Client {
 			game = resp.getJSONObject("game");
 			
 			JSONArray boardArray = game.getJSONArray("board");
+			
 			for (int i = 0; i < boardArray.length(); i++) {
-				JSONArray currArr = boardArray.getJSONArray(i);
-				for(int j = 0; j < currArr.length(); j++) {
-					new_board += ("[" + currArr.getInt(j) + "]") ;		
+				for(int j = 0; j < boardArray.length(); j++) {
+					new_board += ("[" + boardArray.getJSONArray(j).getInt(i) + "]") ;		
 				}
 				new_board += "\n";
 			}
@@ -119,6 +119,10 @@ public class Client {
 	
 	public int getPlayerID() {
 		return playerid;
+	}
+	
+	public boolean isGameOn() {
+		return isGameOn;
 	}
 	
 }

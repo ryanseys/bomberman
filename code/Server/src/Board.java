@@ -19,6 +19,7 @@ public class Board {
 		this.boxes = new ArrayList<GameObject>();
 		this.initBoard();
 	}
+	
 	public Board(int height, int width, int numBoxes){
 		this.width = width;
 		this.height = height;
@@ -50,6 +51,7 @@ public class Board {
 		initPowerups(powerups);
 		placeDoor();
 	}
+	
 	private void placeDoor(){
 		if(door == null){
 			Point emptySpot = getEmptySpot();
@@ -57,6 +59,7 @@ public class Board {
 		}
 		board[door.x()][door.y()] = door;
 	}
+	
 	private void initPlayers(Player[] players){
 		Point emptySpot;
 		for (int i=0;i < players.length; i++) {
@@ -65,6 +68,7 @@ public class Board {
 			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = players[i];
 		}
 	}
+	
 	private void initEnemies(ArrayList<Enemy> enemies){
 		Point emptySpot;
 		Enemy enemy;
@@ -77,6 +81,7 @@ public class Board {
 			board[e.x()][e.y()] = e;
 		}
 	}
+	
 	private void initPowerups(ArrayList<Powerup> powerups){
 		Point emptySpot;
 		Powerup powerup;
@@ -90,6 +95,7 @@ public class Board {
 			board[p.x()][p.y()] = p;
 		}
 	}
+	
 	private void initBoxes(){
 		Point emptySpot;
 		GameObject newBox;
@@ -121,18 +127,6 @@ public class Board {
 	public void moveUp(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
-		if(onBoard(x, y + 1)){
-			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
-				playerMove((Player) obj, x, y+1);
-			}
-			else{
-				enemyMove((Enemy) obj, x, y+1);
-			}
-		}
-	}
-	public void moveDown(MovingObject obj) {
-		int x = obj.x();
-		int y = obj.y();
 		if(onBoard(x, y - 1)){
 			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
 				playerMove((Player) obj, x, y - 1);
@@ -142,6 +136,20 @@ public class Board {
 			}
 		}
 	}
+	
+	public void moveDown(MovingObject obj) {
+		int x = obj.x();
+		int y = obj.y();
+		if(onBoard(x, y + 1)){
+			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
+				playerMove((Player) obj, x, y + 1);
+			}
+			else{
+				enemyMove((Enemy) obj, x, y + 1);
+			}
+		}
+	}
+	
 	public void moveLeft(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -154,6 +162,7 @@ public class Board {
 			}
 		}
 	}
+	
 	public void moveRight(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -166,9 +175,11 @@ public class Board {
 			}
 		}
 	}
+	
 	private void enemyMove(Enemy enemy, int newX, int newY){
 		//TODO - For next milestone do this
 	}
+	
 	private void playerMove(Player player, int newX, int newY){
 		if(board[newX][newY] == null){
 			board[player.x()][player.y()] = null;
@@ -243,6 +254,7 @@ public class Board {
 		}
 		return intArr;
 	}
+	
 	public void fromIntArr(int[][] intArr, int width, int height){
 		GameObjectType type;
 		this.board = new GameObject[width][height];
@@ -265,6 +277,7 @@ public class Board {
 			}
 		}
 	}
+	
 	/**
 	 * @return the door
 	 */

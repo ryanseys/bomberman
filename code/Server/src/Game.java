@@ -168,6 +168,7 @@ public class Game {
 		this.board = new Board(width, height, boxes);
 		this.board.fromIntArr(intArr, width, height);
 	}
+	
 	private synchronized void checkPowerups(){
 		if(powerups.size() == 0)
 			return;
@@ -181,6 +182,7 @@ public class Game {
 			}
 		}
 	}
+	
 	private synchronized void checkDoors(){
 		Door door = board.getDoor();
 		if(enemies.size() == 0) // If there are no enemies left, show the door
