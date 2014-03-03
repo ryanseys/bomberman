@@ -2,26 +2,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.*;
-//import javax.swing.border.EmptyBorder;
-//import javax.swing.border.EtchedBorder;
 
-public class ClientView implements ActionListener, Observer {
+public class ClientView implements ActionListener {
 	
-	/**
-	 * 
-	 */
 	Font font = new Font("LucidaSans", Font.PLAIN, 20);
+	Client client;
+	JTextField field;
 	
-	public ClientView() { 
+	public ClientView (Client c) {
+		this.client = c;
 		JFrame frame = new JFrame("Bomberman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	    JButton button = new JButton("Connect to server...");
-	    JTextField field = new JTextField();
+	    field = new JTextField();
 
 	    button.setAlignmentX(Component.CENTER_ALIGNMENT);
 	    button.addActionListener(this);
@@ -53,9 +48,6 @@ public class ClientView implements ActionListener, Observer {
 	
 	public class ArrowAction extends AbstractAction {
 
-	    /**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 		private String cmd;
 
@@ -81,10 +73,9 @@ public class ClientView implements ActionListener, Observer {
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("Connecting...");
 	}
-
-	@Override
-	public void update(Observable o, Object arg) {
-		
-		
+	
+	public void render() {
+		// get state from client and render state
+		field.setText(client.getState());
 	}
 }
