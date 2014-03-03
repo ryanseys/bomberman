@@ -8,6 +8,7 @@ public class Game {
 	public static int MAX_PLAYERS = 2;
 	public static int MAX_POWERUPS = 1;
 	public static int NUM_ENEMIES = 0;
+	public static int DEFAULT_DOORS = 5;
 	private Player[] players;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Powerup> powerups;
@@ -53,7 +54,7 @@ public class Game {
 		this.enemies = new ArrayList<Enemy>();
 		this.isStarted = true;
 		if(board == null)
-			this.board = new Board(5); // TODO decide on size of board and # boxes
+			this.board = new Board(DEFAULT_DOORS); // TODO decide on size of board and # boxes
 		board.initBoard(players, enemies, powerups);
 	}
 
@@ -168,12 +169,9 @@ public class Game {
 	private synchronized void checkPowerups(){
 		if(powerups.size() == 0)
 			return;
-		Powerup p;
 		for (Player player : players) {
 			for (Powerup powerup : powerups){
 				if(player.getLocation().equals(powerup.getLocation())){
-					// Powerup player!
-					p = powerup;
 					powerups.remove(powerup);
 					player.powerup();
 					return;

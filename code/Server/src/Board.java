@@ -72,7 +72,9 @@ public class Board {
 			emptySpot = getEmptySpot();
 			enemy = new Enemy(emptySpot.getLocation().x, emptySpot.getLocation().y);
 			enemies.add(enemy);
-			board[enemy.x()][enemy.y()] = enemy;
+		}
+		for (Enemy e : enemies) {
+			board[e.x()][e.y()] = e;
 		}
 	}
 	private void initPowerups(ArrayList<Powerup> powerups){
@@ -84,6 +86,9 @@ public class Board {
 			powerups.add(powerup);
 			board[powerup.x()][powerup.y()] = powerup;
 		}
+		for (Powerup p : powerups) {
+			board[p.x()][p.y()] = p;
+		}
 	}
 	private void initBoxes(){
 		Point emptySpot;
@@ -93,6 +98,9 @@ public class Board {
 			newBox = new GameObject(GameObjectType.BOX, emptySpot.getLocation().x, emptySpot.getLocation().y);
 			boxes.add(newBox);
 			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = newBox;
+		}
+		for (GameObject box : boxes) {
+			board[box.x()][box.y()] = box;
 		}
 	}
 	
@@ -241,7 +249,8 @@ public class Board {
 						this.door = new GameObject(GameObjectType.DOOR, i, j);
 						break;
 					case BOX:
-						this.boxes.add(new GameObject(GameObjectType.BOX, i, j));
+						GameObject box = new GameObject(GameObjectType.BOX, i, j);
+						this.boxes.add(box);
 						break;
 					default:
 						break;

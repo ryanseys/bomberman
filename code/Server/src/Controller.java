@@ -36,12 +36,15 @@ public class Controller extends Thread{
 				msg = new JSONObject(message);
 			} catch (Exception e) {
 				System.out.println("Improperly formmated JSON: " + message.toString());
+				serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
+				return;
 			}
 			String command = null;
 			try {
 				command = msg.getString("command");	
 			} catch (Exception e) {
 				System.out.println("Improperly formatted request from client, no \"command\" key found");
+				serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
 				return;
 			}
 			System.out.println("Controller handling command: \"" + command + "\"");
@@ -50,9 +53,17 @@ public class Controller extends Thread{
 			}
 			else if(command.equals("load")){
 				game.loadBoard(msg.getJSONObject("game"));
+				serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
 			}
 			else{
-				int playerID = msg.getInt("pid");
+				int playerID = -1;
+				try{
+					playerID = msg.getInt("pid");
+				}catch(Exception e){
+					System.out.println("Did not pass in playerID");
+					serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
+					return;
+				}
 				if(command.equals("move")){
 					if(game.isStarted()){
 						game.playerMoved(playerID, msg.getString("direction"));
@@ -95,16 +106,29 @@ public class Controller extends Thread{
 		response.put("type", "join");
 		int id = status ? client.getId() : -1;
 		response.put("pid", id);
-		 sender.sendClientMsg(client, response.toString());
+		sender.sendClientMsg(client, response.toString());
 	}
 	
 	private void handleButton(int playerID, String buttonPressed){
 		if(buttonPressed.equals("start")){
 			if(game.isStarted()){
 				System.out.println("Cannot start the game, it has already started");
+				for (Client client : clients) {
+					if(client != null){
+						if(client.getId() == playerID){
+							serverResp(false, client.getIPaddr(), client.getPort());
+							break;
+						}
+					}
+				}
 			}
 			else if(game.isFinished()){
 				System.out.println("Cannot start the game, it has already finished");
+				for (Client client : clients) {
+					if(client.getId() == playerID){
+						serverResp(false, client.getIPaddr(), client.getPort());
+					}
+				}
 			}
 			else{
 				game.startGame();
@@ -116,6 +140,11 @@ public class Controller extends Thread{
 				game.endGame();				
 			}
 			else{
+				for (Client client : clients) {
+					if(client.getId() == playerID){
+						serverResp(false, client.getIPaddr(), client.getPort());
+					}
+				}
 				System.out.println("Cannot end game. It has not yet started.");
 			}
 		}
@@ -135,7 +164,6 @@ public class Controller extends Thread{
 	// isSuccess indicates success/failure.
 	// IP is address to respond to.
 	// port is the port at that address.
-	@SuppressWarnings("unused") // If we want to ack messages later...
 	private void serverResp(boolean isSuccess, InetAddress addr, int port){
 		JSONObject response = new JSONObject();
 		response.put("type", "response");

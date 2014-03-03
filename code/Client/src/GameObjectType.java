@@ -4,5 +4,14 @@
  *
  ********************************************************/
 public enum GameObjectType{
-	EMPTY, PLAYER_1, PLAYER_2, PLAYER_3, PLAYER_4, ENEMY, BOMB, DOOR, BOX, POWERUP;
+	EMPTY,       // 0
+	PLAYER_1,    // 1
+	PLAYER_2,    // 2
+	PLAYER_3,    // 3
+	PLAYER_4,    // 4
+	ENEMY,       // 5
+	BOMB,        // 6
+	DOOR,        // 7
+	BOX,         // 8
+	POWERUP;     // 9
 }
