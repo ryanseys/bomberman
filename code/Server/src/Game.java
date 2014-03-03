@@ -1,22 +1,27 @@
+import java.util.ArrayList;
+
 import org.json.*;
 
 
 public class Game {
 	// Currently we need to limit number of players to 2
 	public static int MAX_PLAYERS = 2;
-
+	public static int MAX_POWERUPS = 1;
+	public static int NUM_ENEMIES = 0;
 	private Player[] players;
-	private Enemy[] enemies;
-	private Powerup[] powerups;
+	private ArrayList<Enemy> enemies;
+	private ArrayList<Powerup> powerups;
+	
 	private Board board;
 	private int numPlayers;
-	private boolean started;
+	private boolean isStarted;
 	private boolean isFinished;
 
 	public Game() {
-		this.started = false;
+		this.isStarted = false;
 		this.isFinished = false;
 		this.numPlayers = 0;
+		this.powerups = new ArrayList<Powerup>();
 	}
 
 	/*
@@ -29,7 +34,7 @@ public class Game {
 			System.out.println("Player cannot join, the game is full");
 			return false;
 		}
-		else if(this.started){
+		else if(this.isStarted){
 			System.out.println("Player cannot join, the game has started");
 			return false;
 		}
@@ -45,9 +50,8 @@ public class Game {
 	// Add one power up... (May change)
 	public void startGame(){
 		this.players = new Player[numPlayers]; // Create array to store players in
-		this.enemies = new Enemy[0];
-		this.powerups = new Powerup[1];
-		this.started = true;
+		this.enemies = new ArrayList<Enemy>();
+		this.isStarted = true;
 		if(board == null)
 			this.board = new Board(5); // TODO decide on size of board and # boxes
 		board.initBoard(players, enemies, powerups);
@@ -55,7 +59,9 @@ public class Game {
 
 	// Moves the specified player in the specified direction
 	public void playerMoved(int playerID, String direction){
+		System.out.println("player: " + playerID + " moved " + direction);
 		Player player = getPlayer(playerID);
+		player.getBombRange();
 		if(direction.equals("up")){
 			board.moveUp(player);
 		}
@@ -71,6 +77,8 @@ public class Game {
 		else{
 			System.out.println("Invalid direction submitted by client!");
 		}
+		checkPowerups();
+		checkDoors();
 		
 	}
 
@@ -107,6 +115,7 @@ public class Game {
 		return game;
 		
 	}
+	
 	private Player getPlayer(int clientID){
 		return players[clientID-1];
 	}
@@ -114,17 +123,82 @@ public class Game {
 	public void loadBoard(JSONObject board) {
 		int width = board.getInt("width");
 		int height = board.getInt("height");
+		int numPowerups = 0;
+		int boxes = 0;
+		GameObjectType type;
 		JSONArray boardArray = board.getJSONArray("board");
-		int [][] intBoard = new int[width][height];
+		int [][] intArr = new int[width][height];
 		
 		for (int i = 0; i < boardArray.length(); i++) {
 			JSONArray currArr = boardArray.getJSONArray(i);
 			for(int j = 0; j < currArr.length(); j++){
-				intBoard[i][j] = currArr.getInt(j);
-				System.out.println(intBoard[i][j]);
+				intArr[i][j] = currArr.getInt(j);
+				type = GameObjectType.values()[intArr[i][j]];
+				if(type != GameObjectType.EMPTY){
+					switch(type){
+					case BOX:
+						boxes++;
+						break;
+					case ENEMY:
+						break;
+					case PLAYER_1:
+						break;
+					case PLAYER_2:
+						break;
+					case PLAYER_3:
+						break;
+					case PLAYER_4:
+						break;
+					case POWERUP:
+						if(numPowerups < MAX_POWERUPS){
+							powerups.add(new Powerup(i, j));
+						}
+						break;
+					default:
+						break;
+					}
+				}			
+				System.out.print(intArr[i][j]);
+			}
+			System.out.println();
+		}
+		this.board = new Board(width, height, boxes);
+		this.board.fromIntArr(intArr, width, height);
+	}
+	private synchronized void checkPowerups(){
+		if(powerups.size() == 0)
+			return;
+		Powerup p;
+		for (Player player : players) {
+			for (Powerup powerup : powerups){
+				if(player.getLocation().equals(powerup.getLocation())){
+					// Powerup player!
+					p = powerup;
+					powerups.remove(powerup);
+					player.powerup();
+					return;
+				}
 			}
 		}
-		System.out.println(intBoard);
 	}
-	
+	private synchronized void checkDoors(){
+		GameObject door = board.getDoor();
+		for (Player player : players) {
+			if(player.getLocation().equals(door.getLocation())){
+				if(enemies.size() == 0){
+					// No enemies left
+					// TODO - Handle end of game scenario...
+					endGame();
+					return;
+				}
+			}
+		}
+		
+	}
+	/**
+	 * @return the isStarted
+	 */
+	public boolean isStarted() {
+		return isStarted;
+	}
 }

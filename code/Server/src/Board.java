@@ -1,28 +1,29 @@
 import java.awt.Point;
-import java.util.Random;
+import java.util.*;
 
 
 public class Board {
-	private static final int MAX_WIDTH = 25;
-	private static final int MAX_HEIGHT = 25;
+	private static final int MAX_WIDTH = 10;
+	private static final int MAX_HEIGHT = 10;
 	private GameObject[][] board;
 	private GameObject door;
 	private int width;
 	private int height;
-	private GameObject[] boxes;
+	private int numBoxes;
+	private ArrayList<GameObject> boxes;
 
 	public Board(int numBoxes){
 		this.width = MAX_WIDTH;
 		this.height = MAX_HEIGHT;
-		this.boxes = new GameObject[numBoxes];
+		this.numBoxes = numBoxes;
+		this.boxes = new ArrayList<GameObject>();
 		this.initBoard();
-		
 	}
-
 	public Board(int height, int width, int numBoxes){
 		this.width = width;
 		this.height = height;
-		this.boxes = new GameObject[numBoxes];
+		this.numBoxes = numBoxes;
+		this.boxes = new ArrayList<GameObject>();
 		this.initBoard();
 	}
 
@@ -42,7 +43,7 @@ public class Board {
 
 	// TODO initialize the board objects
 	// pass in # of players, # of enemies, # of powerups
-	public void initBoard(Player[] players, Enemy[] enemies, Powerup[] powerups){
+	public void initBoard(Player[] players, ArrayList<Enemy> enemies, ArrayList<Powerup> powerups){
 		initBoxes();
 		placeDoor();
 		initPlayers(players);
@@ -64,36 +65,37 @@ public class Board {
 			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = players[i];
 		}
 	}
-	private void initEnemies(Enemy[] enemies){
-		//TODO - Match place boxes
-		Point emptySpot;		
-		for (int i=0;i < enemies.length; i++) {
+	private void initEnemies(ArrayList<Enemy> enemies){
+		Point emptySpot;
+		Enemy enemy;
+		while(enemies.size() < Game.NUM_ENEMIES){
 			emptySpot = getEmptySpot();
-			enemies[i] = new Enemy(emptySpot.getLocation().x, emptySpot.getLocation().y);
-			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = enemies[i];
+			enemy = new Enemy(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			enemies.add(enemy);
+			board[enemy.x()][enemy.y()] = enemy;
 		}
 	}
-	private void initPowerups(Powerup[] powerups){
+	private void initPowerups(ArrayList<Powerup> powerups){
 		Point emptySpot;
-		for (int i=0;i < powerups.length; i++) {
-			if(powerups[i] == null){
-				emptySpot = getEmptySpot();
-				powerups[i] = new Powerup(emptySpot.getLocation().x, emptySpot.getLocation().y);
-			}
-			board[powerups[i].x()][powerups[i].y()] = powerups[i];
+		Powerup powerup;
+		while(powerups.size() < Game.MAX_POWERUPS){
+			emptySpot = getEmptySpot();
+			powerup = new Powerup(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			powerups.add(powerup);
+			board[powerup.x()][powerup.y()] = powerup;
 		}
 	}
 	private void initBoxes(){
 		Point emptySpot;
-		for (int i=0;i < boxes.length; i++) {
-			System.out.println("BOX");
-			if(boxes[i] == null){
-				emptySpot = getEmptySpot();
-				boxes[i] = new GameObject(GameObjectType.BOX, emptySpot.getLocation().x, emptySpot.getLocation().y);
-			}
-			board[boxes[i].x()][boxes[i].y()] = boxes[i];
+		GameObject newBox;
+		while(boxes.size() < numBoxes){
+			emptySpot = getEmptySpot();
+			newBox = new GameObject(GameObjectType.BOX, emptySpot.getLocation().x, emptySpot.getLocation().y);
+			boxes.add(newBox);
+			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = newBox;
 		}
 	}
+	
 	private Point getEmptySpot(){
 		boolean emptySpot = true;
 		int x, y;
@@ -112,43 +114,90 @@ public class Board {
 		int x = obj.x();
 		int y = obj.y();
 		if(onBoard(x, y + 1)){
-			obj.move(x, y + 1);
-			board[x][y] = null;
-			board[x][y + 1] = obj;
+			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
+				playerMove((Player) obj, x, y+1);
+			}
+			else{
+				enemyMove((Enemy) obj, x, y+1);
+			}
 		}
 	}
 	public void moveDown(MovingObject obj) {
-	    int x = obj.x();
-	    int y = obj.y();
-	    if(onBoard(x, y - 1)){
-	      obj.move(x, y - 1);
-	      board[x][y] = null;
-	      board[x][y - 1] = obj;
-	    }
+		int x = obj.x();
+		int y = obj.y();
+		if(onBoard(x, y - 1)){
+			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
+				playerMove((Player) obj, x, y - 1);
+			}
+			else{
+				enemyMove((Enemy) obj, x, y - 1);
+			}
+		}
 	}
 	public void moveLeft(MovingObject obj) {
-	    int x = obj.x();
-	    int y = obj.y();
-	    if(onBoard(x - 1, y)){
-	      obj.move(x - 1, y);
-	      board[x][y] = null;
-	      board[x - 1][y] = obj;
-	    }
+		int x = obj.x();
+		int y = obj.y();
+		if(onBoard(x - 1, y)){
+			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
+				playerMove((Player) obj, x - 1, y);
+			}
+			else{
+				enemyMove((Enemy) obj, x - 1, y);
+			}
+		}
 	}
 	public void moveRight(MovingObject obj) {
-	    int x = obj.x();
-	    int y = obj.y();
-	    if(onBoard(x + 1, y)){
-	      obj.move(x + 1, y);
-	      board[x][y] = null;
-	      board[x + 1][y] = obj;
-	    }
+		int x = obj.x();
+		int y = obj.y();
+		if(onBoard(x + 1, y)){
+			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
+				playerMove((Player) obj, x + 1, y);
+			}
+			else{
+				enemyMove((Enemy) obj, x + 1, y);
+			}
+		}
+	}
+	private void enemyMove(Enemy enemy, int newX, int newY){
+		//TODO - For next milestone do this
+	}
+	private void playerMove(Player player, int newX, int newY){
+		if(board[newX][newY] == null){
+			board[player.x()][player.y()] = null;
+			player.move(newX, newY);
+			board[newX][newY] = player;	
+		}
+		else{
+			switch(board[newX][newY].getType()){
+			case DOOR:
+				board[player.x()][player.y()] = null;
+				player.move(newX, newY);
+				board[newX][newY] = player;
+				// Handle player on door in game.
+				break;
+			case EMPTY:
+				// Can go there... Shouldnt hit this case ever...
+				board[player.x()][player.y()] = null;
+				player.move(newX, newY);
+				board[newX][newY] = player;	
+				break;
+			case POWERUP:
+				board[player.x()][player.y()] = null;
+				player.move(newX, newY);
+				board[newX][newY] = player;
+				// Handle player on powerup in game.
+				break;
+			default:
+				// Don't go there...
+				break;
+			}
+		}
 	}
 	
 	// Returns whether the new location is on the board
 	private boolean onBoard(int x, int y){
-		boolean xValid = (x >= 0) && (x <= this.width);
-		boolean yValid = (y >= 0) && (y <= this.height);
+		boolean xValid = (x >= 0) && (x < this.width);
+		boolean yValid = (y >= 0) && (y < this.height);
 		return xValid && yValid;
 	}
 
@@ -179,5 +228,32 @@ public class Board {
 			}
 		}
 		return intArr;
+	}
+	public void fromIntArr(int[][] intArr, int width, int height){
+		GameObjectType type;
+		this.board = new GameObject[width][height];
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if(intArr[i][j] != GameObjectType.EMPTY.ordinal()){
+					type = GameObjectType.values()[intArr[i][j]];
+					switch(type){
+					case DOOR:
+						this.door = new GameObject(GameObjectType.DOOR, i, j);
+						break;
+					case BOX:
+						this.boxes.add(new GameObject(GameObjectType.BOX, i, j));
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * @return the door
+	 */
+	public GameObject getDoor() {
+		return door;
 	}
 }

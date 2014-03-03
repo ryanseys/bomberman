@@ -3,20 +3,20 @@ import java.awt.Point;
 public class GameObject {
 
 	private GameObjectType type;
-	private Point coord;
+	private Point location;
 
 	GameObject(GameObjectType type, int x, int y){
 		this.type = type;
-		this.coord = new Point(x,y);
+		this.location = new Point(x,y);
 	}
 
 	// return x position
 	public int x(){
-		return coord.x;
+		return location.x;
 	}
 	// return y position
 	public int y(){
-		return coord.y;
+		return location.y;
 	}
 
 	/**
@@ -24,8 +24,16 @@ public class GameObject {
 	 * @param x the new x value of the coordinate
 	 * @param y the new y value of the coordinate
 	 */
-	public void setCoord(int x, int y) {
-		coord.setLocation(x, y);
+	public void setLocation(int x, int y) {
+		location.setLocation(x, y);
+	}
+	
+
+	/**
+	 * @return the location
+	 */
+	public Point getLocation() {
+		return location;
 	}
 
 	/**

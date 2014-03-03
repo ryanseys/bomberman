@@ -1,6 +1,15 @@
 import java.net.*;
 
 public class Client {
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Client [IPaddr=" + IPaddr + ", port=" + port + ", id=" + id
+				+ "]";
+	}
+
 	private static int curr_id = 1;
 	private InetAddress IPaddr;
 	private int port;

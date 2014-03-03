@@ -20,7 +20,7 @@ public class Controller extends Thread{
 	 * This will parse out the message and run the operations against game 
 	 */
 	public void run(){
-		while(true){
+		while(!game.isFinished()){
 			DatagramPacket datagramMsg = null;
 			JSONObject msg = null;
 			
@@ -33,7 +33,7 @@ public class Controller extends Thread{
 			String message = new String(datagramMsg.getData()); 
 			
 			try {
-				msg = new JSONObject(message);	
+				msg = new JSONObject(message);
 			} catch (Exception e) {
 				System.out.println("Improperly formmated JSON: " + message.toString());
 			}
@@ -54,7 +54,13 @@ public class Controller extends Thread{
 			else{
 				int playerID = msg.getInt("pid");
 				if(command.equals("move")){
-					game.playerMoved(playerID, msg.getString("Direction"));
+					if(game.isStarted()){
+						game.playerMoved(playerID, msg.getString("direction"));
+						broadcastGameState();
+					}
+					else{
+						System.out.println("Cannot move, game has not started yet");
+					}
 				}
 				else if(command.equals("button")){
 					handleButton(playerID, msg.getString("button"));
@@ -64,6 +70,13 @@ public class Controller extends Thread{
 				}
 			}
 		}
+		gameOver();		
+	}
+
+	private void gameOver() {
+		JSONObject msg = new JSONObject();
+		msg.put("type", "game_over");
+		sender.broadcastMessage(clients, msg.toString());
 	}
 
 	/******* Helper functions to handle incoming message*******/
@@ -82,28 +95,36 @@ public class Controller extends Thread{
 		response.put("type", "join");
 		int id = status ? client.getId() : -1;
 		response.put("pid", id);
-		sender.sendMsg(response.toString(), addr, port);
+		 sender.sendClientMsg(client, response.toString());
 	}
 	
 	private void handleButton(int playerID, String buttonPressed){
 		if(buttonPressed.equals("start")){
-			game.startGame();
-			JSONObject msg = new JSONObject();
-			msg.put("type", "broadcast");
-			msg.put("game", game.toJSON());
-					
-			sender.broadcastMessage(clients, msg.toString());
+			if(game.isStarted()){
+				System.out.println("Cannot start the game, it has already started");
+			}
+			else if(game.isFinished()){
+				System.out.println("Cannot start the game, it has already finished");
+			}
+			else{
+				game.startGame();
+				broadcastGameState();
+			}
 		}
 		else if(buttonPressed.equals("end")){
-			//TODO
-			game.endGame();
+			if(game.isStarted()){
+				game.endGame();				
+			}
+			else{
+				System.out.println("Cannot end game. It has not yet started.");
+			}
 		}
 		else if(buttonPressed.equals("reset")){
-			//TODO
+			//TODO - next milestone
 			game.resetPlayer(playerID);
 		}
 		else if(buttonPressed.equals("deploy")){
-			//TODO
+			//TODO - next milestone
 			game.dropBomb(playerID);
 		}
 		else{
@@ -121,5 +142,12 @@ public class Controller extends Thread{
 		String resp = isSuccess?"Success":"Failure";
 		response.put("resp", resp);
 		sender.sendMsg(response.toString(), addr, port);
+	}
+	private void broadcastGameState(){
+		JSONObject msg = new JSONObject();
+		msg.put("game", game.toJSON());
+		msg.put("type", "broadcast");
+		System.out.println(msg.get("game"));
+		sender.broadcastMessage(clients, msg.toString());
 	}
 }

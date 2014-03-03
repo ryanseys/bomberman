@@ -86,5 +86,9 @@ public class Player extends MovingObject {
 		}
 		return gameObj;
 	}
+	public void powerup(){
+		this.maxBombs++;
+		this.bombRange++;
+	}
 
 }
