@@ -9,13 +9,14 @@ public class ClientView implements ActionListener {
 	Font font = new Font("LucidaSans", Font.PLAIN, 20);
 	Client client;
 	JTextField field;
+	JButton button;
 	
 	public ClientView (Client c) {
 		this.client = c;
 		JFrame frame = new JFrame("Bomberman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-	    JButton button = new JButton("Connect to server...");
+		
+	    button = new JButton("Connect to server...");
 	    field = new JTextField();
 
 	    button.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -27,9 +28,11 @@ public class ClientView implements ActionListener {
 	    field.setEditable(false);
 	    panel.add( field );
 	    panel.add( button );
-	    frame.pack();
+
+	    frame.setSize(500, 500);
 	    frame.setVisible(true);
 	    
+	    // Handle keyboard input
 	    JPanel view = ((JPanel) panel);
 	    InputMap im = view.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
 	    ActionMap am = view.getActionMap();
@@ -43,7 +46,6 @@ public class ClientView implements ActionListener {
 	    am.put("LeftArrow", new ArrowAction("LeftArrow"));
 	    am.put("UpArrow", new ArrowAction("UpArrow"));
 	    am.put("DownArrow", new ArrowAction("DownArrow"));
-	    
 	}
 	
 	public class ArrowAction extends AbstractAction {
@@ -58,26 +60,32 @@ public class ClientView implements ActionListener {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 	        if (cmd.equalsIgnoreCase("LeftArrow")) {
-	            System.out.println("The left arrow was pressed!");
+	        	client.move(Direction.LEFT);
 	        } else if (cmd.equalsIgnoreCase("RightArrow")) {
-	            System.out.println("The right arrow was pressed!");
+	        	client.move(Direction.RIGHT);
 	        } else if (cmd.equalsIgnoreCase("UpArrow")) {
-	            System.out.println("The up arrow was pressed!");
+	            client.move(Direction.UP);
 	        } else if (cmd.equalsIgnoreCase("DownArrow")) {
-	            System.out.println("The down arrow was pressed!");
+	        	client.move(Direction.DOWN);
 	        }
 	    }
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("Connecting...");
+		button.setText("Connecting...");
+		button.setEnabled(false);
 		client.connect();
 		render();
 	}
 	
 	public void render() {
+		int playerid = client.getPlayerID();
+		if(playerid > 0) {
+			button.setText("Connected as Player " + playerid);
+		}
+		
 		// get state from client and render state
-		field.setText(client.getState());
+		field.setText(client.getGameBoard());
 	}
 }

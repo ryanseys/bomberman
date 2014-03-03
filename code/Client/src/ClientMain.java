@@ -1,8 +1,5 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+//import java.io.BufferedReader;
+//import java.io.InputStreamReader;
 
 
 public class ClientMain {
@@ -13,15 +10,15 @@ public class ClientMain {
 		ClientView cv = new ClientView(client);
 		
 		System.out.println("Client started...");
-		BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+//		BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 		
 		boolean gameOn = true;
 		while(gameOn) {
-			System.out.print("> ");
-			String msg = userInput.readLine();
+//			System.out.print("> ");
+//			String msg = userInput.readLine();
 			
 			// send a message
-			client.send(msg);
+//			client.send(msg);
 			
 			// wait for the response...
 			String serverMsg = client.receive();
@@ -30,25 +27,6 @@ public class ClientMain {
 			
 			// update view here (uses the state of the client to render)
 			cv.render();
-
-			JSONObject resp = new JSONObject(serverMsg);
-		
-			JSONObject game = null;
-			if(resp.getString("type").equals("game_over")) {
-				gameOn = false;
-			}
-			if(resp.keySet().contains("game")) {
-				game=resp.getJSONObject("game");
-				
-				JSONArray boardArray = game.getJSONArray("board");
-				for (int i = 0; i < boardArray.length(); i++) {
-					JSONArray currArr = boardArray.getJSONArray(i);
-					for(int j = 0; j < currArr.length(); j++){
-						System.out.print("["+currArr.getInt(j)+"]");		
-					}
-					System.out.println();
-				}
-			}
 		}
 	}
 }

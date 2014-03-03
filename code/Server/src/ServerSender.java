@@ -19,7 +19,8 @@ public class ServerSender {
 	}
 	public void sendMsg(String message, InetAddress IP, int port){
 		byte[] msg = message.getBytes();
-		 DatagramPacket packet = new DatagramPacket(msg, msg.length, IP, port);
+		System.out.println("Sending message from server: " + message);
+		DatagramPacket packet = new DatagramPacket(msg, msg.length, IP, port);
 		try {
 			serverSocket.send(packet);
 		} catch (IOException e) {

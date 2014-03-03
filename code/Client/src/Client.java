@@ -1,5 +1,6 @@
 import java.net.*;
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Client {
 	MessageQueue toSendMsgs;
@@ -7,12 +8,14 @@ public class Client {
 	ClientReceiver cr;
 	ClientSender cs;
 	DatagramSocket dsocket;
-	String state; // state of the game
+	String board; // state of the game
+	private int playerid;
+	boolean isGameOn = false;
 	
 	public Client(String IPAddress, int port) throws SocketException, UnknownHostException {
 		this.toSendMsgs = new MessageQueue();
 		this.receivedMsgs = new MessageQueue();
-		this.state = "<< initial state >>";
+		this.board = "<< initial state >>";
 		dsocket = new DatagramSocket();
 		
 		// sender and receiver must use the same socket!
@@ -22,6 +25,15 @@ public class Client {
 		// start the threads for receiving and sending
 		cs.start();
 		cr.start();
+	}
+	
+	public void startGame() {
+		isGameOn = true;
+		send("{ command: \"button\", pid: " + playerid + ", button:\"start\"}");
+	}
+	
+	public void endGame() {
+		isGameOn = false;
 	}
 	
 	/**
@@ -58,7 +70,6 @@ public class Client {
 	
 	public void connect() {
 		send("{\"command\":\"join\", \"type\":\"player\"}");
-		setState("Connecting...");
 	}
 	
 	/**
@@ -66,14 +77,48 @@ public class Client {
 	 * @param s String of the game state
 	 */
 	public void setState(String s) {
-		this.state = s;
+		String new_board = "";
+		JSONObject resp = new JSONObject(s);
+		
+		JSONObject game = null;
+		if(resp.getString("type").equals("game_over")) {
+			endGame();
+		}
+		else if(resp.getString("type").equals("player_join") && resp.getString("resp").equals("Success")) {
+			playerid = resp.getInt("pid");
+		}
+		
+		if(resp.keySet().contains("game")) {
+			game = resp.getJSONObject("game");
+			
+			JSONArray boardArray = game.getJSONArray("board");
+			for (int i = 0; i < boardArray.length(); i++) {
+				JSONArray currArr = boardArray.getJSONArray(i);
+				for(int j = 0; j < currArr.length(); j++) {
+					new_board += ("[" + currArr.getInt(j) + "]") ;		
+				}
+				new_board += "\n";
+			}
+		}
+		this.board = new_board;
+	}
+	
+	String[] directions = {"up", "down", "right", "left"};
+	
+	public void move(Direction d) {
+		send("{ command: \"move\", direction: \"" + directions[d.ordinal()] + "\", pid: " + playerid + "}");
 	}
 	
 	/**
 	 * Get the state of the game
 	 * @return String representation of the game state
 	 */
-	public String getState() {
-		return this.state;
+	public String getGameBoard() {
+		return this.board;
 	}
+	
+	public int getPlayerID() {
+		return playerid;
+	}
+	
 }
