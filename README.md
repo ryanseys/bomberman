@@ -108,5 +108,4 @@ Notes
 - The sending of the periodic update must proceed concurrently with ongoing
 processing of player controls. The game state must be double-buffered.
 
-
-####Double Buffered
+- The door is hidden by default until number of enemies is 0 or it is stepped on, in Milestone 1, since there are no enemies, the door is never hidden.

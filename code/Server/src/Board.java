@@ -6,7 +6,7 @@ public class Board {
 	private static final int MAX_WIDTH = 10;
 	private static final int MAX_HEIGHT = 10;
 	private GameObject[][] board;
-	private GameObject door;
+	private Door door;
 	private int width;
 	private int height;
 	private int numBoxes;
@@ -45,15 +45,15 @@ public class Board {
 	// pass in # of players, # of enemies, # of powerups
 	public void initBoard(Player[] players, ArrayList<Enemy> enemies, ArrayList<Powerup> powerups){
 		initBoxes();
-		placeDoor();
 		initPlayers(players);
 		initEnemies(enemies);
 		initPowerups(powerups);
+		placeDoor();
 	}
 	private void placeDoor(){
 		if(door == null){
 			Point emptySpot = getEmptySpot();
-			door = new GameObject(GameObjectType.DOOR, emptySpot.getLocation().x, emptySpot.getLocation().y);
+			door = new Door(emptySpot.getLocation().x, emptySpot.getLocation().y);
 		}
 		board[door.x()][door.y()] = door;
 	}
@@ -228,7 +228,13 @@ public class Board {
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
 				if(this.board[x][y] != null){
-					intArr[x][y] = this.board[x][y].getType().ordinal();
+					if(this.board[x][y].getType() == GameObjectType.DOOR){
+						if(this.door.isVisible())
+							intArr[x][y] = this.board[x][y].getType().ordinal();
+					}
+					else{
+						intArr[x][y] = this.board[x][y].getType().ordinal();
+					}
 				}
 				else{
 					intArr[x][y] = GameObjectType.EMPTY.ordinal();
@@ -246,7 +252,7 @@ public class Board {
 					type = GameObjectType.values()[intArr[i][j]];
 					switch(type){
 					case DOOR:
-						this.door = new GameObject(GameObjectType.DOOR, i, j);
+						this.door = new Door(i, j);
 						break;
 					case BOX:
 						GameObject box = new GameObject(GameObjectType.BOX, i, j);
@@ -262,7 +268,7 @@ public class Board {
 	/**
 	 * @return the door
 	 */
-	public GameObject getDoor() {
+	public Door getDoor() {
 		return door;
 	}
 }

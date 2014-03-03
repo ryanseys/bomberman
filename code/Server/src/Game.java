@@ -56,6 +56,7 @@ public class Game {
 		if(board == null)
 			this.board = new Board(DEFAULT_DOORS); // TODO decide on size of board and # boxes
 		board.initBoard(players, enemies, powerups);
+		checkDoors();
 	}
 
 	// Moves the specified player in the specified direction
@@ -181,12 +182,15 @@ public class Game {
 		}
 	}
 	private synchronized void checkDoors(){
-		GameObject door = board.getDoor();
+		Door door = board.getDoor();
+		if(enemies.size() == 0) // If there are no enemies left, show the door
+			door.setVisible();
 		for (Player player : players) {
 			if(player.getLocation().equals(door.getLocation())){
-				if(enemies.size() == 0){
-					// No enemies left
-					// TODO - Handle end of game scenario...
+				// TODO - Handle end of game scenario...
+				if(enemies.size() > 0)
+					door.setVisible();
+				else{
 					endGame();
 					return;
 				}
