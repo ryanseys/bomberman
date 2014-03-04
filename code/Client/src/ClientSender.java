@@ -11,14 +11,14 @@ public class ClientSender extends Thread {
 	private DatagramPacket data;
 	private InetAddress ip;
 	private int port;
-	
+
 	public ClientSender(MessageQueue sendMsgQ, InetAddress IPAddress, int port, DatagramSocket dsocket) throws SocketException {
 		this.sendMsgQ=sendMsgQ;
 		this.dsocket = dsocket;
 		this.ip = IPAddress;
 		this.port = port;
 	}
-	
+
 	@Override
 	public void run() {
 		String s;
@@ -40,8 +40,8 @@ public class ClientSender extends Thread {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
-		}	
+		}
 	}
 }

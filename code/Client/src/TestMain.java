@@ -11,7 +11,7 @@ public class TestMain {
 	static String server = "127.0.0.1";
 	static String testcaseDirectory = "testcases/";
 	static Client c;
-	public static void main(String args[]) throws IOException {
+	public static void main(String args[]) throws IOException, InterruptedException {
 		System.out.println("Running tests...");
 		c = new Client(server, port);
 		runAllTests(c);
@@ -19,6 +19,13 @@ public class TestMain {
 	}
 
 	public static void runTestCase(File f) throws IOException {
+		// reset the server state first
+		JSONObject resetMsg = new JSONObject();
+		resetMsg.put("command", "reset");
+		c.send(resetMsg.toString());
+		c.receive(); // wait til it replies
+
+		// then run the test case
 		String testcaseJSONString = getFileContents(f);
 		System.out.println(testcaseJSONString);
 		JSONArray arr = new JSONArray(testcaseJSONString);
@@ -37,9 +44,7 @@ public class TestMain {
 				System.out.println("Actual response: " + response);
 			}
 		}
-		JSONObject resetMsg = new JSONObject();
-		resetMsg.put("command", "reset");
-		c.send(resetMsg.toString());
+
 	}
 
 	public static void runAllTests(Client c) throws IOException {

@@ -61,6 +61,7 @@ public class Controller extends Thread{
 					this.numPlayers = 0;
 					// reset this static value! (maybe should not be static?)
 					Client.resetCurrId();
+					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
 				}
 				else if(command.equals("join")){
 					joinGame(msg.getString("type"), datagramMsg.getAddress(), datagramMsg.getPort());

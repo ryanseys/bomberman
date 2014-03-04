@@ -24,13 +24,13 @@ public class ClientReceiver extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			synchronized(recMsgQ) {
 				recMsgQ.add(new String((data.getData())));
 				recMsgQ.notify();
 			}
 		}
-		
-	}	
+
+	}
 
 }

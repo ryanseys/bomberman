@@ -17,7 +17,7 @@ public class Client {
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
 
-	public Client(String IPAddress, int port) throws SocketException, UnknownHostException {
+	public Client(String IPAddress, int port) throws SocketException, UnknownHostException, InterruptedException {
 		this.toSendMsgs = new MessageQueue();
 		this.receivedMsgs = new MessageQueue();
 		this.board = "";
