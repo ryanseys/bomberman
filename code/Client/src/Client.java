@@ -15,7 +15,7 @@ public class Client {
 	public Client(String IPAddress, int port) throws SocketException, UnknownHostException {
 		this.toSendMsgs = new MessageQueue();
 		this.receivedMsgs = new MessageQueue();
-		this.board = "<< initial state >>";
+		this.board = "";
 		dsocket = new DatagramSocket();
 		
 		// sender and receiver must use the same socket!
@@ -29,7 +29,11 @@ public class Client {
 	
 	public void startGame() {
 		isGameOn = true;
-		send("{ command: \"button\", pid: " + playerid + ", button:\"start\"}");
+		JSONObject startMsg = new JSONObject();
+		startMsg.put("command", "button");
+		startMsg.put("button", "start");
+		startMsg.put("pid", playerid);
+		send(startMsg.toString());
 	}
 	
 	public void endGame() {
@@ -68,8 +72,14 @@ public class Client {
 		return s;
 	}
 	
+	/**
+	 * Connect to the server as a player. Get a player id.
+	 */
 	public void connect() {
-		send("{\"command\":\"join\", \"type\":\"player\"}");
+		JSONObject connMsg = new JSONObject();
+		connMsg.put("command", "join");
+		connMsg.put("type", "player");
+		send(connMsg.toString());
 	}
 	
 	/**
@@ -77,7 +87,6 @@ public class Client {
 	 * @param s String of the game state
 	 */
 	public void setState(String s) {
-		String new_board = "";
 		JSONObject resp = new JSONObject(s);
 		
 		JSONObject game = null;
@@ -90,23 +99,29 @@ public class Client {
 		
 		if(resp.keySet().contains("game")) {
 			game = resp.getJSONObject("game");
-			
-			JSONArray boardArray = game.getJSONArray("board");
-			
-			for (int i = 0; i < boardArray.length(); i++) {
-				for(int j = 0; j < boardArray.length(); j++) {
-					new_board += ("[" + boardArray.getJSONArray(j).getInt(i) + "]") ;		
-				}
-				new_board += "\n";
-			}
+			this.board = stringifyBoard(game.getJSONArray("board"));
 		}
-		this.board = new_board;
+	}
+	
+	public String stringifyBoard(JSONArray board) {
+		String result = "";
+		for(int col = 0; col < board.length(); col++) {
+			for(int row = 0; row < board.length(); row++) {
+				result += "[" + board.getJSONArray(row).getInt(col) + "]";
+			}
+			result += "\n";
+		}
+		return result;
 	}
 	
 	String[] directions = {"up", "down", "right", "left"};
 	
 	public void move(Direction d) {
-		send("{ command: \"move\", direction: \"" + directions[d.ordinal()] + "\", pid: " + playerid + "}");
+		JSONObject moveMsg = new JSONObject();
+		moveMsg.put("command", "move");
+		moveMsg.put("direction", directions[d.ordinal()]);
+		moveMsg.put("pid", playerid);
+		send(moveMsg.toString());
 	}
 	
 	/**
@@ -124,5 +139,4 @@ public class Client {
 	public boolean isGameOn() {
 		return isGameOn;
 	}
-	
 }
