@@ -1,21 +1,22 @@
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 
 public class Server {
 	private static final int port = 5000;
-	
-	public static void main(String[] args) throws Exception {		
-		Game game = new Game();
+
+	public static void main(String[] args) throws Exception {
+		//		Game game = new Game();
 		DatagramSocket serverSocket = new DatagramSocket(port);
 		ServerSender sender = new ServerSender(serverSocket);
 		MessageQueue messages = new MessageQueue();
-		
+
 		Controller controller;
-		controller = new Controller(game, sender, messages);
+		controller = new Controller(sender, messages);
 		byte[] recData = new byte[2048];
-		
+
 		System.out.println("Server started listening on port: " + port);
-		
-		while(!game.isFinished()){
+
+		while(!controller.isGameFinished()){
 			if(!controller.isAlive()){
 				System.out.println("Starting controller thread");
 				controller.start();

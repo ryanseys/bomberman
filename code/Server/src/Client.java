@@ -1,4 +1,4 @@
-import java.net.*;
+import java.net.InetAddress;
 
 public class Client {
 	/* (non-Javadoc)
@@ -14,11 +14,15 @@ public class Client {
 	private InetAddress IPaddr;
 	private int port;
 	private int id;
-	
+
 	public Client(InetAddress IP, int port, boolean isPlayer) {
 		this.IPaddr = IP;
 		this.port = port;
 		this.id = isPlayer ? curr_id++ : -1;
+	}
+
+	public static void resetCurrId() {
+		curr_id = 1;
 	}
 
 	/**

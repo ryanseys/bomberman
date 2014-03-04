@@ -1,7 +1,8 @@
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
-import org.json.*;
+import org.json.JSONObject;
 
 public class Controller extends Thread{
 	private Game game;
@@ -9,31 +10,31 @@ public class Controller extends Thread{
 	private ServerSender sender;
 	private ArrayList<Client> clients;
 	private int numPlayers;
-	
-	public Controller(Game game, ServerSender sender, MessageQueue commandQueue){
-		this.game = game;
+
+	public Controller(ServerSender sender, MessageQueue commandQueue){
+		this.game = new Game();
 		this.commandQueue = commandQueue;
 		this.sender = sender;
 		this.clients = new ArrayList<Client>();
 		this.numPlayers = 0;
 	}
-	
+
 	/*
 	 * @see java.lang.Thread#run()
-	 * This will parse out the message and run the operations against game 
+	 * This will parse out the message and run the operations against game
 	 */
+	@Override
 	public void run(){
 		while(!game.isFinished()){
 			DatagramPacket datagramMsg = null;
-			
-			
+
 			try {
 				datagramMsg = commandQueue.pop();
 			} catch (Exception e) {
 				System.out.println("Error in controller retreiving message from command queue");
 			}
-			 
-			String message = new String(datagramMsg.getData()); 
+
+			String message = new String(datagramMsg.getData());
 			JSONObject msg = null;
 			try {
 				msg = new JSONObject(message);
@@ -41,19 +42,28 @@ public class Controller extends Thread{
 				System.out.println("Improperly formmated JSON: " + message.toString());
 				serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
 			}
-			
+
 			String command = null;
 			try {
-				if(msg!=null)
-					command = msg.getString("command");	
+				if(msg!=null) {
+					command = msg.getString("command");
+				}
 			} catch (Exception e) {
 				System.out.println("Improperly formatted request from client, no \"command\" key found");
 				serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
 			}
-			if(command != null && msg != null){
+			if((command != null) && (msg != null)){
 				System.out.println("Controller handling command: \"" + command + "\"");
-				if(command.equals("join")){
-					joinGame(msg.getString("type"), datagramMsg.getAddress(), datagramMsg.getPort());	
+				if(command.equals("reset")) {
+					// reset the game
+					this.game = new Game();
+					this.clients = new ArrayList<Client>();
+					this.numPlayers = 0;
+					// reset this static value! (maybe should not be static?)
+					Client.resetCurrId();
+				}
+				else if(command.equals("join")){
+					joinGame(msg.getString("type"), datagramMsg.getAddress(), datagramMsg.getPort());
 				}
 				else if(command.equals("load")){
 					game.loadBoard(msg.getJSONObject("game"));
@@ -91,7 +101,7 @@ public class Controller extends Thread{
 				}
 			}
 		}
-		gameOver();		
+		gameOver();
 	}
 
 	private void gameOver() {
@@ -106,7 +116,7 @@ public class Controller extends Thread{
 		Client client = null;
 		JSONObject response = new JSONObject();
 		boolean status = true;
-		
+
 		if(type.equals("player")){
 			if(game.addPlayer()){
 				status = true;
@@ -126,14 +136,14 @@ public class Controller extends Thread{
 		}
 
 		response.put("type", type + "_join");
-//		int id = status ? client.getId() : -1;
+		//		int id = status ? client.getId() : -1;
 		String resp = status ? "Success" : "Failure";
-//		response.put("pid", id);
+		//		response.put("pid", id);
 		response.put("resp", resp);
 		sender.sendMsg(response.toString(), addr, port);
-//		sender.sendClientMsg(client, response.toString());
+		//		sender.sendClientMsg(client, response.toString());
 	}
-	
+
 	private void handleButton(int playerID, String buttonPressed){
 		Client client = getClient(playerID);
 		if(client == null){
@@ -159,7 +169,7 @@ public class Controller extends Thread{
 		}
 		else if(buttonPressed.equals("end")){
 			if(game.isStarted()){
-				game.endGame();				
+				game.endGame();
 			}
 			else{
 				System.out.println("Cannot end game. It has not yet started.");
@@ -178,7 +188,7 @@ public class Controller extends Thread{
 			System.out.println("Invalid JSON object sent from the client.");
 		}
 	}
-	
+
 	// isSuccess indicates success/failure.
 	// IP is address to respond to.
 	// port is the port at that address.
@@ -198,9 +208,14 @@ public class Controller extends Thread{
 	}
 	private Client getClient(int id){
 		for(Client client : clients){
-			if(client.getId() == id)
+			if(client.getId() == id) {
 				return client;
+			}
 		}
 		return null;
+	}
+
+	public boolean isGameFinished() {
+		return this.game.isFinished();
 	}
 }
