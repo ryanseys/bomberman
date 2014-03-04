@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
-import org.json.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 public class Game {
@@ -12,7 +13,7 @@ public class Game {
 	private Player[] players;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Powerup> powerups;
-	
+
 	private Board board;
 	private int numPlayers;
 	private boolean isStarted;
@@ -54,7 +55,9 @@ public class Game {
 		this.enemies = new ArrayList<Enemy>();
 		this.isStarted = true;
 		if(board == null)
+		{
 			this.board = new Board(DEFAULT_DOORS); // TODO decide on size of board and # boxes
+		}
 		board.initBoard(players, enemies, powerups);
 		checkDoors();
 	}
@@ -81,7 +84,7 @@ public class Game {
 		}
 		checkPowerups();
 		checkDoors();
-		
+
 	}
 
 	/**
@@ -97,12 +100,12 @@ public class Game {
 
 	public void resetPlayer(int playerID) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void dropBomb(int playerID) {
 		// TODO Auto-generated method stub
-		
+
 	}
 	public JSONObject toJSON(){
 		JSONObject game = new JSONObject();
@@ -115,9 +118,9 @@ public class Game {
 		}
 		game.put("board", arr);
 		return game;
-		
+
 	}
-	
+
 	private Player getPlayer(int clientID){
 		return players[clientID-1];
 	}
@@ -131,7 +134,7 @@ public class Game {
 		GameObjectType type;
 		JSONArray boardArray = board.getJSONArray("board");
 		int [][] intArr = new int[width][height];
-		
+
 		for (int i = 0; i < boardArray.length(); i++) {
 			JSONArray currArr = boardArray.getJSONArray(i);
 			for(int j = 0; j < currArr.length(); j++){
@@ -160,7 +163,7 @@ public class Game {
 					default:
 						break;
 					}
-				}			
+				}
 				System.out.print(intArr[i][j]);
 			}
 			System.out.println();
@@ -168,10 +171,11 @@ public class Game {
 		this.board = new Board(width, height, boxes);
 		this.board.fromIntArr(intArr, width, height);
 	}
-	
+
 	private synchronized void checkPowerups(){
-		if(powerups.size() == 0)
+		if(powerups.size() == 0) {
 			return;
+		}
 		for (Player player : players) {
 			for (Powerup powerup : powerups){
 				if(player.getLocation().equals(powerup.getLocation())){
@@ -182,24 +186,26 @@ public class Game {
 			}
 		}
 	}
-	
+
 	private synchronized void checkDoors(){
 		Door door = board.getDoor();
-		if(enemies.size() == 0) // If there are no enemies left, show the door
+		if(enemies.size() == 0) {
 			door.setVisible();
+		}
 		for (Player player : players) {
 			if(player.getLocation().equals(door.getLocation())){
 				// TODO - Handle end of game scenario...
-				if(enemies.size() > 0)
+				if(enemies.size() > 0) {
 					door.setVisible();
-				else{
+				} else{
 					endGame();
 					return;
 				}
 			}
 		}
-		
+
 	}
+
 	/**
 	 * @return the isStarted
 	 */
