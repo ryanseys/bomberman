@@ -10,6 +10,7 @@ public class ClientView implements ActionListener {
 	Client client;
 	JTextArea textarea;
 	JButton button;
+	JPanel view;
 	
 	public ClientView (Client c) {
 		this.client = c;
@@ -18,14 +19,19 @@ public class ClientView implements ActionListener {
 		
 	    button = new JButton("Connect to server...");
 	    textarea = new JTextArea();
+	    textarea.setFont(font);
 
 	    button.setAlignmentX(Component.CENTER_ALIGNMENT);
 	    button.addActionListener(this);
 	    textarea.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 	    Container panel = frame.getContentPane();
+	    panel.setFocusable(true);
+	    
 	    panel.setLayout( new BoxLayout( panel, BoxLayout.Y_AXIS ) );
 	    textarea.setEditable(false);
+	    textarea.setEnabled(false);
+	    textarea.setDisabledTextColor(Color.BLACK);
 	    panel.add( textarea );
 	    panel.add( button );
 
@@ -33,8 +39,11 @@ public class ClientView implements ActionListener {
 	    frame.setVisible(true);
 	    
 	    // Handle keyboard input
-	    JPanel view = ((JPanel) panel);
-	    InputMap im = view.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
+	    view = ((JPanel) panel);
+	    view.setRequestFocusEnabled(true);
+	    view.requestFocusInWindow();
+	    view.grabFocus();
+	    InputMap im = view.getInputMap(JPanel.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 	    ActionMap am = view.getActionMap();
 	    
 	    im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "RightArrow");
@@ -73,6 +82,8 @@ public class ClientView implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		view.requestFocusInWindow();
+		
 		if(client.getPlayerID() > 0) {
 			client.startGame();
 		}
@@ -90,9 +101,15 @@ public class ClientView implements ActionListener {
 			button.setText("Connected as Player " + playerid + ". Click to Start Game!");
 			button.setEnabled(true);
 		}
-		
-		// get state from client and render state
-		textarea.setText(client.getGameBoard());
-		textarea.setFont(font);
+		else if(playerid > 0  && client.isGameOn()) {
+			button.setText("Game started!");
+			button.setEnabled(false);
+			textarea.setText(client.getGameBoard());
+		}
+		else if(client.gameOver) {
+			button.setText("Game over!");
+			button.setEnabled(false);
+		}
+		view.grabFocus();
 	}
 }

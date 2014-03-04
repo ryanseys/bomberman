@@ -11,6 +11,7 @@ public class Client {
 	String board; // state of the game
 	private int playerid;
 	boolean isGameOn = false;
+	boolean gameOver = false;
 	
 	public Client(String IPAddress, int port) throws SocketException, UnknownHostException {
 		this.toSendMsgs = new MessageQueue();
@@ -38,6 +39,7 @@ public class Client {
 	
 	public void endGame() {
 		isGameOn = false;
+		gameOver = true;
 	}
 	
 	/**
