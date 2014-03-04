@@ -10,7 +10,7 @@ public class Client {
 				+ "]";
 	}
 
-	private static int curr_id = 1;
+	private static int curr_id = 0;
 	private InetAddress IPaddr;
 	private int port;
 	private int id;

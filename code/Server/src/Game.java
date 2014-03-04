@@ -50,6 +50,8 @@ public class Game {
 	// Initialize the board, placing the players at random locations.
 	// All spots are randomly filled as either empty or holding a box(and/or the door)
 	// Add one power up... (May change)
+	// TODO: There is a bug here. You cannot place players on the board if they have been pre-placed with load game.
+	// TODO: There should be a way to specify players initial locations manually rather than randomly
 	public void startGame(){
 		this.players = new Player[numPlayers]; // Create array to store players in
 		this.enemies = new ArrayList<Enemy>();

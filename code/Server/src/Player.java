@@ -68,6 +68,7 @@ public class Player extends MovingObject {
 	public void setBombRange(int bombRange) {
 		this.bombRange = bombRange;
 	}
+	
 	private static GameObjectType playerNumToGameObj(int playerNum){
 		GameObjectType gameObj = null;
 		switch(playerNum){

@@ -272,11 +272,22 @@ public class Board {
 						GameObject box = new GameObject(GameObjectType.BOX, i, j);
 						this.boxes.add(box);
 						break;
+					case PLAYER_1:
+					case PLAYER_2:
+					case PLAYER_3:
+					case PLAYER_4:
+						// this will place the player at its loaded location
+						// (but one will be randomly generated in startGame anyway) so this
+						// just breaks stuff for now
+						//playerMove(new Player(type.ordinal()-1, i, j), i, j);
+						break;
 					default:
 						break;
 					}
 				}
+				//System.out.print(""+ intArr[i][j]);
 			}
+			//System.out.print("\n");
 		}
 	}
 
