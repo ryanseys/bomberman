@@ -10,7 +10,7 @@ public class Game {
 	public static int MAX_POWERUPS = 1;
 	public static int NUM_ENEMIES = 0;
 	public static int DEFAULT_DOORS = 5;
-	private Player[] players;
+	private ArrayList<Player> players;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Powerup> powerups;
 
@@ -24,6 +24,7 @@ public class Game {
 		this.isFinished = false;
 		this.numPlayers = 0;
 		this.powerups = new ArrayList<Powerup>();
+		this.players = new ArrayList<Player>();
 	}
 
 	/*
@@ -41,7 +42,7 @@ public class Game {
 			return false;
 		}
 		else {
-			numPlayers++;
+			this.numPlayers++;
 			System.out.println("Player succesfully joined the game");
 			return true;
 		}
@@ -53,13 +54,20 @@ public class Game {
 	// TODO: There is a bug here. You cannot place players on the board if they have been pre-placed with load game.
 	// TODO: There should be a way to specify players initial locations manually rather than randomly
 	public void startGame(){
-		this.players = new Player[numPlayers]; // Create array to store players in
 		this.enemies = new ArrayList<Enemy>();
 		this.isStarted = true;
 		if(board == null)
 		{
 			this.board = new Board(DEFAULT_DOORS); // TODO decide on size of board and # boxes
 		}
+		System.out.println("NUM PLAYERS: "+numPlayers + " players.size: " + this.players.size());
+		while(this.players.size() < this.numPlayers){
+			this.players.add((new Player(this.players.size()+1, -1,-1)));
+		}
+		while(this.numPlayers > this.players.size()){
+			this.players.remove(this.players.size() -1);
+		}
+		
 		board.initBoard(players, enemies, powerups);
 		checkDoors();
 	}
@@ -124,7 +132,13 @@ public class Game {
 	}
 
 	private Player getPlayer(int clientID){
-		return players[clientID-1];
+		for(Player player : players){
+			if(player.getType() == GameObjectType.values()[clientID]){
+				return player;
+			}
+		}
+		System.out.println("There is an issue in Game.java > getPlayer()");
+		return null;
 	}
 
 	public void loadBoard(JSONObject board) {
@@ -150,12 +164,26 @@ public class Game {
 					case ENEMY:
 						break;
 					case PLAYER_1:
+						this.players.add(new Player(1,i,j));
+						System.out.println("Fount p1");
 						break;
 					case PLAYER_2:
+						if(MAX_PLAYERS > 1){
+							System.out.println("Fount p2");
+							this.players.add(new Player(2,i,j));
+						}
 						break;
 					case PLAYER_3:
+						if(MAX_PLAYERS > 2){
+							System.out.println("Fount p3");
+							this.players.add(new Player(3,i,j));
+						}
 						break;
 					case PLAYER_4:
+						if(MAX_PLAYERS > 3){
+							System.out.println("Fount p4");
+							this.players.add(new Player(4,i,j));
+						}
 						break;
 					case POWERUP:
 						if(numPowerups < MAX_POWERUPS){
@@ -213,5 +241,19 @@ public class Game {
 	 */
 	public boolean isStarted() {
 		return isStarted;
+	}
+
+	/**
+	 * @return the numPlayers
+	 */
+	public int getNumPlayers() {
+		return numPlayers;
+	}
+
+	/**
+	 * @param numPlayers the numPlayers to set
+	 */
+	public void setNumPlayers(int numPlayers) {
+		this.numPlayers = numPlayers;
 	}
 }

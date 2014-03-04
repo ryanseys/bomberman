@@ -45,7 +45,7 @@ public class Board {
 
 	// TODO initialize the board objects
 	// pass in # of players, # of enemies, # of powerups
-	public void initBoard(Player[] players, ArrayList<Enemy> enemies, ArrayList<Powerup> powerups){
+	public void initBoard(ArrayList<Player> players, ArrayList<Enemy> enemies, ArrayList<Powerup> powerups){
 		initBoxes();
 		initPlayers(players);
 		initEnemies(enemies);
@@ -61,12 +61,14 @@ public class Board {
 		board[door.x()][door.y()] = door;
 	}
 
-	private void initPlayers(Player[] players){
+	private void initPlayers(ArrayList<Player> players){
 		Point emptySpot;
-		for (int i=0;i < players.length; i++) {
-			emptySpot = getEmptySpot();
-			players[i] = new Player(i, emptySpot.getLocation().x, emptySpot.getLocation().y);
-			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = players[i];
+		for(Player player : players){
+			if((player.x() == -1) || (player.y() == -1)){
+				emptySpot = getEmptySpot();
+				player.setLocation(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			}
+			board[player.x()][player.y()] = player;
 		}
 	}
 
@@ -236,6 +238,7 @@ public class Board {
 	}
 
 	public int[][] toIntArr(){
+		System.out.println("To int arr:");
 		int[][] intArr = new int[this.width][this.height];
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
@@ -252,7 +255,9 @@ public class Board {
 				else{
 					intArr[x][y] = GameObjectType.EMPTY.ordinal();
 				}
+				System.out.print(intArr[x][y]);
 			}
+			System.out.println();
 		}
 		return intArr;
 	}

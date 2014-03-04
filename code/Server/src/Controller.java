@@ -9,14 +9,14 @@ public class Controller extends Thread{
 	private MessageQueue commandQueue;
 	private ServerSender sender;
 	private ArrayList<Client> clients;
-	private int numPlayers;
+	private int currClientPid;
 
 	public Controller(ServerSender sender, MessageQueue commandQueue){
 		this.game = new Game();
 		this.commandQueue = commandQueue;
 		this.sender = sender;
 		this.clients = new ArrayList<Client>();
-		this.numPlayers = 0;
+		this.currClientPid = 1;
 	}
 
 	/*
@@ -57,10 +57,15 @@ public class Controller extends Thread{
 				if(command.equals("reset")) {
 					// reset the game
 					this.game = new Game();
+					
+					// We could take these out and keep the current clients... Maybe as 
 					this.clients = new ArrayList<Client>();
-					this.numPlayers = 0;
-					// reset this static value! (maybe should not be static?)
-					Client.resetCurrId();
+					this.currClientPid = 1;
+					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
+				}
+				else if(command.equals("new_game")) {
+					// reset the game
+					this.game = new Game();
 					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
 				}
 				else if(command.equals("join")){
@@ -71,7 +76,7 @@ public class Controller extends Thread{
 					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
 				}
 				else{
-					if(numPlayers == 0){
+					if(this.game.getNumPlayers() == 0){
 						System.out.println("No clients have \"join\"(ed) yet, cannot press buttons");
 						serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
 					}
@@ -121,10 +126,9 @@ public class Controller extends Thread{
 		if(type.equals("player")){
 			if(game.addPlayer()){
 				status = true;
-				client = new Client(addr, port, true);
+				client = new Client(addr, port, this.currClientPid++, true);
 				response.put("pid", client.getId());
 				clients.add(client);
-				numPlayers++;
 			}
 			else{
 				status = false;
@@ -149,6 +153,7 @@ public class Controller extends Thread{
 		Client client = getClient(playerID);
 		if(client == null){
 			System.out.println("Client with that ID cannot be found");
+			return;
 		}
 		if(buttonPressed.equals("start")){
 			if(game.isStarted()){
@@ -159,8 +164,12 @@ public class Controller extends Thread{
 				System.out.println("Cannot start the game, it has already finished");
 				serverResp(false, client.getIPaddr(), client.getPort());
 			}
-			else if(numPlayers == 0){
+			else if(this.game.getNumPlayers() == 0){
 				System.out.println("Cannot start the game, client has not joined");
+				serverResp(false, client.getIPaddr(), client.getPort());
+			}
+			else if(this.game.getNumPlayers() > this.currClientPid){
+				System.out.println("Cannot start the game, there are more players in the game than clients");
 				serverResp(false, client.getIPaddr(), client.getPort());
 			}
 			else{

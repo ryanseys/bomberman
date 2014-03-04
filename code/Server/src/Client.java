@@ -9,8 +9,6 @@ public class Client {
 		return "Client [IPaddr=" + IPaddr + ", port=" + port + ", id=" + id
 				+ "]";
 	}
-
-	private static int curr_id = 1;
 	private InetAddress IPaddr;
 	private int port;
 	private int id;
@@ -18,11 +16,12 @@ public class Client {
 	public Client(InetAddress IP, int port, boolean isPlayer) {
 		this.IPaddr = IP;
 		this.port = port;
-		this.id = isPlayer ? curr_id++ : -1;
+		this.id = -1;
 	}
-
-	public static void resetCurrId() {
-		curr_id = 1;
+	public Client(InetAddress IP, int port, int id, boolean isPlayer) {
+		this.IPaddr = IP;
+		this.port = port;
+		this.id = id;
 	}
 
 	/**
