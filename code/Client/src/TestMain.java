@@ -14,9 +14,7 @@ public class TestMain {
 	
 	public static void runAllTests(Client c) {
 		// Run tests using client object
-		
+
 		// Tests go here
 	}
 }
-
-
