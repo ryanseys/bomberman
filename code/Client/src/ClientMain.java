@@ -13,7 +13,7 @@ public class ClientMain {
 //		BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
 		
 		boolean gameOn = true;
-		while(gameOn) {
+		while(true) {
 //			System.out.print("> ");
 //			String msg = userInput.readLine();
 			
