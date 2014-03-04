@@ -7,18 +7,22 @@ import org.json.JSONObject;
 
 
 public class TestMain {
-	static int port = 5000;
-	static String server = "127.0.0.1";
-	static String testcaseDirectory = "testcases/";
-	static Client c;
+	String testcaseDirectory;
+	Client c;
+
+	TestMain(Client c) {
+		this.c = c;
+		this.testcaseDirectory = "testcases/";
+	}
+
 	public static void main(String args[]) throws IOException, InterruptedException {
 		System.out.println("Running tests...");
-		c = new Client(server, port);
-		runAllTests(c);
+		TestMain t = new TestMain(new Client("127.0.0.1", 5000));
+		t.runAllTests();
 		System.out.println("Finished running tests!");
 	}
 
-	public static void runTestCase(File f) throws IOException {
+	public void runTestCase(File f) throws IOException {
 		// reset the server state first
 		JSONObject resetMsg = new JSONObject();
 		resetMsg.put("command", "reset");
@@ -47,7 +51,7 @@ public class TestMain {
 
 	}
 
-	public static void runAllTests(Client c) throws IOException {
+	public void runAllTests() throws IOException {
 		File folder = new File(testcaseDirectory);
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
