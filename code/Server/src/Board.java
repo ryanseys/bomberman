@@ -1,5 +1,6 @@
 import java.awt.Point;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 
 public class Board {
@@ -19,7 +20,7 @@ public class Board {
 		this.boxes = new ArrayList<GameObject>();
 		this.initBoard();
 	}
-	
+
 	public Board(int height, int width, int numBoxes){
 		this.width = width;
 		this.height = height;
@@ -51,7 +52,7 @@ public class Board {
 		initPowerups(powerups);
 		placeDoor();
 	}
-	
+
 	private void placeDoor(){
 		if(door == null){
 			Point emptySpot = getEmptySpot();
@@ -59,7 +60,7 @@ public class Board {
 		}
 		board[door.x()][door.y()] = door;
 	}
-	
+
 	private void initPlayers(Player[] players){
 		Point emptySpot;
 		for (int i=0;i < players.length; i++) {
@@ -68,7 +69,7 @@ public class Board {
 			board[emptySpot.getLocation().x][emptySpot.getLocation().y] = players[i];
 		}
 	}
-	
+
 	private void initEnemies(ArrayList<Enemy> enemies){
 		Point emptySpot;
 		Enemy enemy;
@@ -81,7 +82,7 @@ public class Board {
 			board[e.x()][e.y()] = e;
 		}
 	}
-	
+
 	private void initPowerups(ArrayList<Powerup> powerups){
 		Point emptySpot;
 		Powerup powerup;
@@ -95,7 +96,7 @@ public class Board {
 			board[p.x()][p.y()] = p;
 		}
 	}
-	
+
 	private void initBoxes(){
 		Point emptySpot;
 		GameObject newBox;
@@ -109,7 +110,7 @@ public class Board {
 			board[box.x()][box.y()] = box;
 		}
 	}
-	
+
 	private Point getEmptySpot(){
 		boolean emptySpot = true;
 		int x, y;
@@ -136,7 +137,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public void moveDown(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -149,7 +150,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public void moveLeft(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -162,7 +163,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	public void moveRight(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -175,16 +176,16 @@ public class Board {
 			}
 		}
 	}
-	
+
 	private void enemyMove(Enemy enemy, int newX, int newY){
 		//TODO - For next milestone do this
 	}
-	
+
 	private void playerMove(Player player, int newX, int newY){
 		if(board[newX][newY] == null){
 			board[player.x()][player.y()] = null;
 			player.move(newX, newY);
-			board[newX][newY] = player;	
+			board[newX][newY] = player;
 		}
 		else{
 			switch(board[newX][newY].getType()){
@@ -198,7 +199,7 @@ public class Board {
 				// Can go there... Shouldnt hit this case ever...
 				board[player.x()][player.y()] = null;
 				player.move(newX, newY);
-				board[newX][newY] = player;	
+				board[newX][newY] = player;
 				break;
 			case POWERUP:
 				board[player.x()][player.y()] = null;
@@ -212,7 +213,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	// Returns whether the new location is on the board
 	private boolean onBoard(int x, int y){
 		boolean xValid = (x >= 0) && (x < this.width);
@@ -233,15 +234,16 @@ public class Board {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public int[][] toIntArr(){
 		int[][] intArr = new int[this.width][this.height];
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
 				if(this.board[x][y] != null){
 					if(this.board[x][y].getType() == GameObjectType.DOOR){
-						if(this.door.isVisible())
+						if(this.door.isVisible()) {
 							intArr[x][y] = this.board[x][y].getType().ordinal();
+						}
 					}
 					else{
 						intArr[x][y] = this.board[x][y].getType().ordinal();
@@ -254,7 +256,7 @@ public class Board {
 		}
 		return intArr;
 	}
-	
+
 	public void fromIntArr(int[][] intArr, int width, int height){
 		GameObjectType type;
 		this.board = new GameObject[width][height];
@@ -277,7 +279,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/**
 	 * @return the door
 	 */
