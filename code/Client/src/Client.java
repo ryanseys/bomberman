@@ -141,4 +141,8 @@ public class Client {
 	public boolean isGameOn() {
 		return isGameOn;
 	}
+	
+	public boolean isGameOver() {
+		return gameOver;
+	}
 }

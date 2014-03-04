@@ -97,7 +97,7 @@ public class ClientView implements ActionListener {
 	
 	public void render() {
 		int playerid = client.getPlayerID();
-		if(playerid > 0 && !client.isGameOn()) {
+		if(playerid > 0 && !client.isGameOn() && !client.isGameOver()) {
 			button.setText("Connected as Player " + playerid + ". Click to Start Game!");
 			button.setEnabled(true);
 		}
@@ -106,7 +106,7 @@ public class ClientView implements ActionListener {
 			button.setEnabled(false);
 			textarea.setText(client.getGameBoard());
 		}
-		else if(client.gameOver) {
+		else if(client.isGameOver()) {
 			button.setText("Game over!");
 			button.setEnabled(false);
 		}
