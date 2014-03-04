@@ -104,6 +104,7 @@ public class Client {
 		}
 
 		if(resp.keySet().contains("game")) {
+			isGameOn = true;
 			game = resp.getJSONObject("game");
 			this.board = stringifyBoard(game.getJSONArray("board"));
 		}
