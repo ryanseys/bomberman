@@ -2,7 +2,7 @@ List of testcases to test server functionality:
 ===
 ---
 
-##All integer representations on game are as follows:
+## All integer representations on game are as follows:
 
 
 |int|Type|
@@ -19,8 +19,9 @@ List of testcases to test server functionality:
 |9|POWERUP|
 *Defined in GameObjectType.java*
 
-##Joining a game
-###Test1: Single client joining:
+## Joining a game
+### Test1: Single client joining:
+
 Input:
 
 ```json
@@ -28,19 +29,20 @@ Input:
 ```
 
 Expected Response:
+
 ```json
 {"pid":1,"type":"player_join","resp":"Success"}
 ```
 
-###Test2: Two clients joining:
+### Test2: Two clients joining:
 
 ```json
 {"command":"join", "type":"player"}
 {"command":"join", "type":"player"}
-
 ```
 
-Expected Response:
+Expected Responses:
+
 ```json
 {"pid":1,"type":"player_join","resp":"Success"}
 ```
@@ -48,14 +50,17 @@ Expected Response:
 {"pid":2,"type":"player_join","resp":"Success"}
 ```
 
-###Test3: Three clients joining (More than the limit):
+### Test3: Three clients joining (More than the limit):
+
 Input:
+
 ```json
 {"command":"join", "type":"player"}
 {"command":"join", "type":"player"}
 ```
 
-Expected Response:
+Expected Responses:
+
 ```json
 {"pid":1,"type":"player_join","resp":"Success"}
 ```
@@ -66,7 +71,8 @@ Expected Response:
 {"type":"player_join","resp":"Failure"}
 ```
 
-###Test4: Spectators joining the game, interlaced with players, last player fails because there are already two:
+### Test4: Spectators joining the game, interlaced with players, last player fails because there are already two:
+
 ```json
 {"command":"join", "type":"spectator"}
 {"command":"join", "type":"player"}
@@ -76,7 +82,8 @@ Expected Response:
 {"command":"join", "type":"player"}
 ```
 
-Expected Response:
+Expected Responses:
+
 ```json
 {"type":"spectator_join","resp":"Success"}
 ```
@@ -96,14 +103,18 @@ Expected Response:
 {"type":"player_join","resp":"Failure"}
 ```
 
-##Start a game
-###Test1: Start game while game has not been started, one player:
+## Start a game
+### Test1: Start game while game has not been started, one player:
+
 Input:
+
 ```json
 {"command":"join", "type":"player"}
 {"command":"button", "pid": 1, "button":"start"}
 ```
+
 Expected Response (broadcast of the new game state):
+
 ```json
 {"pid":1,"type":"player_join","resp":"Success"}
 {"game":{"height":10,"width":10,
@@ -118,17 +129,20 @@ Expected Response (broadcast of the new game state):
           [0,9,0,0,0,0,0,0,0,0],
           [0,0,1,0,0,0,0,0,0,0]]},"type":"broadcast"}
 ```
-###Test1: Start game while game has not been started, two players:
+
+### Test1: Start game while game has not been started, two players:
+
 Input:
+
 ```json
 {"command":"join", "type":"player"}
 {"command":"join", "type":"player"}
 {"command":"button", "pid": 1, "button":"start"}
 ```
 
-Server Response:
+### Server Response:
+
 ```json
-Client Started
 {"pid":1,"type":"player_join","resp":"Success"}
 {"pid":1,"type":"player_join","resp":"Success"}
 {"game":{"height":10,"width":10,
@@ -145,19 +159,18 @@ Client Started
 
 ```
 
+## Load a board
+### Test1: Pass in a board from Client to Server
 
-##Load a board
-###Test1: Pass in a board from Client to Server
-
-```json
+```javascript
 {"command":"join", "type":"player"}
 {"game":{"height":10,"width":10,"board":[[9,0,0,0,0,0,0,0,1,0],[0,0,0,0,0,0,0,0,0,0],[8,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,8,0,0],[0,0,0,0,0,0,0,0,8,8],[0,0,0,0,0,8,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,7],[0,0,0,0,0,0,0,0,0,0]]},"command":"load"}
 {"command":"button", "pid": 1, "button":"start"}
 ```
 
 Server Response:
-```
-Client Started
+
+```javascript
 {"pid":1,"type":"player_join","resp":"Success"}
 {"type":"response","resp":"Success"}
 {"game":{"height":10,"width":10,
@@ -174,9 +187,10 @@ Client Started
 
 ```
 
-##Moving a player
-###Test1: Move up
-```json
+## Moving a player
+### Test1: Move up
+
+```javascript
 {"command":"join", "type":"player"}
 {"command":"button", "pid": 1, "button":"start"}
 {"command":"move", "pid": 1, "direction":"up"}
@@ -184,8 +198,10 @@ Client Started
 {"command":"move", "pid": 1, "direction":"left"}
 {"command":"move", "pid": 1, "direction":"right"}
 ```
-Resuling board from start:
-```
+
+### Resulting board from start:
+
+```javascript
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][9][0][8][8][0][0][0]
 [0][0][0][0][0][0][0][0][0][0]
@@ -197,8 +213,10 @@ Resuling board from start:
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][0][0][8][0][0][0][0]
 ```
-Board after move up:
-```
+
+### Board after move up:
+
+```javascript
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][9][0][8][8][0][0][0]
 [0][0][0][0][0][0][0][0][0][0]
@@ -206,12 +224,14 @@ Board after move up:
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][8][0][0][8][0][0][0]
-[0][0][1][0][0][0][0][0][7][0]
+[1][0][0][0][0][0][0][0][7][0]
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][0][0][8][0][0][0][0]
 ```
-Board after move down:
-```
+
+### Board after move down:
+
+```javascript
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][9][0][8][8][0][0][0]
 [0][0][0][0][0][0][0][0][0][0]
@@ -223,8 +243,10 @@ Board after move down:
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][0][0][8][0][0][0][0]
 ```
-Board after move left:
-```
+
+### Board after move left:
+
+```javascript
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][9][0][8][8][0][0][0]
 [0][0][0][0][0][0][0][0][0][0]
@@ -236,8 +258,10 @@ Board after move left:
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][0][0][8][0][0][0][0]
 ```
-Board after move right:
-```
+
+### Board after move right:
+
+```javascript
 [0][0][0][0][0][0][0][0][0][0]
 [0][0][0][9][0][8][8][0][0][0]
 [0][0][0][0][0][0][0][0][0][0]
