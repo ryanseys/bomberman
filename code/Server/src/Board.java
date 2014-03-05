@@ -66,7 +66,7 @@ public class Board {
 		for(Player player : players){
 			if((player.x() == -1) || (player.y() == -1)){
 				emptySpot = getEmptySpot();
-				player.setLocation(emptySpot.getLocation().x, emptySpot.getLocation().y);
+				player.move(emptySpot.getLocation().x, emptySpot.getLocation().y);
 			}
 			board[player.x()][player.y()] = player;
 		}
@@ -190,6 +190,10 @@ public class Board {
 			board[newX][newY] = player;
 		}
 		else{
+			if(board[newX][newY].getType().ordinal() < GameObjectType.PLAYER_4.ordinal()){
+				((Player) board[newX][newY]).dies();
+				player.dies();
+			}
 			switch(board[newX][newY].getType()){
 			case DOOR:
 				board[player.x()][player.y()] = null;
@@ -198,10 +202,11 @@ public class Board {
 				// Handle player on door in game.
 				break;
 			case EMPTY:
-				// Can go there... Shouldnt hit this case ever...
-				board[player.x()][player.y()] = null;
-				player.move(newX, newY);
-				board[newX][newY] = player;
+//				// Can go there... Shouldnt hit this case ever...
+//				board[player.x()][player.y()] = null;
+//				player.move(newX, newY);
+//				board[newX][newY] = player;
+				System.out.println("Empty Game Object... Check Board.java");
 				break;
 			case POWERUP:
 				board[player.x()][player.y()] = null;
@@ -243,14 +248,17 @@ public class Board {
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
 				if(this.board[x][y] != null){
-					if(this.board[x][y].getType() == GameObjectType.DOOR){
-						if(this.door.isVisible()) {
-							intArr[x][y] = this.board[x][y].getType().ordinal();
-						}
-					}
-					else{
+					if(this.board[x][y].isVisible()){
 						intArr[x][y] = this.board[x][y].getType().ordinal();
 					}
+//					if(this.board[x][y].getType() == GameObjectType.DOOR){
+//						if(this.door.isVisible()) {
+//							intArr[x][y] = this.board[x][y].getType().ordinal();
+//						}
+//					}
+//					else{
+//						intArr[x][y] = this.board[x][y].getType().ordinal();
+//					}
 				}
 				else{
 					intArr[x][y] = GameObjectType.EMPTY.ordinal();

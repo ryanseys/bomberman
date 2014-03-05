@@ -4,6 +4,7 @@ public class Player extends MovingObject {
 	private int currentBombs;
 	private int bombRange;
 	private int lives;
+	private boolean isAlive;
 
 	public Player(int player_number, int x, int y) {
 		super(playerNumToGameObj(player_number), x, y);
@@ -11,6 +12,7 @@ public class Player extends MovingObject {
 		this.currentBombs = 1;
 		this.lives = 1;
 		this.bombRange = 1;
+		this.isAlive = true;
 	}
 
 	/**
@@ -90,6 +92,22 @@ public class Player extends MovingObject {
 	public void powerup(){
 		this.maxBombs++;
 		this.bombRange++;
+	}
+
+	/**
+	 * @return the isAlive
+	 */
+	public boolean isAlive() {
+		return isAlive;
+	}
+
+	/**
+	 * @param isAlive the isAlive to set
+	 */
+	public void dies() {
+		this.setVisible(false);
+		this.isAlive = false;
+		this.move(-1, -1);
 	}
 
 }

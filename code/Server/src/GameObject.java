@@ -1,13 +1,14 @@
 import java.awt.Point;
 
 public class GameObject {
-
+	private boolean isVisible;
 	private GameObjectType type;
-	private Point location;
+	protected Point location;
 
 	GameObject(GameObjectType type, int x, int y){
 		this.type = type;
 		this.location = new Point(x,y);
+		this.isVisible = true;
 	}
 
 	// return x position
@@ -24,9 +25,7 @@ public class GameObject {
 	 * @param x the new x value of the coordinate
 	 * @param y the new y value of the coordinate
 	 */
-	public void setLocation(int x, int y) {
-		location.setLocation(x, y);
-	}
+
 	
 
 	/**
@@ -42,4 +41,19 @@ public class GameObject {
 	public GameObjectType getType() {
 		return type;
 	}
+
+	/**
+	 * @return the isVisible
+	 */
+	public boolean isVisible() {
+		return isVisible;
+	}
+
+	/**
+	 * @param isVisible the isVisible to set
+	 */
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
+	}
+	
 }

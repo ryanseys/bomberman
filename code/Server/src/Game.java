@@ -76,7 +76,6 @@ public class Game {
 	public void playerMoved(int playerID, String direction){
 		System.out.println("player: " + playerID + " moved " + direction);
 		Player player = getPlayer(playerID);
-		player.getBombRange();
 		if(direction.equals("up")){
 			board.moveUp(player);
 		}
@@ -94,6 +93,7 @@ public class Game {
 		}
 		checkPowerups();
 		checkDoors();
+		checkPlayerAlive();
 
 	}
 
@@ -216,13 +216,13 @@ public class Game {
 	private synchronized void checkDoors(){
 		Door door = board.getDoor();
 		if(enemies.size() == 0) {
-			door.setVisible();
+			door.setVisible(true);
 		}
 		for (Player player : players) {
 			if(player.getLocation().equals(door.getLocation())){
 				// TODO - Handle end of game scenario...
 				if(enemies.size() > 0) {
-					door.setVisible();
+					door.setVisible(true);
 				} else{
 					endGame();
 					return;
@@ -230,6 +230,17 @@ public class Game {
 			}
 		}
 
+	}
+	void checkPlayerAlive(){
+		int playersAlive = players.size();
+		for (Player player : players) {
+			if(!player.isAlive()){
+				playersAlive--;
+			}
+		}
+		if(playersAlive == 0){
+			endGame();
+		}
 	}
 
 	/**

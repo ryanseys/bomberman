@@ -6,6 +6,6 @@ public abstract class MovingObject extends GameObject {
 	}
 
 	public void move(int x, int y){
-		super.setLocation(x, y);
+		this.location.setLocation(x, y);
 	}
 }
