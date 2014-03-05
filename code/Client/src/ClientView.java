@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -73,9 +74,8 @@ public class ClientView {
  		connMenuItem.addActionListener(new ActionListener() {
              @Override
              public void actionPerformed(ActionEvent event) {
-            	view.requestFocusInWindow();
- 				int playerid = client.getPlayerID();
-
+				view.requestFocusInWindow();
+				int playerid = client.getPlayerID();
  				if((playerid > 0) && !client.isGameOn() && !client.isGameOver()) {
  					client.startGame();
  				}
@@ -83,12 +83,22 @@ public class ClientView {
  					client.newGame();
  				}
  				else {
- 					frame.setTitle("Bomberman - Connecting...");
- 					connMenuItem.setText("Connecting...");
- 					connMenuItem.setEnabled(false);
- 					client.connect();
- 					render();
- 				}
+				 String clientTypes[] = {"player", "spectator"};
+				 String clientType = (String) JOptionPane.showInputDialog(frame, 
+							        "Connect as?",
+							        "Connect",
+							        JOptionPane.PLAIN_MESSAGE, 
+							        null, 
+							        clientTypes, 
+									clientTypes[0]);
+				 if(clientType != null){
+	 					frame.setTitle("Bomberman - Connecting as " + clientType +"...");
+	 					connMenuItem.setText("Connecting...");
+	 					connMenuItem.setEnabled(false);
+	 					client.connect(clientType);
+	 					render();
+	 				}
+	             }
              }
         });
 
@@ -149,14 +159,16 @@ public class ClientView {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (cmd.equalsIgnoreCase("LeftArrow")) {
-				client.move(Direction.LEFT);
-			} else if (cmd.equalsIgnoreCase("RightArrow")) {
-				client.move(Direction.RIGHT);
-			} else if (cmd.equalsIgnoreCase("UpArrow")) {
-				client.move(Direction.UP);
-			} else if (cmd.equalsIgnoreCase("DownArrow")) {
-				client.move(Direction.DOWN);
+			if(client.isPlayer()){
+				if (cmd.equalsIgnoreCase("LeftArrow")) {
+					client.move(Direction.LEFT);
+				} else if (cmd.equalsIgnoreCase("RightArrow")) {
+					client.move(Direction.RIGHT);
+				} else if (cmd.equalsIgnoreCase("UpArrow")) {
+					client.move(Direction.UP);
+				} else if (cmd.equalsIgnoreCase("DownArrow")) {
+					client.move(Direction.DOWN);
+				}
 			}
 		}
 	}
@@ -169,6 +181,12 @@ public class ClientView {
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setEnabled(true);
 		}
+		else if((playerid < 0) && !client.isGameOn() && !client.isGameOver()) {
+			frame.setTitle("Bomberman - Spectator");
+			connMenuItem.setText("Start New Game");
+			connMenuItem.setEnabled(false);
+			connMenuItem.setVisible(false);
+		}
 		else if((playerid > 0)  && client.isGameOn()) {
 			frame.setTitle("Bomberman - Player " + playerid + " - In Game");
 			background.setVisible(false);
@@ -176,10 +194,24 @@ public class ClientView {
 			connMenuItem.setText("End Game");
 			connMenuItem.setEnabled(true);
 		}
-		else if(client.isGameOver()) {
+		else if((playerid < 0)  && client.isGameOn()) {
+			frame.setTitle("Bomberman - Spectator");
+			background.setVisible(false);
+			textarea.setVisible(true);
+			connMenuItem.setText("End Game");
+			connMenuItem.setEnabled(false);
+			connMenuItem.setVisible(false);
+		}
+		else if(((playerid > 0)) && (client.isGameOver())) {
 			frame.setTitle("Bomberman - Player " + playerid + " - Game Over");
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setEnabled(true);
+		}
+		else if(((playerid < 0)) && (client.isGameOver())) {
+			frame.setTitle("Bomberman - Game Over");
+			connMenuItem.setText("Start New Game");
+			connMenuItem.setEnabled(false);
+			connMenuItem.setVisible(false);
 		}
 
 		// always render the game board

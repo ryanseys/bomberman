@@ -13,7 +13,7 @@ public class Client {
 	private ClientSender cs;
 	private DatagramSocket dsocket;
 	private String board; // state of the game
-	private int playerid;
+	private int playerid = 0;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
 	private boolean isDebug = false;
@@ -88,10 +88,10 @@ public class Client {
 	/**
 	 * Connect to the server as a player. Get a player id.
 	 */
-	public void connect() {
+	public void connect(String type) {
 		JSONObject connMsg = new JSONObject();
 		connMsg.put("command", "join");
-		connMsg.put("type", "player");
+		connMsg.put("type", type);
 		send(connMsg.toString());
 	}
 
@@ -116,7 +116,9 @@ public class Client {
 		else if(resp.getString("type").equals("player_join") && resp.getString("resp").equals("Success")) {
 			playerid = resp.getInt("pid");
 		}
-
+		else if(resp.getString("type").equals("spectator_join") && resp.getString("resp").equals("Success")) {
+			playerid = -1;
+		}
 		if(resp.keySet().contains("game")) {
 			isGameOn = true;
 			game = resp.getJSONObject("game");
@@ -163,5 +165,18 @@ public class Client {
 
 	public boolean isGameOver() {
 		return gameOver;
+	}
+
+	/**
+	 * @return the isPlayer
+	 */
+	public boolean isPlayer() {
+		return this.playerid > 0;
+	}
+	public boolean isSpectator() {
+		return this.playerid < 0;
+	}
+	public boolean isConnected(){
+		return this.playerid != 0;
 	}
 }
