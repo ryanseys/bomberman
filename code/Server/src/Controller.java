@@ -65,7 +65,9 @@ public class Controller extends Thread{
 				}
 				else if(command.equals("new_game")) {
 					// reset the game
+					int numPlayers = game.getNumPlayers();
 					this.game = new Game();
+					game.setNumPlayers(numPlayers);
 					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
 				}
 				else if(command.equals("join")){
