@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
@@ -152,8 +153,21 @@ public class ClientView {
 					saveFile.setAcceptAllFileFilterUsed(false);
 					saveFile.setFileFilter(jsonFilter);
 					saveFile.setApproveButtonText("Save");
-					int returnValue = saveFile.showSaveDialog(view);
-					client.saveGame();
+					int saving = saveFile.showSaveDialog(view);
+					if(saving == JFileChooser.APPROVE_OPTION){
+						FileWriter fw = null;
+						try {
+				            fw = new FileWriter(saveFile.getSelectedFile()+".json");
+				            fw.write(client.getBoardToSave());
+				        } catch (Exception ex) {
+				            ex.printStackTrace();
+				        }
+						try {
+							fw.close();
+						} catch (IOException e) {
+							System.out.println("Error saving the file");
+						}
+					}
 				}
 				else {
 					System.out.println("!!!!!!"); // Here for testing, delete this statement later...

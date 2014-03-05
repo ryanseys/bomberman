@@ -12,16 +12,15 @@ public class Client {
 	private ClientReceiver cr;
 	private ClientSender cs;
 	private DatagramSocket dsocket;
-	private String board; // state of the game
 	private int playerid = 0;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
 	private boolean isDebug = false;
+	private JSONObject game = null; // State of the game
 
 	public Client(String IPAddress, int port) throws SocketException, UnknownHostException, InterruptedException {
 		this.toSendMsgs = new MessageQueue();
 		this.receivedMsgs = new MessageQueue();
-		this.board = "";
 		dsocket = new DatagramSocket();
 
 		// sender and receiver must use the same socket!
@@ -113,7 +112,7 @@ public class Client {
 	public void setState(String s) {
 		JSONObject resp = new JSONObject(s);
 
-		JSONObject game = null;
+
 		if(resp.getString("type").equals("game_over")) {
 			isGameOn = false;
 			gameOver = true;
@@ -126,8 +125,7 @@ public class Client {
 		}
 		if(resp.keySet().contains("game")) {
 			isGameOn = true;
-			game = resp.getJSONObject("game");
-			this.board = stringifyBoard(game.getJSONArray("board"));
+			this.game = resp.getJSONObject("game");
 		}
 	}
 
@@ -157,7 +155,8 @@ public class Client {
 	 * @return String representation of the game state
 	 */
 	public String getGameBoard() {
-		return this.board;
+		String board = (this.game == null) ? "" : stringifyBoard(this.game.getJSONArray("board"));
+		return board;
 	}
 
 	public int getPlayerID() {
@@ -189,8 +188,10 @@ public class Client {
 		send(board);
 	}
 
-	public void saveGame() {
-		// TODO Auto-generated method stub
-		
+	public String getBoardToSave(){
+		JSONObject board = new JSONObject();
+		board.put("game",this.game);
+		board.put("command", "load");
+		return board.toString();
 	}
 }
