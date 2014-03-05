@@ -5,8 +5,10 @@ public class TestMain {
 
 	public static void main(String args[]) throws IOException, InterruptedException {
 		System.out.println("Running tests...");
-		TestDriver t = new TestDriver(new Client("127.0.0.1", 5000));
+		Client c = new Client("127.0.0.1", 5000);
+		TestDriver t = new TestDriver(c);
 		t.runAllTests();
+		c.quit();
 		System.out.println("Finished running tests!");
 	}
 }

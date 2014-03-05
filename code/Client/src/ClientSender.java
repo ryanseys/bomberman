@@ -11,6 +11,7 @@ public class ClientSender extends Thread {
 	private DatagramPacket data;
 	private InetAddress ip;
 	private int port;
+	private boolean shouldQuit = false;
 
 	public ClientSender(MessageQueue sendMsgQ, InetAddress IPAddress, int port, DatagramSocket dsocket) throws SocketException {
 		this.sendMsgQ=sendMsgQ;
@@ -22,16 +23,19 @@ public class ClientSender extends Thread {
 	@Override
 	public void run() {
 		String s;
-		while(true) {
+		while(!shouldQuit) {
 			synchronized(sendMsgQ)
 			{
-				while(sendMsgQ.isEmpty())
+				while(sendMsgQ.isEmpty() && !shouldQuit)
 				{
 					try {
 						sendMsgQ.wait();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				}
+				if(shouldQuit) {
+					return;
 				}
 				s = sendMsgQ.pop();
 				data = new DatagramPacket(s.getBytes(), s.length(), this.ip, this.port);
@@ -42,6 +46,19 @@ public class ClientSender extends Thread {
 				}
 
 			}
+		}
+		System.out.println("Holy shit exiting sender!");
+	}
+
+	/**
+	 * Used to request that the thread quit itself
+	 */
+	public void requestQuit() {
+		shouldQuit = true;
+
+		// notify my own message queue to wake up and check state
+		synchronized(sendMsgQ) {
+			sendMsgQ.notify();
 		}
 	}
 }

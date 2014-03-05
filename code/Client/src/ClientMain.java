@@ -7,8 +7,7 @@ public class ClientMain {
 
 		System.out.println("Client started...");
 
-		boolean gameOn = true;
-		while(gameOn) {
+		while(true) {
 			// wait for the response...
 			String serverMsg = client.receive();
 

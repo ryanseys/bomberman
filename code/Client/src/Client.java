@@ -95,6 +95,13 @@ public class Client {
 		send(connMsg.toString());
 	}
 
+	public void quit() throws InterruptedException {
+		cr.requestQuit();
+		cs.requestQuit();
+		cr.join();
+		cs.join();
+	}
+
 	/**
 	 * Set the state of the game
 	 * @param s String of the game state

@@ -36,6 +36,8 @@ public class ClientView {
 	JLabel background;
 	JMenuItem eMenuItem;
 
+
+
 	public ClientView (Client c) throws IOException {
 		this.client = c;
 		frame = new JFrame("Bomberman");
@@ -54,7 +56,13 @@ public class ClientView {
         eMenuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                System.exit(0);
+            	try {
+					client.quit();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            	System.exit(0);
             }
         });
 
