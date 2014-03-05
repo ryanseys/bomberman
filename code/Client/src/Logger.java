@@ -5,18 +5,18 @@ import java.io.PrintWriter;
 
 
 public class Logger {
-	private String filename;
+	private PrintWriter out;
 
 	Logger(String filename) {
-		this.filename = filename;
+		try {
+			out = new PrintWriter(new BufferedWriter(new FileWriter(filename, true)));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void append(String line) {
-		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(filename, true)))) {
-		    out.println(line);
-		}
-		catch (IOException e) {
-			// fail
-		}
+		out.println(line);
+		out.flush();
 	}
 }
