@@ -20,6 +20,7 @@ public class TestDriver {
 	}
 
 	public void runTestCase(File f) throws IOException {
+		boolean allTestsPassed = true;
 		Logger log = new Logger(logDir + f.getName() + "-" + (new Date()).getTime() + ".log");
 
 		log.append("Running test case: " + f.getName());
@@ -50,10 +51,11 @@ public class TestDriver {
 
 			if(response.equals(expectedResponse)) {
 				log.append("\nTest case passed!");
+
 			}
 			else {
 				log.append("\nTest case failed!");
-				System.out.println("Failure!");
+				allTestsPassed = false;
 			}
 
 			// log details about test case
@@ -65,6 +67,12 @@ public class TestDriver {
 			log.append("Actual response: \t" + response);
 		}
 
+		if(allTestsPassed) {
+			System.out.println(" passed!");
+		}
+		else {
+			System.out.println("FAILED!");
+		}
 	}
 
 	public void runAllTests() throws IOException {
@@ -72,7 +80,7 @@ public class TestDriver {
 		File[] listOfFiles = folder.listFiles();
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()) {
-				System.out.println("Running test in " + listOfFiles[i].getName());
+				System.out.print("Running test in " + listOfFiles[i].getName() + "...");
 				runTestCase(listOfFiles[i]);
 			} else if (listOfFiles[i].isDirectory()) {
 				System.out.println("Directory " + listOfFiles[i].getName());
