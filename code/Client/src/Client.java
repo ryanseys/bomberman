@@ -16,6 +16,7 @@ public class Client {
 	private int playerid;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
+	private boolean isDebug = true;
 
 	public Client(String IPAddress, int port) throws SocketException, UnknownHostException, InterruptedException {
 		this.toSendMsgs = new MessageQueue();
@@ -51,7 +52,7 @@ public class Client {
 	 * @param msg String message to send
 	 */
 	public void send(String msg) {
-		System.out.println("Sending message: " + msg);
+		if(isDebug) System.out.println("Sending message: " + msg);
 		synchronized(toSendMsgs) {
 			toSendMsgs.add(msg);
 			toSendMsgs.notify();
@@ -70,11 +71,12 @@ public class Client {
 					receivedMsgs.wait();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+					return "";
 				}
 			}
 			s = receivedMsgs.pop();
 		}
-		System.out.println("Received message: " + s);
+		if(isDebug) System.out.println("Received message: " + s);
 		return s;
 	}
 
