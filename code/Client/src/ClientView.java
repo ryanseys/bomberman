@@ -12,6 +12,9 @@ import javax.swing.BoxLayout;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -24,17 +27,55 @@ public class ClientView implements ActionListener {
 	JButton button;
 	JPanel view;
 	JFrame frame;
+	JMenuBar menubar;
+	JMenu fileMenu;
 
 	public ClientView (Client c) {
 		this.client = c;
 		frame = new JFrame("Bomberman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		menubar = new JMenuBar();
+		fileMenu = new JMenu("File");
+		fileMenu.setMnemonic(KeyEvent.VK_F);
+		JMenuItem eMenuItem = new JMenuItem("Quit");
+
+		eMenuItem.setMnemonic(KeyEvent.VK_Q);
+        eMenuItem.setToolTipText("Quit application");
+        eMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                System.exit(0);
+            }
+        });
+
+        fileMenu.add(eMenuItem);
+
+        menubar.add(fileMenu);
+        frame.setJMenuBar(menubar);
 
 		button = new JButton("Connect");
 		textarea = new JTextArea();
 		textarea.setFont(font);
 
-		button.addActionListener(this);
+		button.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				view.requestFocusInWindow();
+				int playerid = client.getPlayerID();
+
+				if((playerid > 0) && !client.isGameOn() && !client.isGameOver()) {
+					client.startGame();
+				}
+				else {
+					button.setText("Connecting...");
+					button.setEnabled(false);
+					client.connect();
+					render();
+				}
+			}
+		});
+
 		button.setAlignmentX(Component.CENTER_ALIGNMENT);
 		textarea.setAlignmentX(Component.CENTER_ALIGNMENT);
 		textarea.setAlignmentY(Component.TOP_ALIGNMENT);
@@ -46,11 +87,13 @@ public class ClientView implements ActionListener {
 		textarea.setEditable(false);
 		textarea.setEnabled(false);
 		textarea.setDisabledTextColor(Color.BLACK);
+//		panel.add(menubar);
 		panel.add(textarea);
 		panel.add(button);
 
 		frame.setSize(500, 500);
 		frame.setVisible(true);
+
 
 		// Handle keyboard input
 		view = ((JPanel) panel);
@@ -96,18 +139,7 @@ public class ClientView implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		view.requestFocusInWindow();
-		int playerid = client.getPlayerID();
 
-		if((playerid > 0) && !client.isGameOn() && !client.isGameOver()) {
-			client.startGame();
-		}
-		else {
-			button.setText("Connecting...");
-			button.setEnabled(false);
-			client.connect();
-			render();
-		}
 	}
 
 	public void render() {
