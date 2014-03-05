@@ -25,9 +25,11 @@ public class Controller extends Thread{
 	 */
 	@Override
 	public void run(){
-		while(!game.isFinished()){
+		while(true){
 			DatagramPacket datagramMsg = null;
-
+			if(game.isFinished()){
+				gameOver();
+			}
 			try {
 				datagramMsg = commandQueue.pop();
 			} catch (Exception e) {
@@ -61,13 +63,6 @@ public class Controller extends Thread{
 					// We could take these out and keep the current clients... Maybe as 
 					this.clients = new ArrayList<Client>();
 					this.currClientPid = 1;
-					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
-				}
-				else if(command.equals("new_game")) {
-					// reset the game
-					int numPlayers = game.getNumPlayers();
-					this.game = new Game();
-					game.setNumPlayers(numPlayers);
 					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
 				}
 				else if(command.equals("join")){
@@ -109,10 +104,14 @@ public class Controller extends Thread{
 				}
 			}
 		}
-		gameOver();
 	}
 
 	private void gameOver() {
+		// reset the game saving number of players
+		int numPlayers = game.getNumPlayers();
+		this.game = new Game();
+		game.setNumPlayers(numPlayers);
+		
 		JSONObject msg = new JSONObject();
 		msg.put("type", "game_over");
 		sender.broadcastMessage(clients, msg.toString());
