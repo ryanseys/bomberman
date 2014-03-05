@@ -165,23 +165,19 @@ public class Game {
 						break;
 					case PLAYER_1:
 						this.players.add(new Player(1,i,j));
-						System.out.println("Fount p1");
 						break;
 					case PLAYER_2:
 						if(MAX_PLAYERS > 1){
-							System.out.println("Fount p2");
 							this.players.add(new Player(2,i,j));
 						}
 						break;
 					case PLAYER_3:
 						if(MAX_PLAYERS > 2){
-							System.out.println("Fount p3");
 							this.players.add(new Player(3,i,j));
 						}
 						break;
 					case PLAYER_4:
 						if(MAX_PLAYERS > 3){
-							System.out.println("Fount p4");
 							this.players.add(new Player(4,i,j));
 						}
 						break;

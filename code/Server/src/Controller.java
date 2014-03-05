@@ -225,8 +225,4 @@ public class Controller extends Thread{
 		}
 		return null;
 	}
-
-	public boolean isGameFinished() {
-		return this.game.isFinished();
-	}
 }

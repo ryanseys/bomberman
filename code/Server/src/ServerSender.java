@@ -24,8 +24,11 @@ public class ServerSender {
 	}
 
 	public void sendMsg(String message, InetAddress IP, int port){
+		if(port < 0){
+			return; 
+		}
 		byte[] msg = message.getBytes();
-		System.out.println("Sending message from server: " + message);
+		System.out.println("Sending message from server: " + message + "to: " + IP + ":" + port);
 		DatagramPacket packet = new DatagramPacket(msg, msg.length, IP, port);
 		try {
 			serverSocket.send(packet);
