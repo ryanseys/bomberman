@@ -2,7 +2,7 @@
 public class Bomb extends GameObject {
 	private int range;
 
-	public Bomb(GameObjectType type, int x, int y) {
+	public Bomb(int x, int y) {
 		super(GameObjectType.BOMB, x, y);
 	}
 
