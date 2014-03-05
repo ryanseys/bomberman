@@ -16,7 +16,7 @@ public class Client {
 	private int playerid;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
-	private boolean isDebug = true;
+	private boolean isDebug = false;
 
 	public Client(String IPAddress, int port) throws SocketException, UnknownHostException, InterruptedException {
 		this.toSendMsgs = new MessageQueue();
