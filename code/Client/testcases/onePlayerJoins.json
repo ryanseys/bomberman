@@ -1,3 +1,14 @@
 [
-  { "desc": "Player 1 joins", "request": {"command":"join", "type":"player"}, "expectedResponse": { "pid": 1, "type": "player_join", "resp": "Success" }}
+  {
+    "desc": "Player 1 joins",
+    "request": {
+      "command": "join",
+      "type": "player"
+    },
+    "expectedResponse": {
+      "pid": 1,
+      "type": "player_join",
+      "resp": "Success"
+    }
+  }
 ]

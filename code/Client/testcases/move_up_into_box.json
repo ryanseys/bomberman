@@ -65,7 +65,7 @@
     }
   },
   {
-    "desc": "Move up",
+    "desc": "Move up into box",
     "request": {
       "command": "move",
       "pid": 1,
