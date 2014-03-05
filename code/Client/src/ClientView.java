@@ -182,11 +182,13 @@ public class ClientView {
 		if((playerid > 0) && !client.isGameOn() && !client.isGameOver()) {
 			frame.setTitle("Bomberman - Player " + playerid);
 			connMenuItem.setText("Start New Game");
+			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(true);
 		}
 		else if((playerid < 0) && !client.isGameOn() && !client.isGameOver()) {
 			frame.setTitle("Bomberman - Spectator");
 			connMenuItem.setText("Start New Game");
+			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(false);
 			connMenuItem.setVisible(false);
 		}
@@ -195,6 +197,7 @@ public class ClientView {
 			background.setVisible(false);
 			textarea.setVisible(true);
 			connMenuItem.setText("End Game");
+			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(true);
 		}
 		else if((playerid < 0)  && client.isGameOn()) {
@@ -202,17 +205,20 @@ public class ClientView {
 			background.setVisible(false);
 			textarea.setVisible(true);
 			connMenuItem.setText("End Game");
+			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(false);
 			connMenuItem.setVisible(false);
 		}
 		else if(((playerid > 0)) && (client.isGameOver())) {
 			frame.setTitle("Bomberman - Player " + playerid + " - Game Over");
 			connMenuItem.setText("Start New Game");
+			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(true);
 		}
 		else if(((playerid < 0)) && (client.isGameOver())) {
 			frame.setTitle("Bomberman - Game Over");
 			connMenuItem.setText("Start New Game");
+			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(false);
 			connMenuItem.setVisible(false);
 		}
