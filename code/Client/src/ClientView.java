@@ -28,7 +28,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ClientView {
@@ -96,7 +95,7 @@ public class ClientView {
  				}
  				else if(playerid == 0){
 				 String clientTypes[] = {"player", "spectator"};
-				 String clientType = (String) JOptionPane.showInputDialog(frame, 
+				 String clientType = (String) JOptionPane.showInputDialog(view, 
 							        "Connect as?",
 							        "Connect",
 							        JOptionPane.PLAIN_MESSAGE, 
