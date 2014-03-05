@@ -42,6 +42,11 @@ public class Client {
 		send(startMsg.toString());
 	}
 
+	public void newGame() {
+		gameOver = false;
+		startGame();
+	}
+
 	public void endGame() {
 		isGameOn = false;
 		gameOver = true;

@@ -5,13 +5,16 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -19,9 +22,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
-public class ClientView implements ActionListener {
+public class ClientView {
 
-	Font font = new Font("LucidaSans", Font.PLAIN, 20);
+	Font font = new Font("LucidaSans", Font.PLAIN, 28);
 	Client client;
 	JTextArea textarea;
 	JButton button;
@@ -29,16 +32,23 @@ public class ClientView implements ActionListener {
 	JFrame frame;
 	JMenuBar menubar;
 	JMenu fileMenu;
+	JMenuItem connMenuItem;
+	JLabel background;
+	JMenuItem eMenuItem;
 
-	public ClientView (Client c) {
+	public ClientView (Client c) throws IOException {
 		this.client = c;
 		frame = new JFrame("Bomberman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		menubar = new JMenuBar();
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
-		JMenuItem eMenuItem = new JMenuItem("Quit");
 
+		// background image
+		background = new JLabel(new ImageIcon("bomberman.png"));
+
+		// Quit item
+		eMenuItem = new JMenuItem("Quit");
 		eMenuItem.setMnemonic(KeyEvent.VK_Q);
         eMenuItem.setToolTipText("Quit application");
         eMenuItem.addActionListener(new ActionListener() {
@@ -48,52 +58,58 @@ public class ClientView implements ActionListener {
             }
         });
 
-        fileMenu.add(eMenuItem);
+        // Connect item
+        connMenuItem = new JMenuItem("Connect");
+ 		connMenuItem.setMnemonic(KeyEvent.VK_C);
+ 		connMenuItem.setToolTipText("Connect to server");
+ 		connMenuItem.addActionListener(new ActionListener() {
+             @Override
+             public void actionPerformed(ActionEvent event) {
+            	view.requestFocusInWindow();
+ 				int playerid = client.getPlayerID();
 
+ 				if((playerid > 0) && !client.isGameOn() && !client.isGameOver()) {
+ 					client.startGame();
+ 				}
+ 				else if((playerid > 0) && client.isGameOver()) {
+ 					client.newGame();
+ 				}
+ 				else {
+ 					frame.setTitle("Bomberman - Connecting...");
+ 					connMenuItem.setText("Connecting...");
+ 					connMenuItem.setEnabled(false);
+ 					client.connect();
+ 					render();
+ 				}
+             }
+        });
+
+ 		// Add file items
+        fileMenu.add(connMenuItem);
+        fileMenu.add(eMenuItem);
         menubar.add(fileMenu);
         frame.setJMenuBar(menubar);
 
-		button = new JButton("Connect");
 		textarea = new JTextArea();
 		textarea.setFont(font);
 
-		button.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				view.requestFocusInWindow();
-				int playerid = client.getPlayerID();
-
-				if((playerid > 0) && !client.isGameOn() && !client.isGameOver()) {
-					client.startGame();
-				}
-				else {
-					button.setText("Connecting...");
-					button.setEnabled(false);
-					client.connect();
-					render();
-				}
-			}
-		});
-
-		button.setAlignmentX(Component.CENTER_ALIGNMENT);
-		textarea.setAlignmentX(Component.CENTER_ALIGNMENT);
-		textarea.setAlignmentY(Component.TOP_ALIGNMENT);
-
 		Container panel = frame.getContentPane();
 		panel.setFocusable(true);
-
 		panel.setLayout( new BoxLayout( panel, BoxLayout.Y_AXIS ) );
+
+		textarea.setAlignmentX(Component.CENTER_ALIGNMENT);
+		textarea.setAlignmentY(Component.TOP_ALIGNMENT);
 		textarea.setEditable(false);
 		textarea.setEnabled(false);
 		textarea.setDisabledTextColor(Color.BLACK);
-//		panel.add(menubar);
+		textarea.setVisible(false);
+
+		frame.add(background);
 		panel.add(textarea);
-		panel.add(button);
 
-		frame.setSize(500, 500);
+		frame.setSize(380, 450);
+		frame.setResizable(false);
 		frame.setVisible(true);
-
 
 		// Handle keyboard input
 		view = ((JPanel) panel);
@@ -137,26 +153,25 @@ public class ClientView implements ActionListener {
 		}
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-
-	}
-
 	public void render() {
 		int playerid = client.getPlayerID();
 
 		if((playerid > 0) && !client.isGameOn() && !client.isGameOver()) {
 			frame.setTitle("Bomberman - Player " + playerid);
-			button.setText("Start Game");
-			button.setEnabled(true);
+			connMenuItem.setText("New Game");
+			connMenuItem.setEnabled(true);
 		}
 		else if((playerid > 0)  && client.isGameOn()) {
-			button.setText("End Game");
-			button.setEnabled(false);
+			frame.setTitle("Bomberman - Player " + playerid + " - In Game");
+			background.setVisible(false);
+			textarea.setVisible(true);
+			connMenuItem.setText("End Game");
+			connMenuItem.setEnabled(true);
 		}
 		else if(client.isGameOver()) {
-			button.setText("Game Over.");
-			button.setEnabled(false);
+			frame.setTitle("Bomberman - Player " + playerid + " - Game Over");
+			connMenuItem.setText("New Game");
+			connMenuItem.setEnabled(true);
 		}
 
 		// always render the game board
