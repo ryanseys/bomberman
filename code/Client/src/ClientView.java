@@ -166,7 +166,7 @@ public class ClientView {
 
 		if((playerid > 0) && !client.isGameOn() && !client.isGameOver()) {
 			frame.setTitle("Bomberman - Player " + playerid);
-			connMenuItem.setText("New Game");
+			connMenuItem.setText("Start New Game");
 			connMenuItem.setEnabled(true);
 		}
 		else if((playerid > 0)  && client.isGameOn()) {
@@ -178,7 +178,7 @@ public class ClientView {
 		}
 		else if(client.isGameOver()) {
 			frame.setTitle("Bomberman - Player " + playerid + " - Game Over");
-			connMenuItem.setText("New Game");
+			connMenuItem.setText("Start New Game");
 			connMenuItem.setEnabled(true);
 		}
 
