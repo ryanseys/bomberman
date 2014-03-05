@@ -6,7 +6,6 @@ public class ClientMain {
 		ClientView cv = new ClientView(client);
 
 		System.out.println("Client started...");
-
 		while(true) {
 			// wait for the response...
 			String serverMsg = client.receive();

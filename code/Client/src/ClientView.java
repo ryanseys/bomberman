@@ -82,7 +82,10 @@ public class ClientView {
  				else if((playerid > 0) && client.isGameOver()) {
  					client.newGame();
  				}
- 				else {
+ 				else if((playerid > 0) && (client.isGameOn())){
+ 					client.endGame();
+ 				}
+ 				else if(playerid == 0){
 				 String clientTypes[] = {"player", "spectator"};
 				 String clientType = (String) JOptionPane.showInputDialog(frame, 
 							        "Connect as?",

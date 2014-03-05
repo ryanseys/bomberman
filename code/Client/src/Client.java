@@ -46,10 +46,14 @@ public class Client {
 		gameOver = false;
 		startGame();
 	}
-
-	public void endGame() {
-		isGameOn = false;
-		gameOver = true;
+	public void endGame(){
+		if(isGameOn){
+			JSONObject endMsg = new JSONObject();
+			endMsg.put("pid", this.playerid);
+			endMsg.put("command", "button");
+			endMsg.put("button", "end");
+			send(endMsg.toString());
+		}
 	}
 
 	/**
@@ -111,7 +115,8 @@ public class Client {
 
 		JSONObject game = null;
 		if(resp.getString("type").equals("game_over")) {
-			endGame();
+			isGameOn = false;
+			gameOver = true;
 		}
 		else if(resp.getString("type").equals("player_join") && resp.getString("resp").equals("Success")) {
 			playerid = resp.getInt("pid");
