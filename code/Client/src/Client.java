@@ -184,4 +184,13 @@ public class Client {
 	public boolean isConnected(){
 		return this.playerid != 0;
 	}
+
+	public void loadGame(String board) {
+		send(board);
+	}
+
+	public void saveGame() {
+		// TODO Auto-generated method stub
+		
+	}
 }

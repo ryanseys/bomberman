@@ -5,6 +5,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
@@ -13,6 +17,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -22,6 +27,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ClientView {
 
@@ -34,6 +41,7 @@ public class ClientView {
 	JMenuBar menubar;
 	JMenu fileMenu;
 	JMenuItem connMenuItem;
+	JMenuItem lMenuItem;
 	JLabel background;
 	JMenuItem eMenuItem;
 
@@ -103,10 +111,58 @@ public class ClientView {
 	 				}
 	             }
              }
-        });
-
+        });	
+ 		lMenuItem = new JMenuItem("Load");
+ 		lMenuItem.setMnemonic(KeyEvent.VK_L);
+ 		lMenuItem.setToolTipText("Load Board");
+ 		final FileNameExtensionFilter jsonFilter = new FileNameExtensionFilter(new String("*.json"), "json");  
+ 		lMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+				view.requestFocusInWindow();
+				int playerid = client.getPlayerID();
+				if((playerid >= 0) && (!client.isGameOn() || client.isGameOver())) {
+					JFileChooser loadFile = new JFileChooser("./boards");
+					loadFile.setApproveButtonText("Load");
+					loadFile.setAcceptAllFileFilterUsed(false);
+					loadFile.setFileFilter(jsonFilter);
+					loadFile.showOpenDialog(view);
+					if(loadFile.getSelectedFile()!=null){  
+						File boardFile = loadFile.getSelectedFile();
+						BufferedReader br = null;
+						try {
+							br = new BufferedReader(new FileReader(boardFile));
+						} catch (FileNotFoundException e) {
+							System.out.println("Could not find specified file");
+						}
+						String currLine;
+						String gameBoard = "";
+						try {
+							while((currLine = br.readLine()) != null){
+								gameBoard += currLine; 
+							}
+						} catch (IOException e) {
+							System.out.println("Error reading loaded board");
+						}
+						client.loadGame(gameBoard);
+					}
+				}
+				else if((playerid >= 0) && (client.isGameOn())){
+					JFileChooser saveFile = new JFileChooser("./boards");
+					saveFile.setAcceptAllFileFilterUsed(false);
+					saveFile.setFileFilter(jsonFilter);
+					saveFile.setApproveButtonText("Save");
+					int returnValue = saveFile.showSaveDialog(view);
+					client.saveGame();
+				}
+				else {
+					System.out.println("!!!!!!"); // Here for testing, delete this statement later...
+				}
+            }
+       });	
  		// Add file items
         fileMenu.add(connMenuItem);
+        fileMenu.add(lMenuItem);
         fileMenu.add(eMenuItem);
         menubar.add(fileMenu);
         frame.setJMenuBar(menubar);
@@ -184,6 +240,10 @@ public class ClientView {
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(true);
+			lMenuItem.setText("Load");
+			lMenuItem.setToolTipText("Load");
+			lMenuItem.setEnabled(true);
+			lMenuItem.setVisible(true);
 		}
 		else if((playerid < 0) && !client.isGameOn() && !client.isGameOver()) {
 			frame.setTitle("Bomberman - Spectator");
@@ -191,6 +251,8 @@ public class ClientView {
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(false);
 			connMenuItem.setVisible(false);
+			lMenuItem.setEnabled(false);
+			lMenuItem.setVisible(false);
 		}
 		else if((playerid > 0)  && client.isGameOn()) {
 			frame.setTitle("Bomberman - Player " + playerid + " - In Game");
@@ -199,6 +261,11 @@ public class ClientView {
 			connMenuItem.setText("End Game");
 			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(true);
+			lMenuItem.setText("Save");
+			lMenuItem.setToolTipText("Save");
+			lMenuItem.setEnabled(true);
+			lMenuItem.setVisible(true);
+			
 		}
 		else if((playerid < 0)  && client.isGameOn()) {
 			frame.setTitle("Bomberman - Spectator");
@@ -208,12 +275,19 @@ public class ClientView {
 			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(false);
 			connMenuItem.setVisible(false);
+			lMenuItem.setEnabled(false);
+			lMenuItem.setVisible(false);
 		}
 		else if(((playerid > 0)) && (client.isGameOver())) {
 			frame.setTitle("Bomberman - Player " + playerid + " - Game Over");
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(true);
+			
+			lMenuItem.setText("Load");
+			lMenuItem.setToolTipText("Load");
+			lMenuItem.setEnabled(true);
+			lMenuItem.setVisible(true);
 		}
 		else if(((playerid < 0)) && (client.isGameOver())) {
 			frame.setTitle("Bomberman - Game Over");
@@ -221,6 +295,8 @@ public class ClientView {
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(false);
 			connMenuItem.setVisible(false);
+			lMenuItem.setEnabled(false);
+			lMenuItem.setVisible(false);
 		}
 
 		// always render the game board
