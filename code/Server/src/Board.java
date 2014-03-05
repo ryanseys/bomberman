@@ -251,14 +251,6 @@ public class Board {
 					if(this.board[x][y].isVisible()){
 						intArr[x][y] = this.board[x][y].getType().ordinal();
 					}
-//					if(this.board[x][y].getType() == GameObjectType.DOOR){
-//						if(this.door.isVisible()) {
-//							intArr[x][y] = this.board[x][y].getType().ordinal();
-//						}
-//					}
-//					else{
-//						intArr[x][y] = this.board[x][y].getType().ordinal();
-//					}
 				}
 				else{
 					intArr[x][y] = GameObjectType.EMPTY.ordinal();
