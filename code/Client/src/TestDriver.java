@@ -52,7 +52,8 @@ public class TestDriver {
 				log.append("\nTest case passed!");
 			}
 			else {
-				log.append("Test case failed!");
+				log.append("\nTest case failed!");
+				System.out.println("Failure!");
 			}
 
 			// log details about test case
