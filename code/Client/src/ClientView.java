@@ -28,6 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ClientView {
@@ -37,6 +38,7 @@ public class ClientView {
 	JTextArea textarea;
 	JButton button;
 	JPanel view;
+	JLabel gameOverLabel;
 	JFrame frame;
 	JMenuBar menubar;
 	JMenu fileMenu;
@@ -44,8 +46,7 @@ public class ClientView {
 	JMenuItem lMenuItem;
 	JLabel background;
 	JMenuItem eMenuItem;
-
-
+	
 
 	public ClientView (Client c) throws IOException {
 		this.client = c;
@@ -200,6 +201,10 @@ public class ClientView {
 		frame.setSize(380, 450);
 		frame.setResizable(false);
 		frame.setVisible(true);
+		
+		gameOverLabel = new JLabel("GAME OVER");
+        gameOverLabel.setFont(font);
+        panel.add(gameOverLabel);
 
 		// Handle keyboard input
 		view = ((JPanel) panel);
@@ -271,6 +276,7 @@ public class ClientView {
 			frame.setTitle("Bomberman - Player " + playerid + " - In Game");
 			background.setVisible(false);
 			textarea.setVisible(true);
+			gameOverLabel.setVisible(false);
 			connMenuItem.setText("End Game");
 			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(true);
@@ -284,6 +290,7 @@ public class ClientView {
 			frame.setTitle("Bomberman - Spectator");
 			background.setVisible(false);
 			textarea.setVisible(true);
+			gameOverLabel.setVisible(false);
 			connMenuItem.setText("End Game");
 			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(false);
@@ -293,10 +300,12 @@ public class ClientView {
 		}
 		else if(((playerid > 0)) && (client.isGameOver())) {
 			frame.setTitle("Bomberman - Player " + playerid + " - Game Over");
+			textarea.setVisible(false);
+			background.setVisible(false);
+			gameOverLabel.setVisible(true);
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(true);
-			
 			lMenuItem.setText("Load");
 			lMenuItem.setToolTipText("Load");
 			lMenuItem.setEnabled(true);
@@ -304,6 +313,8 @@ public class ClientView {
 		}
 		else if(((playerid < 0)) && (client.isGameOver())) {
 			frame.setTitle("Bomberman - Game Over");
+			textarea.setVisible(false);
+			gameOverLabel.setVisible(true);
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(false);
