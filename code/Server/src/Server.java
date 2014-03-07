@@ -52,9 +52,9 @@ public class Server {
 		}
 		
 		System.out.println("Server started listening on port: " + port);
-
+		// Listen for a message and add it to the queue if there is one
 		while(true){
-			if(!controller.isAlive()){
+			if(!controller.isAlive()){  // If the controller thread dies for some reason, start-er back up
 				System.out.println("Starting controller thread");
 				controller.start();
 			}

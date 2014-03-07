@@ -2,17 +2,17 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
-
+// Board object holds all of the things that defines the game's board
 public class Board {
-	private static final int MAX_WIDTH = 10;
-	private static final int MAX_HEIGHT = 10;
-	private GameObject[][] board;
-	private Door door;
-	private int width;
-	private int height;
-	private int numBoxes;
-	private ArrayList<GameObject> boxes;
-
+	private static final int MAX_WIDTH = 10;  // Default width
+	private static final int MAX_HEIGHT = 10; // Default height
+	private GameObject[][] board;             // Array to hold things in the game	
+	private GameObject door;
+	private int width;                        // Current game's width
+	private int height;                       // Current game's height
+	private int numBoxes;                     // Number of boxes in this game
+	private ArrayList<GameObject> boxes;      // Array list of boxes in this game
+ 
 	public Board(int numBoxes){
 		this.width = MAX_WIDTH;
 		this.height = MAX_HEIGHT;
@@ -43,8 +43,8 @@ public class Board {
 		this.board = new GameObject[this.width][this.height];
 	}
 
-	// TODO initialize the board objects
-	// pass in # of players, # of enemies, # of powerups
+	// Initialize the board objects
+	// pass in reference to list of players, enemies, and powerups
 	public void initBoard(ArrayList<Player> players, ArrayList<Enemy> enemies, ArrayList<Powerup> powerups){
 		initBoxes();
 		initPlayers(players);
@@ -52,15 +52,15 @@ public class Board {
 		initPowerups(powerups);
 		placeDoor();
 	}
-
+	// Place the door randomly if it isnt instantiated already
 	private void placeDoor(){
 		if(door == null){
 			Point emptySpot = getEmptySpot();
-			door = new Door(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			door = new GameObject(GameObjectType.DOOR, emptySpot.getLocation().x, emptySpot.getLocation().y);
 		}
 		board[door.x()][door.y()] = door;
 	}
-
+	// Place the players randomly if they aren't instantiated already
 	private void initPlayers(ArrayList<Player> players){
 		Point emptySpot;
 		for(Player player : players){
@@ -71,7 +71,7 @@ public class Board {
 			board[player.x()][player.y()] = player;
 		}
 	}
-
+	// Place the enemies randomly if they aren't instantiated already
 	private void initEnemies(ArrayList<Enemy> enemies){
 		Point emptySpot;
 		Enemy enemy;
@@ -84,7 +84,7 @@ public class Board {
 			board[e.x()][e.y()] = e;
 		}
 	}
-
+	// Place the powerups randomly if they aren't instantiated already
 	private void initPowerups(ArrayList<Powerup> powerups){
 		Point emptySpot;
 		Powerup powerup;
@@ -98,7 +98,7 @@ public class Board {
 			board[p.x()][p.y()] = p;
 		}
 	}
-
+	// Place the boxes randomly if they aren't instantiated already
 	private void initBoxes(){
 		Point emptySpot;
 		GameObject newBox;
@@ -112,7 +112,7 @@ public class Board {
 			board[box.x()][box.y()] = box;
 		}
 	}
-
+	// Find a random empty spot on the board
 	private Point getEmptySpot(){
 		boolean emptySpot = true;
 		int x, y;
@@ -126,7 +126,7 @@ public class Board {
 		}while(!emptySpot);
 		return new Point(x,y);
 	}
-
+	// Handle a game object moving up
 	public void moveUp(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -139,7 +139,7 @@ public class Board {
 			}
 		}
 	}
-
+	// Handle a game object moving down
 	public void moveDown(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -152,7 +152,7 @@ public class Board {
 			}
 		}
 	}
-
+	// Handle a game object moving left
 	public void moveLeft(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -165,7 +165,7 @@ public class Board {
 			}
 		}
 	}
-
+	// Handle a game object moving right
 	public void moveRight(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
@@ -178,11 +178,11 @@ public class Board {
 			}
 		}
 	}
-
+	// Handle enemy movement
 	private void enemyMove(Enemy enemy, int newX, int newY){
 		//TODO - For next milestone do this
 	}
-
+	// Handle player movement checks if spot is taken and by what.
 	private void playerMove(Player player, int newX, int newY){
 		if(board[newX][newY] == null){
 			board[player.x()][player.y()] = null;
@@ -241,7 +241,7 @@ public class Board {
 	public int getHeight() {
 		return height;
 	}
-
+	// Converts the state of the board to a 2D integer array in order to be passed to the client
 	public int[][] toIntArr(){
 		System.out.println("To int arr:");
 		int[][] intArr = new int[this.width][this.height];
@@ -261,7 +261,7 @@ public class Board {
 		}
 		return intArr;
 	}
-
+	// Converts a 2D integer array to a board state so that a game board state can be loaded in
 	public void fromIntArr(int[][] intArr, int width, int height){
 		GameObjectType type;
 		this.board = new GameObject[width][height];
@@ -271,7 +271,7 @@ public class Board {
 					type = GameObjectType.values()[intArr[i][j]];
 					switch(type){
 					case DOOR:
-						this.door = new Door(i, j);
+						this.door = new GameObject(GameObjectType.DOOR, i, j);
 						break;
 					case BOX:
 						GameObject box = new GameObject(GameObjectType.BOX, i, j);
@@ -299,7 +299,7 @@ public class Board {
 	/**
 	 * @return the door
 	 */
-	public Door getDoor() {
-		return door;
+	public GameObject getDoor() {
+		return this.door;
 	}
 }

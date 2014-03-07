@@ -4,13 +4,15 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
+// The controller thread handles all of the messages that the server
+// queues up and interprets them and updates the games' model
 public class Controller extends Thread{
-	private Game game;
-	private MessageQueue commandQueue;
-	private ServerSender sender;
-	private ArrayList<Client> clients;
-	private int currClientPid;
-
+	private Game game;                   // Current game
+	private MessageQueue commandQueue;   // The message queue to be interpreted
+	private ServerSender sender;         // The class that handles sending messages
+	private ArrayList<Client> clients;   // List of clients connected to the game
+	private int currClientPid;           // Running count of player clients' IDs
+	
 	public Controller(ServerSender sender, MessageQueue commandQueue){
 		this.game = new Game();
 		this.commandQueue = commandQueue;
@@ -21,7 +23,8 @@ public class Controller extends Thread{
 
 	/*
 	 * @see java.lang.Thread#run()
-	 * This will parse out the message and run the operations against game
+	 * This will parse out the messages send to the Server and interpret them
+	 * and run the corresponding functions to update the Game state.
 	 */
 	@Override
 	public void run(){
@@ -105,7 +108,11 @@ public class Controller extends Thread{
 			}
 		}
 	}
-
+	
+	// Handles the scenario when a game ends
+	// Dumps the state of the old game and creates
+	// a new one. The number of players is preserved
+	// so that they can all keep playing.
 	private void gameOver() {
 		// reset the game saving number of players
 		int numPlayers = game.getNumPlayers();
@@ -118,6 +125,7 @@ public class Controller extends Thread{
 	}
 
 	/******* Helper functions to handle incoming message*******/
+	// Handles scenario of a client joining the game.
 	private void joinGame(String type, InetAddress addr, int port){
 		System.out.println("Client["+type+"] requested to join game");
 		Client client = null;
@@ -127,7 +135,7 @@ public class Controller extends Thread{
 		if(type.equals("player")){
 			if(game.addPlayer()){
 				status = true;
-				client = new Client(addr, port, this.currClientPid++, true);
+				client = new Client(addr, port, this.currClientPid++);
 				response.put("pid", client.getId());
 				clients.add(client);
 			}
@@ -137,19 +145,17 @@ public class Controller extends Thread{
 		}
 		else if(type.equals("spectator")){
 			status = true;
-			client = new Client(addr, port, false);
+			client = new Client(addr, port);
 			clients.add(client);
 		}
 
 		response.put("type", type + "_join");
-		//		int id = status ? client.getId() : -1;
 		String resp = status ? "Success" : "Failure";
-		//		response.put("pid", id);
 		response.put("resp", resp);
 		sender.sendMsg(response.toString(), addr, port);
-		//		sender.sendClientMsg(client, response.toString());
 	}
-
+	
+	// Handles if the player pressed a button.
 	private void handleButton(int playerID, String buttonPressed){
 		Client client = getClient(playerID);
 		if(client == null){
@@ -210,6 +216,7 @@ public class Controller extends Thread{
 		response.put("resp", resp);
 		sender.sendMsg(response.toString(), addr, port);
 	}
+	// Send the current game state to all of the clients that are connected
 	private void broadcastGameState(){
 		JSONObject msg = new JSONObject();
 		msg.put("game", game.toJSON());
@@ -217,6 +224,9 @@ public class Controller extends Thread{
 		System.out.println(msg.get("game"));
 		sender.broadcastMessage(clients, msg.toString());
 	}
+	// Get a specific client based on their ID
+	// only works for player clients since 
+	// spectator clients cannot do anything
 	private Client getClient(int id){
 		for(Client client : clients){
 			if(client.getId() == id) {
