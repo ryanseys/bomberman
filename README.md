@@ -12,6 +12,7 @@ Bomberman client/server game written in Java
 
 Code
 ===
+*Recommended JAVA version 1.7.x*
 We have two Eclipse projects under the following directories:
 
 Server: `code/Server`
@@ -107,6 +108,12 @@ Json Message
 
 If one of the clients finishes the game (e.g. exits a door or collides with the last player on the board), the Server will not respond
 with an updated board state, but will instead broadcast a `{“type":"game_over"}` message to all players alerting them that the game is over.
+
+## Testing & Test Framework
+
+You can see Testcases.md in the root folder of this project. 
+
+To run tests, run Server.java. Then run TestMain.java. It will run all the tests and output the results to the console. It will also write a more detailed output to log files in the `/log` directory in the Client folder.
 
 Notes
 ===
