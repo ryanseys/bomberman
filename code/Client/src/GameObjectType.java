@@ -3,6 +3,7 @@
  * MAKE SURE THAT THIS DEFINITION MATCHES ENUM ON CLIENT
  *
  ********************************************************/
+// The different game objects
 public enum GameObjectType{
 	EMPTY,       // 0
 	PLAYER_1,    // 1

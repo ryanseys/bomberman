@@ -3,20 +3,21 @@ import java.io.File;
 import java.io.FileReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-
+// Server class for instantiating the controller and waiting for messages
+// received messages get queued onto the messageQueue
 public class Server {
 	private static final int port = 5000;
 
 	public static void main(String[] args) throws Exception {
 		
 		// Instantiate objects
-		DatagramSocket serverSocket = new DatagramSocket(port);
-		ServerSender sender = new ServerSender(serverSocket);
-		MessageQueue messages = new MessageQueue();
-		Controller controller = new Controller(sender, messages);
+		DatagramSocket serverSocket = new DatagramSocket(port);   // Socket to send and receive messages on
+		ServerSender sender = new ServerSender(serverSocket);     // New sender socket to send messages with
+		MessageQueue messages = new MessageQueue();               // Queue to stack messages received on.
+		Controller controller = new Controller(sender, messages); // Controller to handle messages
 		byte[] recData = new byte[2048];
 		
-		// Check for command line args
+		// Check for command line arguments and interpret them
 		if(args.length > 0){
 			if(args.length != 2){
 				System.out.println("Invalid use of command line arguments");
@@ -63,6 +64,5 @@ public class Server {
 			System.out.println("Server received a packet!");
 			messages.add(recPacket);
 		}
-		//serverSocket.close();
 	}
 }

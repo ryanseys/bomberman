@@ -1,32 +1,27 @@
 import java.awt.Point;
+// Basic game object type that has all properties
+// common to all of the objects on the board
 
 public class GameObject {
-	private boolean isVisible;
-	private GameObjectType type;
-	protected Point location;
+	private boolean isVisible; // Is the object currently visible
+	private GameObjectType type; // What type of game object is it?
+	protected Point location; // Position of the object on the board
 
-	GameObject(GameObjectType type, int x, int y){
+	GameObject(GameObjectType type, int x, int y) {
 		this.type = type;
-		this.location = new Point(x,y);
+		this.location = new Point(x, y);
 		this.isVisible = true;
 	}
 
 	// return x position
-	public int x(){
+	public int x() {
 		return location.x;
 	}
+
 	// return y position
-	public int y(){
+	public int y() {
 		return location.y;
 	}
-
-	/**
-	 * Set the coordinate of the game object.
-	 * @param x the new x value of the coordinate
-	 * @param y the new y value of the coordinate
-	 */
-
-	
 
 	/**
 	 * @return the location
@@ -50,10 +45,11 @@ public class GameObject {
 	}
 
 	/**
-	 * @param isVisible the isVisible to set
+	 * @param isVisible
+	 *            the isVisible to set
 	 */
 	public void setVisible(boolean isVisible) {
 		this.isVisible = isVisible;
 	}
-	
+
 }

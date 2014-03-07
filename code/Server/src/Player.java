@@ -1,10 +1,10 @@
-
+// Object to simulate the players
 public class Player extends MovingObject {
-	private int maxBombs;
-	private int currentBombs;
-	private int bombRange;
-	private int lives;
-	private boolean isAlive;
+	private int maxBombs;     // Max number of bombs a player can hold
+	private int currentBombs; // Number of bombs that a current player has
+	private int bombRange;    // The range of the bombs that the player drops
+	private int lives;        // Number of lives a player has
+	private boolean isAlive;  // If the player is alive
 
 	public Player(int player_number, int x, int y) {
 		super(playerNumToGameObj(player_number), x, y);
@@ -23,7 +23,8 @@ public class Player extends MovingObject {
 	}
 
 	/**
-	 * @param maxBombs the maxBombs to set
+	 * @param maxBombs
+	 *            the maxBombs to set
 	 */
 	public void setMaxBombs(int maxBombs) {
 		this.maxBombs = maxBombs;
@@ -37,7 +38,8 @@ public class Player extends MovingObject {
 	}
 
 	/**
-	 * @param currentBombs the currentBombs to set
+	 * @param currentBombs
+	 *            the currentBombs to set
 	 */
 	public void setCurrentBombs(int currentBombs) {
 		this.currentBombs = currentBombs;
@@ -51,7 +53,8 @@ public class Player extends MovingObject {
 	}
 
 	/**
-	 * @param lives the lives to set
+	 * @param lives
+	 *            the lives to set
 	 */
 	public void setLives(int lives) {
 		this.lives = lives;
@@ -65,15 +68,16 @@ public class Player extends MovingObject {
 	}
 
 	/**
-	 * @param bombRange the bombRange to set
+	 * @param bombRange
+	 *            the bombRange to set
 	 */
 	public void setBombRange(int bombRange) {
 		this.bombRange = bombRange;
 	}
-	
-	private static GameObjectType playerNumToGameObj(int playerNum){
+
+	private static GameObjectType playerNumToGameObj(int playerNum) {
 		GameObjectType gameObj = null;
-		switch(playerNum){
+		switch (playerNum) {
 		case 1:
 			gameObj = GameObjectType.PLAYER_1;
 			break;
@@ -89,7 +93,9 @@ public class Player extends MovingObject {
 		}
 		return gameObj;
 	}
-	public void powerup(){
+	
+	// If a player lands on a powerup
+	public void powerup() {
 		this.maxBombs++;
 		this.bombRange++;
 	}
@@ -102,7 +108,8 @@ public class Player extends MovingObject {
 	}
 
 	/**
-	 * @param isAlive the isAlive to set
+	 * @param isAlive
+	 *            the isAlive to set
 	 */
 	public void dies() {
 		this.setVisible(false);
