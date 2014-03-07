@@ -6,18 +6,18 @@ import org.json.JSONObject;
 
 public class Game {
 	// Currently we need to limit number of players to 2
-	public static int MAX_PLAYERS = 2;
-	public static int MAX_POWERUPS = 1;
-	public static int NUM_ENEMIES = 0;
-	public static int DEFAULT_DOORS = 5;
-	private ArrayList<Player> players;
-	private ArrayList<Enemy> enemies;
-	private ArrayList<Powerup> powerups;
+	public static int MAX_PLAYERS = 2;           // Max number of players per game
+	public static int MAX_POWERUPS = 1;          // Max number of powerups per game
+	public static int NUM_ENEMIES = 0;           // Number of enemies per game
+	private static final int DEFAULT_BLOCKS = 8; // Default number of blocks on the map 
+	private ArrayList<Player> players;           // List of players in the game
+	private ArrayList<Enemy> enemies;            // List of enemies in the game
+	private ArrayList<Powerup> powerups;         // List of powerups in the game
 
-	private Board board;
-	private int numPlayers;
-	private boolean isStarted;
-	private boolean isFinished;
+	private Board board;                         // Current game board
+	private int numPlayers;                      // Number of players in the game
+	private boolean isStarted;                   // If the game has started
+	private boolean isFinished;                  // Indicates if the game has finished
 
 	public Game() {
 		this.isStarted = false;
@@ -58,7 +58,7 @@ public class Game {
 		this.isStarted = true;
 		if(board == null)
 		{
-			this.board = new Board(DEFAULT_DOORS); // TODO decide on size of board and # boxes
+			this.board = new Board(DEFAULT_BLOCKS); // TODO decide on size of board and # boxes
 		}
 		System.out.println("NUM PLAYERS: "+numPlayers + " players.size: " + this.players.size());
 		while(this.players.size() < this.numPlayers){
@@ -214,7 +214,7 @@ public class Game {
 	}
 
 	private synchronized void checkDoors(){
-		Door door = board.getDoor();
+		GameObject door = board.getDoor();
 		if(enemies.size() == 0) {
 			door.setVisible(true);
 		}

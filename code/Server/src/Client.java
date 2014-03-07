@@ -1,5 +1,7 @@
 import java.net.InetAddress;
 
+// Information about clients that connect to the game so that
+// they can be broadcast information when the state chagnes.
 public class Client {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -9,16 +11,16 @@ public class Client {
 		return "Client [IPaddr=" + IPaddr + ", port=" + port + ", id=" + id
 				+ "]";
 	}
-	private InetAddress IPaddr;
-	private int port;
-	private int id;
+	private InetAddress IPaddr;  // IP of the client
+	private int port;            // Port of the client
+	private int id;              // Player id of client, -1 if spectator
 
-	public Client(InetAddress IP, int port, boolean isPlayer) {
+	public Client(InetAddress IP, int port) {
 		this.IPaddr = IP;
 		this.port = port;
 		this.id = -1;
 	}
-	public Client(InetAddress IP, int port, int id, boolean isPlayer) {
+	public Client(InetAddress IP, int port, int id) {
 		this.IPaddr = IP;
 		this.port = port;
 		this.id = id;
