@@ -45,7 +45,8 @@ public class Client {
 		gameOver = false;
 		startGame();
 	}
-	public void endGame(){
+
+	public void endGame() {
 		if(isGameOn){
 			JSONObject endMsg = new JSONObject();
 			endMsg.put("pid", this.playerid);
@@ -103,6 +104,13 @@ public class Client {
 		cs.requestQuit();
 		cr.join();
 		cs.join();
+	}
+
+	public void resetServer() {
+		JSONObject resetMsg = new JSONObject();
+		resetMsg.put("command", "reset");
+		send(resetMsg.toString());
+		receive(); // wait til it replies
 	}
 
 	/**

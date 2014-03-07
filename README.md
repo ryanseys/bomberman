@@ -79,7 +79,6 @@ Json Message
 ||"y"|int|
 
 
-
 Server -> Client: Message Specification
 ===
 Json Message
@@ -106,6 +105,8 @@ Json Message
 ||"height"|int|height of the board|
 ||board|[(GameObjectType)int][(GameObjectType)int]|A two dimensional integer array of GameObjectType defined in GameObjectType enum|
 
+If one of the clients finishes the game (e.g. exits a door or collides with the last player on the board), the Server will not respond
+with an updated board state, but will instead broadcast a `{“type":"game_over"}` message to all players alerting them that the game is over.
 
 Notes
 ===
