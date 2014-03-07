@@ -1,25 +1,30 @@
 bomberman
 =========
 
-Bomberman game designed for SYSC 3303.
+Bomberman client/server game written in Java
 
-Collaboration
-===
-Documents for this project will be stored on a shared
-[Google Drive folder](https://drive.google.com/a/ryanseys.com/folderview?id=0B-HAHCc4sghKT3lOaEtNazRuSE0&usp=sharing).
+## Collaborators (Group Members)
 
+- Martin Gingras
+- Cassandra Perez
+- Fady Ibrahim
+- Ryan Seys
 
 Code
 ===
 We have two Eclipse projects under the following directories:
 
-Client: `code/Client`
-
 Server: `code/Server`
 
-JSON
-===
-We decided to use JSON as our communication protocol.
+The server listens for UDP packets (datagrams) on port 5000.
+
+Client: `code/Client`
+
+The client communicates with the server using UDP datagrams.
+
+## Messaging Format (JSON)
+
+We decided to use JSON as our server/client data-interchange notation.
 In order to use JSON with Java we needed to include a
 library, in this case [org.json](http://www.json.org/java/index.html).
 
