@@ -26,10 +26,7 @@ public class TestDriver {
 		log.append("Running test case: " + f.getName());
 
 		// reset the server state first
-		JSONObject resetMsg = new JSONObject();
-		resetMsg.put("command", "reset");
-		c.send(resetMsg.toString());
-		c.receive(); // wait til it replies
+		c.resetServer();
 
 		// then run the test case
 		String testcaseJSONString = getFileContents(f);
@@ -43,10 +40,16 @@ public class TestDriver {
 				desc = testcase.getString("desc");
 			} catch(JSONException e) {}
 
-			String request = testcase.getJSONObject("request").toString();
+			String request;
+			try {
+				request = testcase.getJSONObject("request").toString();
+				c.send(request);
+			}
+			catch(JSONException e) {
+				request = null;
+			}
 			String expectedResponse = testcase.getJSONObject("expectedResponse").toString().trim();
 
-			c.send(request);
 			String response = c.receive().trim();
 
 			if(response.equals(expectedResponse)) {
@@ -62,7 +65,13 @@ public class TestDriver {
 			if(desc != null) {
 				log.append("Description: \t\t" + desc);
 			}
-			log.append("Request: \t\t" + request);
+			if(request != null) {
+				log.append("Request: \t\t" + request);
+			}
+			else {
+				log.append("No request given for this test");
+			}
+
 			log.append("Expected response: \t" + expectedResponse);
 			log.append("Actual response: \t" + response);
 		}
@@ -86,6 +95,9 @@ public class TestDriver {
 				System.out.println("Directory " + listOfFiles[i].getName());
 			}
 		}
+
+		// reset server one final time
+//		c.resetServer();
 	}
 
 	private static String getFileContents(File file) throws IOException {

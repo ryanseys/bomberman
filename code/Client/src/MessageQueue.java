@@ -3,7 +3,7 @@ import java.util.LinkedList;
 
 public class MessageQueue {
 	private LinkedList<String> messageQueue;
-	
+
 	public MessageQueue() {
 		messageQueue = new LinkedList<String>();
 	}
@@ -15,5 +15,8 @@ public class MessageQueue {
 	}
 	public synchronized boolean isEmpty() {
 		return messageQueue.isEmpty();
+	}
+	public synchronized void clear() {
+		messageQueue.clear();
 	}
 }

@@ -59,8 +59,8 @@ public class Controller extends Thread{
 				if(command.equals("reset")) {
 					// reset the game
 					this.game = new Game();
-					
-					// We could take these out and keep the current clients... Maybe as 
+
+					// We could take these out and keep the current clients... Maybe as
 					this.clients = new ArrayList<Client>();
 					this.currClientPid = 1;
 					serverResp(true, datagramMsg.getAddress(), datagramMsg.getPort());
@@ -88,7 +88,9 @@ public class Controller extends Thread{
 						if(command.equals("move")){
 							if(game.isStarted()){
 								game.playerMoved(playerID, msg.getString("direction"));
-								broadcastGameState();
+								if(!game.isFinished()) {
+									broadcastGameState();
+								}
 							}
 							else{
 								System.out.println("Cannot move, game has not started yet");
@@ -111,7 +113,7 @@ public class Controller extends Thread{
 		int numPlayers = game.getNumPlayers();
 		this.game = new Game();
 		game.setNumPlayers(numPlayers);
-		
+
 		JSONObject msg = new JSONObject();
 		msg.put("type", "game_over");
 		sender.broadcastMessage(clients, msg.toString());

@@ -47,7 +47,6 @@ public class ClientSender extends Thread {
 
 			}
 		}
-		System.out.println("Holy shit exiting sender!");
 	}
 
 	/**
