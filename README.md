@@ -12,6 +12,9 @@ Bomberman client/server game written in Java
 
 Code
 ===
+
+## How to Run
+
 *Recommended JAVA version 1.7.x*
 We have two Eclipse projects under the following directories:
 
@@ -22,6 +25,21 @@ The server listens for UDP packets (datagrams) on port 5000.
 Client: `code/Client`
 
 The client communicates with the server using UDP datagrams.
+
+To run, import Client and Server as separate projects in Eclipse. Right-click each project and click Properties.
+Adjust the Java Build Path to include `lib/JSON.jar` as a jar.
+
+### Running the server
+
+Run the main in Server.java
+
+### Running GUI Client
+
+Run the main in ClientMain.java (after running the server)
+
+### Running the Tests
+
+Run the main in TestMain.java (after running the server)
 
 ## Messaging Format (JSON)
 
