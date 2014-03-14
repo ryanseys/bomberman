@@ -13,6 +13,7 @@ public class Client {
 	private ClientSender cs;
 	private DatagramSocket dsocket;
 	private int playerid = 0;
+	private int powerups = 0;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
 	private boolean isDebug = false;
@@ -135,6 +136,9 @@ public class Client {
 			isGameOn = true;
 			this.game = resp.getJSONObject("game");
 		}
+		if(resp.getString("type").equals("powerups")) {
+			powerups = resp.getInt("powerups");
+		}
 	}
 
 	public String stringifyBoard(JSONArray board) {
@@ -177,6 +181,10 @@ public class Client {
 
 	public boolean isGameOver() {
 		return gameOver;
+	}
+	
+	public int getPowerups() {
+		return powerups;
 	}
 
 	/**

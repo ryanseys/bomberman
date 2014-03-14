@@ -9,12 +9,14 @@ import java.util.ArrayList;
 public class ServerSender {
 	private DatagramSocket serverSocket;  // Socket to send/receive messages on
 
+
 	public ServerSender(DatagramSocket serverSocket) {
 		this.serverSocket = serverSocket;
 	}
 	
 	// Send the specified message to all of the clients that are passed in
 	public void broadcastMessage(ArrayList<Client> clients, String message){
+		
 		System.out.println("Broadcast Message: " + message);
 		for (Client client : clients) {
 			sendClientMsg(client, message);

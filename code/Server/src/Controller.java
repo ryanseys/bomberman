@@ -230,6 +230,17 @@ public class Controller extends Thread{
 		JSONObject msg = new JSONObject();
 		msg.put("game", game.toJSON());
 		msg.put("type", "broadcast");
+		//
+		JSONObject players = new JSONObject();
+		for(Player p : game.getPlayers()) {
+			String pid = Integer.toString(p.getType().ordinal());
+			JSONObject playerData = new JSONObject();
+			playerData.put("powerups", p.getPowerups()); //
+			playerData.put("bombs", p.getCurrentBombs());
+			players.put(pid, playerData);
+		}
+		msg.put("players", players);
+		//
 		System.out.println(msg.get("game"));
 		sender.broadcastMessage(clients, msg.toString());
 	}

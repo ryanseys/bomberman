@@ -205,6 +205,7 @@ public class ClientView {
 		gameOverLabel = new JLabel("GAME OVER");
 		gameOverLabel.setFont(font);
 		panel.add(gameOverLabel);
+	
 
 		// Handle keyboard input
 		view = ((JPanel) panel);

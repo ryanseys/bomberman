@@ -25,6 +25,10 @@ public class Game {
 		this.powerups = new ArrayList<Powerup>();
 		this.players = new ArrayList<Player>();
 	}
+	
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
 
 	/*
 	 * Try to add a player to the game. return true on success. return false on
@@ -206,6 +210,7 @@ public class Game {
 		for (Player player : players) {
 			for (Powerup powerup : powerups) {
 				if (player.getLocation().equals(powerup.getLocation())) {
+					player.addPowerup(powerup);
 					powerups.remove(powerup);
 					player.powerup();
 					return;

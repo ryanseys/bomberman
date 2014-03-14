@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+
+
+
 // Object to simulate the players
 public class Player extends MovingObject {
 	private int maxBombs;     // Max number of bombs a player can hold
@@ -5,6 +9,7 @@ public class Player extends MovingObject {
 	private int bombRange;    // The range of the bombs that the player drops
 	private int lives;        // Number of lives a player has
 	private boolean isAlive;  // If the player is alive
+	private ArrayList<Powerup> powerups;
 
 	public Player(int player_number, int x, int y) {
 		super(playerNumToGameObj(player_number), x, y);
@@ -13,6 +18,15 @@ public class Player extends MovingObject {
 		this.lives = 1;
 		this.bombRange = 1;
 		this.isAlive = true;
+		powerups = new ArrayList<Powerup>();
+	}
+	
+	public void addPowerup(Powerup p){
+		powerups.add(p);
+	}
+	
+	public int getPowerups(){
+		return powerups.size();
 	}
 
 	/**
