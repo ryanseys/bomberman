@@ -12,6 +12,8 @@ public class Controller extends Thread{
 	private ServerSender sender;         // The class that handles sending messages
 	private ArrayList<Client> clients;   // List of clients connected to the game
 	private int currClientPid;           // Running count of player clients' IDs
+	private DoubleBuffer dblBuffer;
+	private GameBroadcaster broadcaster;
 	
 	public Controller(ServerSender sender, MessageQueue commandQueue){
 		this.game = new Game();
@@ -62,7 +64,6 @@ public class Controller extends Thread{
 				if(command.equals("reset")) {
 					// reset the game
 					this.game = new Game();
-
 					// We could take these out and keep the current clients... Maybe as
 					this.clients = new ArrayList<Client>();
 					this.currClientPid = 1;
@@ -107,6 +108,9 @@ public class Controller extends Thread{
 						}
 					}
 				}
+			}
+			if(dblBuffer != null){
+				this.dblBuffer.controllerSetState();
 			}
 		}
 	}
@@ -183,6 +187,9 @@ public class Controller extends Thread{
 			}
 			else{
 				game.startGame();
+				this.dblBuffer = new DoubleBuffer(game);
+				this.broadcaster = new GameBroadcaster(this.sender, this.clients, this.dblBuffer);
+				this.broadcaster.start();
 				broadcastGameState();
 			}
 		}
