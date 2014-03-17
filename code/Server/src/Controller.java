@@ -14,7 +14,7 @@ public class Controller extends Thread{
 	private int currClientPid;           // Running count of player clients' IDs
 	private DoubleBuffer dblBuffer;
 	private GameBroadcaster broadcaster;
-	
+
 	public Controller(ServerSender sender, MessageQueue commandQueue){
 		this.game = new Game();
 		this.commandQueue = commandQueue;
@@ -114,7 +114,7 @@ public class Controller extends Thread{
 			}
 		}
 	}
-	
+
 	// Handles the scenario when a game ends
 	// Dumps the state of the old game and creates
 	// a new one. The number of players is preserved
@@ -160,7 +160,7 @@ public class Controller extends Thread{
 		response.put("resp", resp);
 		sender.sendMsg(response.toString(), addr, port);
 	}
-	
+
 	// Handles if the player pressed a button.
 	private void handleButton(int playerID, String buttonPressed){
 		Client client = getClient(playerID);
@@ -196,6 +196,7 @@ public class Controller extends Thread{
 		else if(buttonPressed.equals("end")){
 			if(game.isStarted()){
 				game.endGame();
+				broadcaster.requestQuit();
 			}
 			else{
 				System.out.println("Cannot end game. It has not yet started.");
@@ -245,7 +246,7 @@ public class Controller extends Thread{
 		sender.broadcastMessage(clients, msg.toString());
 	}
 	// Get a specific client based on their ID
-	// only works for player clients since 
+	// only works for player clients since
 	// spectator clients cannot do anything
 	private Client getClient(int id){
 		for(Client client : clients){
