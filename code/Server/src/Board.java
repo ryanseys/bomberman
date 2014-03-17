@@ -126,9 +126,30 @@ public class Board {
 
 	}
 	// will kill players in the range of fire
-	public synchronized void fire()
+	public synchronized void fire(int heightOne,int heightTwo,int widthOne, int widthTwo,Point bombPlace)
 	{
-		
+		int x=bombPlace.x,y=bombPlace.y;
+		board[x][y] = new GameObject(GameObjectType.FIRE, x, y);
+		for(int i=0; i<=heightOne;i++)
+		{
+			System.out.print(heightOne);
+			board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
+		}
+		for(int i=0; i<=heightTwo;i++)
+		{
+			System.out.print(heightTwo);
+			board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
+		}
+		for(int i=0; i<=widthOne;i++)
+		{
+			System.out.print(widthOne);
+			board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
+		}
+		for(int i=0; i<=widthTwo;i++)
+		{
+			System.out.println(widthTwo);
+			board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
+		}
 	}
 	// Place the boxes randomly if they aren't instantiated already
 	private void initBoxes(){
@@ -146,7 +167,7 @@ public class Board {
 	}
 	private boolean isEmptySpot(int x,int y)
 	{
-		if(x>MAX_WIDTH || y> MAX_HEIGHT ||x<0 || y<0)
+		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)
 		{
 			return false;
 		}else if(board[x][y]==null)
