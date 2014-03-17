@@ -13,7 +13,7 @@ public class Client {
 	private ClientSender cs;
 	private DatagramSocket dsocket;
 	private int playerid = 0;
-	private int powerups = 0;
+	private int powerups;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
 	private boolean isDebug = false;
@@ -111,7 +111,7 @@ public class Client {
 		JSONObject resetMsg = new JSONObject();
 		resetMsg.put("command", "reset");
 		send(resetMsg.toString());
-		receive(); // wait til it replies
+		receive(); // wait until it replies
 	}
 
 	/**
@@ -120,7 +120,6 @@ public class Client {
 	 */
 	public void setState(String s) {
 		JSONObject resp = new JSONObject(s);
-
 
 		if(resp.getString("type").equals("game_over")) {
 			isGameOn = false;
@@ -135,10 +134,7 @@ public class Client {
 		if(resp.keySet().contains("game")) {
 			isGameOn = true;
 			this.game = resp.getJSONObject("game");
-		}
-		if(resp.getString("type").equals("powerups")) {
-			powerups = resp.getInt("powerups");
-		}
+		}	
 	}
 
 	public String getGameBoardTypeLetter(int type) {

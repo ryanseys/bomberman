@@ -38,6 +38,7 @@ public class ClientView {
 	JButton button;
 	JPanel view;
 	JLabel gameOverLabel;
+	JLabel powerups;
 	JFrame frame;
 	JMenuBar menubar;
 	JMenu fileMenu;
@@ -202,10 +203,13 @@ public class ClientView {
 		frame.setResizable(false);
 		frame.setVisible(true);
 
-		gameOverLabel = new JLabel("GAME OVER");
-		gameOverLabel.setFont(font);
-		panel.add(gameOverLabel);
+		gameOverLabel = new JLabel(new ImageIcon("gameover.png"));
 
+		frame.add(gameOverLabel);
+
+		/*powerups = new JLabel();
+		powerups.setFont(font);
+		panel.add(powerups);*/
 
 		// Handle keyboard input
 		view = ((JPanel) panel);
@@ -227,6 +231,11 @@ public class ClientView {
 		am.put("DownArrow", new buttonAction("DownArrow"));
 		am.put("SpaceBar", new buttonAction("SpaceBar"));
 	}
+	
+	/*public void updateDisplay()
+	{
+		powerups.setText("Powerups: " + Integer.toString(client.getPowerups()));
+	}*/
 
 	public class buttonAction extends AbstractAction {
 
@@ -267,6 +276,7 @@ public class ClientView {
 			lMenuItem.setToolTipText("Load");
 			lMenuItem.setEnabled(true);
 			lMenuItem.setVisible(true);
+			gameOverLabel.setVisible(false);
 		}
 		else if((playerid < 0) && !client.isGameOn() && !client.isGameOver()) {
 			frame.setTitle("Bomberman - Spectator");
@@ -276,12 +286,14 @@ public class ClientView {
 			connMenuItem.setVisible(false);
 			lMenuItem.setEnabled(false);
 			lMenuItem.setVisible(false);
+			gameOverLabel.setVisible(false);
 		}
 		else if((playerid > 0)  && client.isGameOn()) {
 			frame.setTitle("Bomberman - Player " + playerid + " - In Game");
 			background.setVisible(false);
 			textarea.setVisible(true);
 			gameOverLabel.setVisible(false);
+			//powerups.setVisible(true);
 			connMenuItem.setText("End Game");
 			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(true);
@@ -289,6 +301,7 @@ public class ClientView {
 			lMenuItem.setToolTipText("Save");
 			lMenuItem.setEnabled(true);
 			lMenuItem.setVisible(true);
+			//updateDisplay();
 
 		}
 		else if((playerid < 0)  && client.isGameOn()) {
@@ -296,6 +309,7 @@ public class ClientView {
 			background.setVisible(false);
 			textarea.setVisible(true);
 			gameOverLabel.setVisible(false);
+			//powerups.setVisible(true);
 			connMenuItem.setText("End Game");
 			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(false);
@@ -308,6 +322,7 @@ public class ClientView {
 			textarea.setVisible(false);
 			background.setVisible(false);
 			gameOverLabel.setVisible(true);
+			//powerups.setVisible(false);
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(true);
@@ -320,6 +335,7 @@ public class ClientView {
 			frame.setTitle("Bomberman - Game Over");
 			textarea.setVisible(false);
 			gameOverLabel.setVisible(true);
+			//powerups.setVisible(false);
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(false);
