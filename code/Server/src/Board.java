@@ -132,24 +132,36 @@ public class Board {
 		board[x][y] = new GameObject(GameObjectType.FIRE, x, y);
 		for(int i=0; i<=heightOne;i++)
 		{
-			System.out.print(heightOne);
-			board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
+			if(board[x][y-i] instanceof Player || isEmptySpot(x,y-i))
+			{
+				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
+			}
 		}
 		for(int i=0; i<=heightTwo;i++)
 		{
-			System.out.print(heightTwo);
-			board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
+			if(board[x][y+i] instanceof Player || isEmptySpot(x,y+i))
+			{
+				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
+			}
 		}
 		for(int i=0; i<=widthOne;i++)
 		{
-			System.out.print(widthOne);
-			board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
+			if(board[x-i][y] instanceof Player || isEmptySpot(x-i,y))
+			{
+				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
+			}
 		}
 		for(int i=0; i<=widthTwo;i++)
 		{
-			System.out.println(widthTwo);
-			board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
+			if(board[x+i][y] instanceof Player || isEmptySpot(x+i,y))
+			{
+				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
+			}
 		}
+		System.out.print(heightTwo);
+	}
+	public synchronized void clearFire(int heightOne,int heightTwo,int widthOne, int widthTwo,Point bombPlace)
+	{
 	}
 	// Place the boxes randomly if they aren't instantiated already
 	private void initBoxes(){
