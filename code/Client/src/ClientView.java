@@ -32,7 +32,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ClientView {
 
-	Font font = new Font("LucidaSans", Font.PLAIN, 28);
+	Font font = new Font(Font.MONOSPACED, Font.PLAIN, 20);
 	Client client;
 	JTextArea textarea;
 	JButton button;
@@ -205,7 +205,7 @@ public class ClientView {
 		gameOverLabel = new JLabel("GAME OVER");
 		gameOverLabel.setFont(font);
 		panel.add(gameOverLabel);
-	
+
 
 		// Handle keyboard input
 		view = ((JPanel) panel);
