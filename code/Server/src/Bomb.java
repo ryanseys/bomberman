@@ -4,11 +4,13 @@ public class Bomb extends Thread {
 	private GameObject gameObj;
 	Player player;
 	Game game;
+	
 	public Bomb(Player player, Game game) {
 		this.player=player;
 		this.game=game;
-		this.range = range;
-		GameObject gameObj= new GameObject(GameObjectType.BOMB, this.player.x()+1, this.player.y()+1);
+		this.range = player.getBombRange();
+		game.getBoard().placeBomb(player);
+		
 	}
 
 	@Override
@@ -22,14 +24,19 @@ public class Bomb extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.print("I have awaken!");
 	}
-	
+	//will check to see if the range is within the limit of the grid int the x direction.
 	private int explosionX()
 	{
+		if(game.getBoard().getWidth()==0)
+		{
+			
+		}
+		
 		return 0;
 		
 	}
+	//will check to see if the range is within the limit of the grid int the y direction.
 	private int explosionY()
 	{
 		return 0;

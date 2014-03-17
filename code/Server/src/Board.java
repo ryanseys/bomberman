@@ -98,6 +98,38 @@ public class Board {
 			board[p.x()][p.y()] = p;
 		}
 	}
+	//place a bomb behind the user
+	public synchronized Point placeBomb(Player player)
+	{
+		int x=player.x(),y=player.y();
+		GameObject bombObj;
+		if(isEmptySpot(x+1,y))
+		{
+			bombObj= new GameObject(GameObjectType.BOMB, x+1, y);
+			board[x+1][y] = bombObj;
+			return new Point(x+1,y);
+		} else if(isEmptySpot(x,y+1)){
+			bombObj= new GameObject(GameObjectType.BOMB, x, y+1);
+			board[x][y+1] = bombObj;
+			return new Point(x,y+1);
+		} else if (isEmptySpot(x-1,y)){
+			bombObj= new GameObject(GameObjectType.BOMB, x-1, y);
+			board[x-1][y] = bombObj;
+			return new Point(x-1,y);
+		} else if (isEmptySpot(x,y-1)){
+			bombObj= new GameObject(GameObjectType.BOMB, x, y-1);
+			board[x][y-1] = bombObj;
+			return new Point(x,y-1);
+		} else{
+			return null;
+		}
+
+	}
+	// will kill players in the range of fire
+	public synchronized void fire()
+	{
+		
+	}
 	// Place the boxes randomly if they aren't instantiated already
 	private void initBoxes(){
 		Point emptySpot;
@@ -111,6 +143,17 @@ public class Board {
 		for (GameObject box : boxes) {
 			board[box.x()][box.y()] = box;
 		}
+	}
+	private boolean isEmptySpot(int x,int y)
+	{
+		if(x>MAX_WIDTH || y> MAX_HEIGHT ||x<0 || y<0)
+		{
+			return false;
+		}else if(board[x][y]==null)
+		{
+			return true;
+		}
+		return false;
 	}
 	// Find a random empty spot on the board
 	private Point getEmptySpot(){

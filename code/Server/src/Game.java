@@ -118,10 +118,13 @@ public class Game {
 		Player player = getPlayer(playerID);
 		if(player.getCurrentBombs()>0)
 		{
-			player.setCurrentBombs(player.getCurrentBombs()-1);
+			synchronized(player)
+			{
+				player.setCurrentBombs(player.getCurrentBombs()-1);
+			}
 			System.out.println("player: " + playerID + " has dropped a bomb");
 			Bomb bomb=new Bomb(player,this);
-			//bomb.start();
+			bomb.start();
 
 		}else{
 			System.out.println("player: " + playerID + " has run out of bombs to deploy.");
@@ -212,6 +215,10 @@ public class Game {
 		this.board.fromIntArr(intArr, width, height);
 	}
 
+	public Board getBoard()
+	{
+		return board;
+	}
 	// Checks to see if any players are standing on a powerup
 	private synchronized void checkPowerups() {
 		if (powerups.size() == 0) {
