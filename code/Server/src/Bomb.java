@@ -28,7 +28,13 @@ public class Bomb extends Thread {
 			e.printStackTrace();
 		}
 		game.getBoard().fire(explosionHeightOne(), explosionHeightTwo(), explosionWidthOne(), explosionWidthTwo(), bombPlace);
-		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		game.getBoard().clearFire();
 	}
 	
 	

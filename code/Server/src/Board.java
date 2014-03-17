@@ -131,7 +131,7 @@ public class Board {
 	{
 		int x=bombPlace.x,y=bombPlace.y;
 		board[x][y] = new GameObject(GameObjectType.FIRE, x, y);
-		for(int i=1; i<=heightOne;i++)
+		for(int i=0; i<=heightOne;i++)
 		{
 			if(board[x][y-i] instanceof Player)
 			{
@@ -146,7 +146,7 @@ public class Board {
 
 			}
 		}
-		for(int i=1; i<=heightTwo;i++)
+		for(int i=0; i<=heightTwo;i++)
 		{
 			if(board[x][y+i] instanceof Player)
 			{
@@ -159,7 +159,7 @@ public class Board {
 				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
 			}
 		}
-		for(int i=1; i<=widthOne;i++)
+		for(int i=0; i<=widthOne;i++)
 		{
 			if(board[x-i][y] instanceof Player)
 			{
@@ -172,7 +172,7 @@ public class Board {
 				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
 			}
 		}
-		for(int i=1; i<=widthTwo;i++)
+		for(int i=0; i<=widthTwo;i++)
 		{
 			if(board[x+i][y] instanceof Player)
 			{
@@ -187,8 +187,22 @@ public class Board {
 		}
 		System.out.print(heightTwo);
 	}
-	public synchronized void clearFire(int heightOne,int heightTwo,int widthOne, int widthTwo,Point bombPlace)
+	
+	public synchronized void clearFire()
 	{
+		for(int i=0;i<MAX_WIDTH; i++)
+		{
+			for(int j=0;j<MAX_HEIGHT;j++)
+			{
+				if(board[i][j]!=null)
+				{
+					if (board[i][j].getType()==GameObjectType.FIRE)
+					{
+						board[i][j]= null;
+					}
+				}
+			}
+		}
 	}
 	// Place the boxes randomly if they aren't instantiated already
 	private void initBoxes(){
