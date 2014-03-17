@@ -131,31 +131,57 @@ public class Board {
 	{
 		int x=bombPlace.x,y=bombPlace.y;
 		board[x][y] = new GameObject(GameObjectType.FIRE, x, y);
-		for(int i=0; i<=heightOne;i++)
+		for(int i=1; i<=heightOne;i++)
 		{
-			if(board[x][y-i] instanceof Player || isEmptySpot(x,y-i))
+			if(board[x][y-i] instanceof Player)
 			{
+				((Player)board[x][y-i]).dies();	
 				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
+			}else if(board[x][y-i] instanceof Enemy){
+				((Enemy)board[x][y-i]).dies();
+				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
+
+			}else if(isEmptySpot(x,y-i)){
+				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
+
 			}
 		}
-		for(int i=0; i<=heightTwo;i++)
+		for(int i=1; i<=heightTwo;i++)
 		{
-			if(board[x][y+i] instanceof Player || isEmptySpot(x,y+i))
+			if(board[x][y+i] instanceof Player)
 			{
+				((Player)board[x][y+i]).dies();	
+				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
+			}else if(board[x][y+i] instanceof Enemy){
+				((Enemy)board[x][y+i]).dies();
+				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
+			}else if(isEmptySpot(x,y+i)){
 				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
 			}
 		}
-		for(int i=0; i<=widthOne;i++)
+		for(int i=1; i<=widthOne;i++)
 		{
-			if(board[x-i][y] instanceof Player || isEmptySpot(x-i,y))
+			if(board[x-i][y] instanceof Player)
 			{
+				((Player)board[x-i][y]).dies();
+				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
+			}else if( board[x-i][y] instanceof Enemy){
+				((Enemy)board[x-i][y]).dies();
+				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
+			}else if(isEmptySpot(x-i,y)){
 				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
 			}
 		}
-		for(int i=0; i<=widthTwo;i++)
+		for(int i=1; i<=widthTwo;i++)
 		{
-			if(board[x+i][y] instanceof Player || isEmptySpot(x+i,y))
+			if(board[x+i][y] instanceof Player)
 			{
+				((Player)board[x+i][y]).dies();
+				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
+			}else if(board[x+i][y] instanceof Enemy){
+				((Enemy)board[x+i][y]).dies();
+				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
+			}else if(isEmptySpot(x+i,y)){
 				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
 			}
 		}
@@ -188,6 +214,15 @@ public class Board {
 			return true;
 		}
 		return false;
+	}
+	private boolean isWithinBorder(int x, int y)
+	{
+		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)
+		{
+			return false;
+		}else{
+			return true;
+		}
 	}
 	// Find a random empty spot on the board
 	private Point getEmptySpot(){
@@ -291,6 +326,10 @@ public class Board {
 				board[newX][newY] = player;
 				// Handle player on powerup in game.
 				break;
+			case FIRE:
+				//if the player steps into the fire
+				player.dies();
+				
 			default:
 				// Don't go there...
 				break;
