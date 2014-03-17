@@ -13,7 +13,7 @@ public class Player extends MovingObject {
 
 	public Player(int player_number, int x, int y) {
 		super(playerNumToGameObj(player_number), x, y);
-		this.maxBombs = 1;
+		this.maxBombs = 10;
 		this.currentBombs = 1;
 		this.lives = 1;
 		this.bombRange = 1;
@@ -110,7 +110,12 @@ public class Player extends MovingObject {
 	
 	// If a player lands on a powerup
 	public void powerup() {
-		this.maxBombs++;
+		if(currentBombs+1>maxBombs)
+		{
+			currentBombs=maxBombs;
+		}else{
+			currentBombs++;
+		}
 		this.bombRange++;
 	}
 

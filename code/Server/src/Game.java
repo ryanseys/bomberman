@@ -120,7 +120,9 @@ public class Game {
 		{
 			synchronized(player)
 			{
+				System.out.println(player.getCurrentBombs());
 				player.setCurrentBombs(player.getCurrentBombs()-1);
+				System.out.println(player.getCurrentBombs());
 			}
 			System.out.println("player: " + playerID + " has dropped a bomb");
 			Bomb bomb=new Bomb(player,this);
