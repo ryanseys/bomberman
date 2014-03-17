@@ -25,7 +25,7 @@ public class Game {
 		this.powerups = new ArrayList<Powerup>();
 		this.players = new ArrayList<Player>();
 	}
-	
+
 	public ArrayList<Player> getPlayers() {
 		return players;
 	}
@@ -245,9 +245,7 @@ public class Game {
 		for (Player player : players) {
 			if (player.getLocation().equals(door.getLocation())) {
 				// TODO - Handle end of game scenario...
-				if (enemies.size() > 0) {
-					door.setVisible(true);
-				} else {
+				if (door.isVisible()) {
 					endGame();
 					return;
 				}

@@ -6,13 +6,13 @@ import java.util.Random;
 public class Board {
 	private static final int MAX_WIDTH = 10;  // Default width
 	private static final int MAX_HEIGHT = 10; // Default height
-	private GameObject[][] board;             // Array to hold things in the game	
+	private GameObject[][] board;             // Array to hold things in the game
 	private GameObject door;
 	private int width;                        // Current game's width
 	private int height;                       // Current game's height
 	private int numBoxes;                     // Number of boxes in this game
 	private ArrayList<GameObject> boxes;      // Array list of boxes in this game
- 
+
 	public Board(int numBoxes){
 		this.width = MAX_WIDTH;
 		this.height = MAX_HEIGHT;
@@ -58,6 +58,7 @@ public class Board {
 			Point emptySpot = getEmptySpot();
 			door = new GameObject(GameObjectType.DOOR, emptySpot.getLocation().x, emptySpot.getLocation().y);
 		}
+//		door.setVisible(false); // TODO: Uncomment to hide door by default
 		board[door.x()][door.y()] = door;
 	}
 	// Place the players randomly if they aren't instantiated already

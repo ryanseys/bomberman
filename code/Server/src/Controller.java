@@ -124,7 +124,7 @@ public class Controller extends Thread{
 		int numPlayers = game.getNumPlayers();
 		this.game = new Game();
 		game.setNumPlayers(numPlayers);
-
+		broadcaster.requestQuit();
 		JSONObject msg = new JSONObject();
 		msg.put("type", "game_over");
 		sender.broadcastMessage(clients, msg.toString());
@@ -196,7 +196,6 @@ public class Controller extends Thread{
 		else if(buttonPressed.equals("end")){
 			if(game.isStarted()){
 				game.endGame();
-				broadcaster.requestQuit();
 			}
 			else{
 				System.out.println("Cannot end game. It has not yet started.");
