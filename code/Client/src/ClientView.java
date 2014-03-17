@@ -219,19 +219,21 @@ public class ClientView {
 		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "LeftArrow");
 		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "UpArrow");
 		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "DownArrow");
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "SpaceBar");
 
-		am.put("RightArrow", new ArrowAction("RightArrow"));
-		am.put("LeftArrow", new ArrowAction("LeftArrow"));
-		am.put("UpArrow", new ArrowAction("UpArrow"));
-		am.put("DownArrow", new ArrowAction("DownArrow"));
+		am.put("RightArrow", new buttonAction("RightArrow"));
+		am.put("LeftArrow", new buttonAction("LeftArrow"));
+		am.put("UpArrow", new buttonAction("UpArrow"));
+		am.put("DownArrow", new buttonAction("DownArrow"));
+		am.put("SpaceBar", new buttonAction("SpaceBar"));
 	}
 
-	public class ArrowAction extends AbstractAction {
+	public class buttonAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
 		private String cmd;
 
-		public ArrowAction(String cmd) {
+		public buttonAction(String cmd) {
 			this.cmd = cmd;
 		}
 
@@ -239,13 +241,15 @@ public class ClientView {
 		public void actionPerformed(ActionEvent e) {
 			if(client.isPlayer()){
 				if (cmd.equalsIgnoreCase("LeftArrow")) {
-					client.move(Direction.LEFT);
+					client.move(Action.LEFT);
 				} else if (cmd.equalsIgnoreCase("RightArrow")) {
-					client.move(Direction.RIGHT);
+					client.move(Action.RIGHT);
 				} else if (cmd.equalsIgnoreCase("UpArrow")) {
-					client.move(Direction.UP);
+					client.move(Action.UP);
 				} else if (cmd.equalsIgnoreCase("DownArrow")) {
-					client.move(Direction.DOWN);
+					client.move(Action.DOWN);
+				} else if (cmd.equalsIgnoreCase("SpaceBar")){
+					client.deployBomb(Action.BOMB);
 				}
 			}
 		}

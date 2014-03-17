@@ -115,7 +115,17 @@ public class Game {
 
 	public void dropBomb(int playerID) {
 		// TODO Auto-generated method stub
+		Player player = getPlayer(playerID);
+		if(player.getCurrentBombs()>0)
+		{
+			player.setCurrentBombs(player.getCurrentBombs()-1);
+			System.out.println("player: " + playerID + " has dropped a bomb");
+			Bomb bomb=new Bomb(player,this);
+			//bomb.start();
 
+		}else{
+			System.out.println("player: " + playerID + " has run out of bombs to deploy.");
+		}
 	}
 
 	// Puts the current state of the game into a

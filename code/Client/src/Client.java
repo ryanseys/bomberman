@@ -152,16 +152,23 @@ public class Client {
 		return result;
 	}
 
-	String[] directions = {"up", "down", "right", "left"};
+	String[] actions = {"up", "down", "right", "left", "deploy"};
 
-	public void move(Direction d) {
+	public void move(Action d) {
 		JSONObject moveMsg = new JSONObject();
 		moveMsg.put("command", "move");
-		moveMsg.put("direction", directions[d.ordinal()]);
+		moveMsg.put("direction", actions[d.ordinal()]);
 		moveMsg.put("pid", playerid);
 		send(moveMsg.toString());
 	}
-
+	public void deployBomb(Action act)
+	{
+		JSONObject bombMsg = new JSONObject();
+		bombMsg.put("command", "button");
+		bombMsg.put("button", actions[act.ordinal()]);
+		bombMsg.put("pid", playerid);
+		send(bombMsg.toString());
+	}
 	/**
 	 * Get the state of the game
 	 * @return String representation of the game state
