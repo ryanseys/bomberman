@@ -141,11 +141,22 @@ public class Client {
 		}
 	}
 
+	public String getGameBoardTypeLetter(int type) {
+		switch(type) {
+		case 6:
+			return "B";
+		case 10:
+			return "F";
+		default:
+			return (new Integer(type)).toString();
+		}
+	}
+
 	public String stringifyBoard(JSONArray board) {
 		String result = "";
 		for(int col = 0; col < board.length(); col++) {
 			for(int row = 0; row < board.length(); row++) {
-				result += "[" + board.getJSONArray(row).getInt(col) + "]";
+				result += "[" + getGameBoardTypeLetter(board.getJSONArray(row).getInt(col)) + "]";
 			}
 			result += "\n";
 		}
@@ -189,7 +200,7 @@ public class Client {
 	public boolean isGameOver() {
 		return gameOver;
 	}
-	
+
 	public int getPowerups() {
 		return powerups;
 	}
