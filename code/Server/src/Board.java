@@ -100,94 +100,95 @@ public class Board {
 		}
 	}
 	//place a bomb behind the user
-	public synchronized Point placeBomb(Player player)
-	{
-		int x=player.x(),y=player.y();
-		GameObject bombObj;
-		if(isEmptySpot(x+1,y))
-		{
-			bombObj= new GameObject(GameObjectType.BOMB, x+1, y);
-			board[x+1][y] = bombObj;
-			return new Point(x+1,y);
-		} else if(isEmptySpot(x,y+1)){
-			bombObj= new GameObject(GameObjectType.BOMB, x, y+1);
-			board[x][y+1] = bombObj;
-			return new Point(x,y+1);
-		} else if (isEmptySpot(x-1,y)){
-			bombObj= new GameObject(GameObjectType.BOMB, x-1, y);
-			board[x-1][y] = bombObj;
-			return new Point(x-1,y);
-		} else if (isEmptySpot(x,y-1)){
-			bombObj= new GameObject(GameObjectType.BOMB, x, y-1);
-			board[x][y-1] = bombObj;
-			return new Point(x,y-1);
-		} else{
-			return null;
-		}
-
+	public synchronized void placeBomb(Bomb b, int x, int y){
+			board[x][y] = b;
 	}
-	// will kill players in the range of fire
-	public synchronized void fire(int heightOne,int heightTwo,int widthOne, int widthTwo,Point bombPlace)
-	{
-		int x=bombPlace.x,y=bombPlace.y;
-		board[x][y] = new GameObject(GameObjectType.FIRE, x, y);
-		for(int i=0; i<=heightOne;i++)
-		{
-			if(board[x][y-i] instanceof Player)
-			{
-				((Player)board[x][y-i]).dies();	
-				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
-			}else if(board[x][y-i] instanceof Enemy){
-				((Enemy)board[x][y-i]).dies();
-				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
-
-			}else if(isEmptySpot(x,y-i)){
-				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
-
+	public void bombExplosion(Bomb b){
+		int i;
+		board[b.x()][b.y()] = null; // Set the bomb reference to null
+		ArrayList<GameObject> fire = new ArrayList<GameObject>();
+		//Explode in place
+		fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y()));
+		//Explode up
+		for(i = 1; i <= b.getRange(); i++){
+			if(onBoard(b.x(), b.y() + i)){
+				if(board[b.x()][b.y() + i] != null){
+					if(board[b.x()][b.y() + i].getType() == GameObjectType.BOX){
+						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else{
+						fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() + i));
+					}
+				}
+				else{
+					fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() + i));
+				}
 			}
 		}
-		for(int i=0; i<=heightTwo;i++)
-		{
-			if(board[x][y+i] instanceof Player)
-			{
-				((Player)board[x][y+i]).dies();	
-				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
-			}else if(board[x][y+i] instanceof Enemy){
-				((Enemy)board[x][y+i]).dies();
-				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
-			}else if(isEmptySpot(x,y+i)){
-				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
+		//Explode down
+		for(i = 1; i <= b.getRange(); i++){
+			if(onBoard(b.x(), b.y() - i)){
+				if(board[b.x()][b.y() - i] != null){
+					if(board[b.x()][b.y() - i].getType() == GameObjectType.BOX){
+						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else{
+						fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() - i));
+					}
+				}
+				else{
+					fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() - i));
+				}
 			}
 		}
-		for(int i=0; i<=widthOne;i++)
-		{
-			if(board[x-i][y] instanceof Player)
-			{
-				((Player)board[x-i][y]).dies();
-				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
-			}else if( board[x-i][y] instanceof Enemy){
-				((Enemy)board[x-i][y]).dies();
-				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
-			}else if(isEmptySpot(x-i,y)){
-				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
+		//Explode left
+		for(i = 1; i <= b.getRange(); i++){
+			if(onBoard(b.x() - i, b.y())){
+				if(board[b.x() - i][b.y()] != null){
+					if(board[b.x() - i][b.y()].getType() == GameObjectType.BOX){
+						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else{
+						fire.add(new GameObject(GameObjectType.FIRE, b.x() - i, b.y()));
+					}
+				}
+				else{
+					fire.add(new GameObject(GameObjectType.FIRE, b.x() - i, b.y()));
+				}
 			}
 		}
-		for(int i=0; i<=widthTwo;i++)
-		{
-			if(board[x+i][y] instanceof Player)
-			{
-				((Player)board[x+i][y]).dies();
-				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
-			}else if(board[x+i][y] instanceof Enemy){
-				((Enemy)board[x+i][y]).dies();
-				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
-			}else if(isEmptySpot(x+i,y)){
-				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
+		//Explode right
+		for(i = 1; i <= b.getRange(); i++){
+			if(onBoard(b.x() + i, b.y())){
+				if(board[b.x() + i][b.y()] != null){
+					if(board[b.x() + i][b.y()].getType() == GameObjectType.BOX){
+						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else{
+						fire.add(new GameObject(GameObjectType.FIRE, b.x() + i, b.y()));
+					}
+				}
+				else{
+					fire.add(new GameObject(GameObjectType.FIRE, b.x() + i, b.y()));
+				}
 			}
 		}
-		System.out.print(heightTwo);
+		for (GameObject onFire : fire) {
+			if(board[onFire.x()][onFire.y()] != null){
+				if(board[onFire.x()][onFire.y()] instanceof Player || board[onFire.x()][onFire.y()] instanceof Enemy){
+					((MovingObject) board[onFire.x()][onFire.y()]).dies();
+					addFire(onFire);
+				}
+			}
+			else{
+				addFire(onFire);
+			}
+		}
 	}
-	
+	public void addFire(GameObject fire){
+		this.board[fire.x()][fire.y()] = fire;
+	}
+	//clears the fire from the map
 	public synchronized void clearFire()
 	{
 		for(int i=0;i<MAX_WIDTH; i++)
@@ -196,7 +197,7 @@ public class Board {
 			{
 				if(board[i][j]!=null)
 				{
-					if (board[i][j].getType()==GameObjectType.FIRE)
+					if (board[i][j].getType() == GameObjectType.FIRE)
 					{
 						board[i][j]= null;
 					}
@@ -218,6 +219,8 @@ public class Board {
 			board[box.x()][box.y()] = box;
 		}
 	}
+	//checks to see if a given location is empty
+	@SuppressWarnings("unused")
 	private boolean isEmptySpot(int x,int y)
 	{
 		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)
@@ -229,6 +232,7 @@ public class Board {
 		}
 		return false;
 	}
+	@SuppressWarnings("unused")
 	private boolean isWithinBorder(int x, int y)
 	{
 		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)
@@ -311,13 +315,15 @@ public class Board {
 	// Handle player movement checks if spot is taken and by what.
 	private void playerMove(Player player, int newX, int newY){
 		if(board[newX][newY] == null){
-			board[player.x()][player.y()] = null;
+			if(board[player.x()][player.y()].getClass() != Bomb.class){
+				board[player.x()][player.y()] = null;	
+			}
 			player.move(newX, newY);
 			board[newX][newY] = player;
 		}
 		else{
-			if(board[newX][newY].getType().ordinal() < GameObjectType.PLAYER_4.ordinal()){
-				((Player) board[newX][newY]).dies();
+			if(board[newX][newY].getType().ordinal() <= GameObjectType.ENEMY.ordinal()){
+				((MovingObject) board[newX][newY]).dies();
 				player.dies();
 			}
 			switch(board[newX][newY].getType()){
@@ -343,7 +349,12 @@ public class Board {
 			case FIRE:
 				//if the player steps into the fire
 				player.dies();
-				
+				break;
+//			case BOMB:
+//				board[player.x()][player.y()] = null;
+//				player.move(newX, newY);
+//				board[newX][newY] = player;
+//				break;
 			default:
 				// Don't go there...
 				break;

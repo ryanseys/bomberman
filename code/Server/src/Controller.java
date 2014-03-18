@@ -12,7 +12,6 @@ public class Controller extends Thread{
 	private ServerSender sender;         // The class that handles sending messages
 	private ArrayList<Client> clients;   // List of clients connected to the game
 	private int currClientPid;           // Running count of player clients' IDs
-	private DoubleBuffer dblBuffer;
 	private GameBroadcaster broadcaster;
 
 	public Controller(ServerSender sender, MessageQueue commandQueue){
@@ -109,8 +108,8 @@ public class Controller extends Thread{
 					}
 				}
 			}
-			if(dblBuffer != null){
-				this.dblBuffer.controllerSetState();
+			if(this.game.getBuffer() != null){
+				this.game.getBuffer().updateGameState();
 			}
 		}
 	}
@@ -187,8 +186,7 @@ public class Controller extends Thread{
 			}
 			else{
 				game.startGame();
-				this.dblBuffer = new DoubleBuffer(game);
-				this.broadcaster = new GameBroadcaster(this.sender, this.clients, this.dblBuffer);
+				this.broadcaster = new GameBroadcaster(this.sender, this.clients, game.getBuffer());
 				this.broadcaster.start();
 				broadcastGameState();
 			}
@@ -207,7 +205,6 @@ public class Controller extends Thread{
 			game.resetPlayer(playerID);
 		}
 		else if(buttonPressed.equals("deploy")){
-			//TODO - next milestone
 			game.dropBomb(playerID);
 		}
 		else{

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.concurrent.ThreadFactory;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,6 +18,9 @@ public class Game {
 	private int numPlayers; // Number of players in the game
 	private boolean isStarted; // If the game has started
 	private boolean isFinished; // Indicates if the game has finished
+	private ThreadFactory bombFactory; // Gonna make some bombs hurr
+	private DoubleBuffer dblBuffer;
+
 
 	public Game() {
 		this.isStarted = false;
@@ -24,9 +28,10 @@ public class Game {
 		this.numPlayers = 0;
 		this.powerups = new ArrayList<Powerup>();
 		this.players = new ArrayList<Player>();
+		this.bombFactory = new BombFactory(this);
 	}
 
-	public ArrayList<Player> getPlayers() {
+	public synchronized ArrayList<Player> getPlayers() {
 		return players;
 	}
 
@@ -74,10 +79,11 @@ public class Game {
 
 		board.initBoard(players, enemies, powerups);
 		checkDoors();
+		this.dblBuffer = new DoubleBuffer(this);
 	}
 
 	// Moves the specified player in the specified direction
-	public void playerMoved(int playerID, String direction) {
+	public synchronized void playerMoved(int playerID, String direction) {
 		System.out.println("player: " + playerID + " moved " + direction);
 		Player player = getPlayer(playerID);
 		if (direction.equals("up")) {
@@ -94,7 +100,6 @@ public class Game {
 		checkPowerups();
 		checkDoors();
 		checkPlayerAlive();
-
 	}
 
 	/**
@@ -104,7 +109,7 @@ public class Game {
 		return isFinished;
 	}
 
-	public void endGame() {
+	public synchronized void endGame() {
 		this.isFinished = true;
 	}
 
@@ -114,28 +119,27 @@ public class Game {
 	}
 
 	public void dropBomb(int playerID) {
-		// TODO Auto-generated method stub
 		Player player = getPlayer(playerID);
-		if(player.getCurrentBombs()>0)
-		{
-			synchronized(player)
-			{
+		if(player.getCurrentBombs() > 0){
+			synchronized(player){
 				System.out.println(player.getCurrentBombs());
 				player.setCurrentBombs(player.getCurrentBombs()-1);
 				System.out.println(player.getCurrentBombs());
 			}
 			System.out.println("player: " + playerID + " has dropped a bomb");
-			Bomb bomb=new Bomb(player,this);
+			
+			Bomb bombObj = new Bomb(player, this);
+			Thread bomb = bombFactory.newThread(bombObj);
+			this.board.placeBomb(bombObj, player.x(), player.y());
 			bomb.start();
-
 		}else{
-			System.out.println("player: " + playerID + " has run out of bombs to deploy.");
+			System.out.println("Player: " + player.toString() + " has run out of bombs to deploy.");
 		}
 	}
 
 	// Puts the current state of the game into a
 	// JSON Object
-	public JSONObject toJSON() {
+	public synchronized JSONObject toJSON() {
 		JSONObject game = new JSONObject();
 		game.put("width", this.board.getWidth());
 		game.put("height", this.board.getHeight());
@@ -257,7 +261,7 @@ public class Game {
 	}
 
 	// Checks that all of the players are still alive
-	void checkPlayerAlive() {
+	private void checkPlayerAlive() {
 		int playersAlive = players.size();
 		for (Player player : players) {
 			if (!player.isAlive()) {
@@ -290,4 +294,12 @@ public class Game {
 	public void setNumPlayers(int numPlayers) {
 		this.numPlayers = numPlayers;
 	}
+	
+	/**
+	 * @return the dblBuffer
+	 */
+	public synchronized DoubleBuffer getBuffer() {
+		return dblBuffer;
+	}
+
 }

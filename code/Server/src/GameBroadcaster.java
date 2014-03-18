@@ -21,7 +21,7 @@ public class GameBroadcaster extends Thread {
 			if(state != null){
 				sender.broadcastMessage(clients, state);
 				try {
-					sleep(500);
+					sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
