@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,6 +20,7 @@ public class Game {
 	private int numPlayers; // Number of players in the game
 	private boolean isStarted; // If the game has started
 	private boolean isFinished; // Indicates if the game has finished
+	ThreadFactory bombFactory; // Gonna make some bombs hurr
 
 	public Game() {
 		this.isStarted = false;
@@ -24,6 +28,7 @@ public class Game {
 		this.numPlayers = 0;
 		this.powerups = new ArrayList<Powerup>();
 		this.players = new ArrayList<Player>();
+		this.bombFactory = new BombFactory(this);
 	}
 
 	public ArrayList<Player> getPlayers() {
@@ -114,22 +119,21 @@ public class Game {
 	}
 
 	public void dropBomb(int playerID) {
-		// TODO Auto-generated method stub
 		Player player = getPlayer(playerID);
-		if(player.getCurrentBombs()>0)
-		{
-			synchronized(player)
-			{
+		if(player.getCurrentBombs() > 0){
+			synchronized(player){
 				System.out.println(player.getCurrentBombs());
 				player.setCurrentBombs(player.getCurrentBombs()-1);
 				System.out.println(player.getCurrentBombs());
 			}
 			System.out.println("player: " + playerID + " has dropped a bomb");
-			Bomb bomb=new Bomb(player,this);
+			
+			Bomb bombObj = new Bomb(player, this);
+			Thread bomb = bombFactory.newThread(bombObj);
+			this.board.placeBomb(bombObj, player.x(), player.y());
 			bomb.start();
-
 		}else{
-			System.out.println("player: " + playerID + " has run out of bombs to deploy.");
+			System.out.println("Player: " + player.toString() + " has run out of bombs to deploy.");
 		}
 	}
 

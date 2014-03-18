@@ -1,92 +1,53 @@
-import java.awt.Point;
 
-
-public class Bomb extends Thread {
+public class Bomb extends GameObject implements Runnable {
 	private int range;    // The range this bomb will have
-	private GameObject gameObj;
 	private Player player;
-	private int x,y;
 	private Game game;
-	private PlaceBomb plcbmb;
 	
 	public Bomb(Player player, Game game) {
+		super(GameObjectType.BOMB, player.x(), player.y());
+		this.game = game;
 		this.player=player;
-		x=player.location.x;
-		y=player.location.y;
-		this.game=game;
-		this.range = player.getBombRange();
-		plcbmb=new PlaceBomb(this,x,y);
-		plcbmb.start();
-		
+		this.range = player.getBombRange();		
 	}
 
 	@Override
-	public void run() {
+	public void run(){
 		try {
 			Thread.sleep(3000);
-			plcbmb.kill();
-			synchronized(player){ 
-				player.setCurrentBombs(player.getCurrentBombs()+1);
-			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		game.getBoard().fire(explosionHeightOne(), explosionHeightTwo(), explosionWidthOne(), explosionWidthTwo(), x,y);
+//		game.getBoard().fire(explosionHeightOne(), explosionHeightTwo(), explosionWidthOne(), explosionWidthTwo(), x,y);
+		explode();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		synchronized(player){ 
+			player.setCurrentBombs(player.getCurrentBombs()+1);
+		}
 		game.getBoard().clearFire();
 	}
-	
-	
-	//will check to see if the range is within the limit of the grid in the y direction to the point of the placement of the bomb.
-	private int explosionHeightOne()
-	{	
-		if ( y-range>=0)
-		{
-			return range;
-		}else{
-		return y;
-		}
+	private void explode(){
+		this.game.getBoard().bombExplosion(this);
 	}
-	//will check to see if the range is within the limit of the grid in the y direction to the end of the map from the placement of the bomb.
-	private int explosionHeightTwo()
-	{	if((game.getBoard().getHeight()-y)-range>=0)
-		{
-			return range;
-		}else{
-		return game.getBoard().getHeight()-y;
-		}
-		
+
+	/**
+	 * @return the range
+	 */
+	public int getRange() {
+		return range;
 	}
-	//will check to see if the range is within the limit of the grid in the x direction to the point of the placement of the bomb.
-	private int explosionWidthOne()
-	{	
-		if ( x-range>=0)
-		{
-			return range;
-		}else{
-		return x;
-		}
-	}
-	//will check to see if the range is within the limit of the grid in the x direction to the end of the map from the placement of the bomb.
-	private int explosionWidthTwo()
-	{	
-		if((game.getBoard().getWidth()-x)-range>=0)
-		{
-			return range;
-		}else{
-		return game.getBoard().getWidth()-x;
-		}
-		
-	}
-	public Game getGame()
-	{
-		return game;
+
+	/**
+	 * @param range the range to set
+	 */
+	public void setRange(int range) {
+		this.range = range;
 	}
 
 }

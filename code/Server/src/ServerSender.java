@@ -17,7 +17,7 @@ public class ServerSender {
 	// Send the specified message to all of the clients that are passed in
 	public void broadcastMessage(ArrayList<Client> clients, String message){
 		
-		System.out.println("Broadcast Message: " + message);
+//		System.out.println("Broadcast Message: " + message);
 		for (Client client : clients) {
 			sendClientMsg(client, message);
 		}
@@ -34,7 +34,7 @@ public class ServerSender {
 			return; 
 		}
 		byte[] msg = message.getBytes();
-		System.out.println("Sending message from server: " + message + "to: " + IP + ":" + port);
+//		System.out.println("Sending message from server: " + message + "to: " + IP + ":" + port);
 		DatagramPacket packet = new DatagramPacket(msg, msg.length, IP, port);
 		try {
 			serverSocket.send(packet);

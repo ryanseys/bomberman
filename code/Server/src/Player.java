@@ -8,7 +8,6 @@ public class Player extends MovingObject {
 	private int currentBombs; // Number of bombs that a current player has
 	private int bombRange;    // The range of the bombs that the player drops
 	private int lives;        // Number of lives a player has
-	private boolean isAlive;  // If the player is alive
 	private ArrayList<Powerup> powerups;
 
 	public Player(int player_number, int x, int y) {
@@ -17,7 +16,6 @@ public class Player extends MovingObject {
 		this.currentBombs = 1;
 		this.lives = 1;
 		this.bombRange = 1;
-		this.isAlive = true;
 		powerups = new ArrayList<Powerup>();
 	}
 	
@@ -110,30 +108,14 @@ public class Player extends MovingObject {
 	
 	// If a player lands on a powerup
 	public void powerup() {
-		if(currentBombs+1>maxBombs)
+		if((currentBombs + 1) > maxBombs)
 		{
-			currentBombs=maxBombs;
+			currentBombs = maxBombs;
 		}else{
 			currentBombs++;
 		}
 		this.bombRange++;
 	}
 
-	/**
-	 * @return the isAlive
-	 */
-	public boolean isAlive() {
-		return isAlive;
-	}
-
-	/**
-	 * @param isAlive
-	 *            the isAlive to set
-	 */
-	public void dies() {
-		this.setVisible(false);
-		this.isAlive = false;
-		this.move(-1, -1);
-	}
 
 }

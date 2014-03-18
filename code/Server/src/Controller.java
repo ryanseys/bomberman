@@ -207,7 +207,6 @@ public class Controller extends Thread{
 			game.resetPlayer(playerID);
 		}
 		else if(buttonPressed.equals("deploy")){
-			//TODO - next milestone
 			game.dropBomb(playerID);
 		}
 		else{
