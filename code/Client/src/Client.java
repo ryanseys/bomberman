@@ -138,7 +138,7 @@ public class Client {
 		if(resp.keySet().contains("players")) {
 				powerups = resp.getJSONObject("players").getJSONObject("1").getInt("powerups");
 				bombs = resp.getJSONObject("players").getJSONObject("1").getInt("bombs");
-		}
+		} //works only for one player for now
 	}
 
 	public String getGameBoardTypeLetter(int type) {
