@@ -31,7 +31,7 @@ public class Game {
 		this.bombFactory = new BombFactory(this);
 	}
 
-	public ArrayList<Player> getPlayers() {
+	public synchronized ArrayList<Player> getPlayers() {
 		return players;
 	}
 
@@ -83,7 +83,7 @@ public class Game {
 	}
 
 	// Moves the specified player in the specified direction
-	public void playerMoved(int playerID, String direction) {
+	public synchronized void playerMoved(int playerID, String direction) {
 		System.out.println("player: " + playerID + " moved " + direction);
 		Player player = getPlayer(playerID);
 		if (direction.equals("up")) {
@@ -100,7 +100,6 @@ public class Game {
 		checkPowerups();
 		checkDoors();
 		checkPlayerAlive();
-
 	}
 
 	/**
@@ -110,7 +109,7 @@ public class Game {
 		return isFinished;
 	}
 
-	public void endGame() {
+	public synchronized void endGame() {
 		this.isFinished = true;
 	}
 
@@ -140,7 +139,7 @@ public class Game {
 
 	// Puts the current state of the game into a
 	// JSON Object
-	public JSONObject toJSON() {
+	public synchronized JSONObject toJSON() {
 		JSONObject game = new JSONObject();
 		game.put("width", this.board.getWidth());
 		game.put("height", this.board.getHeight());

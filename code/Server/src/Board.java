@@ -112,31 +112,72 @@ public class Board {
 		//Explode up
 		for(i = 1; i <= b.getRange(); i++){
 			if(onBoard(b.x(), b.y() + i)){
-				fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() + i));
+				if(board[b.x()][b.y() + i] != null){
+					if(board[b.x()][b.y() + i].getType() == GameObjectType.BOX){
+						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else{
+						fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() + i));
+					}
+				}
+				else{
+					fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() + i));
+				}
 			}
 		}
 		//Explode down
 		for(i = 1; i <= b.getRange(); i++){
 			if(onBoard(b.x(), b.y() - i)){
-				fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() - i));
+				if(board[b.x()][b.y() - i] != null){
+					if(board[b.x()][b.y() - i].getType() == GameObjectType.BOX){
+						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else{
+						fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() - i));
+					}
+				}
+				else{
+					fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() - i));
+				}
 			}
 		}
 		//Explode left
 		for(i = 1; i <= b.getRange(); i++){
 			if(onBoard(b.x() - i, b.y())){
-				fire.add(new GameObject(GameObjectType.FIRE, b.x() - i, b.y()));
+				if(board[b.x() - i][b.y()] != null){
+					if(board[b.x() - i][b.y()].getType() == GameObjectType.BOX){
+						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else{
+						fire.add(new GameObject(GameObjectType.FIRE, b.x() - i, b.y()));
+					}
+				}
+				else{
+					fire.add(new GameObject(GameObjectType.FIRE, b.x() - i, b.y()));
+				}
 			}
 		}
 		//Explode right
 		for(i = 1; i <= b.getRange(); i++){
 			if(onBoard(b.x() + i, b.y())){
-				fire.add(new GameObject(GameObjectType.FIRE, b.x() + i, b.y()));
+				if(board[b.x() + i][b.y()] != null){
+					if(board[b.x() + i][b.y()].getType() == GameObjectType.BOX){
+						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else{
+						fire.add(new GameObject(GameObjectType.FIRE, b.x() + i, b.y()));
+					}
+				}
+				else{
+					fire.add(new GameObject(GameObjectType.FIRE, b.x() + i, b.y()));
+				}
 			}
 		}
 		for (GameObject onFire : fire) {
 			if(board[onFire.x()][onFire.y()] != null){
 				if(board[onFire.x()][onFire.y()] instanceof Player || board[onFire.x()][onFire.y()] instanceof Enemy){
 					((MovingObject) board[onFire.x()][onFire.y()]).dies();
+					addFire(onFire);
 				}
 			}
 			else{
@@ -281,8 +322,8 @@ public class Board {
 			board[newX][newY] = player;
 		}
 		else{
-			if(board[newX][newY].getType().ordinal() < GameObjectType.PLAYER_4.ordinal()){
-				((Player) board[newX][newY]).dies();
+			if(board[newX][newY].getType().ordinal() <= GameObjectType.ENEMY.ordinal()){
+				((MovingObject) board[newX][newY]).dies();
 				player.dies();
 			}
 			switch(board[newX][newY].getType()){
@@ -309,11 +350,11 @@ public class Board {
 				//if the player steps into the fire
 				player.dies();
 				break;
-			case BOMB:
-				board[player.x()][player.y()] = null;
-				player.move(newX, newY);
-				board[newX][newY] = player;
-				break;
+//			case BOMB:
+//				board[player.x()][player.y()] = null;
+//				player.move(newX, newY);
+//				board[newX][newY] = player;
+//				break;
 			default:
 				// Don't go there...
 				break;
