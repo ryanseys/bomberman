@@ -15,10 +15,7 @@ public class DoubleBuffer {
 		this.buffer2 = msg.toString();
 		controllerBufferOne = true;
 	}
-	public DoubleBuffer() {
-		controllerBufferOne = true;
-	}
-	void controllerSetState() {
+	void updateGameState() {
 		synchronized (controllerBufferOne){
 			JSONObject msg;
 			if(controllerBufferOne){

@@ -21,6 +21,7 @@ public class Bomb extends GameObject implements Runnable {
 		}
 //		game.getBoard().fire(explosionHeightOne(), explosionHeightTwo(), explosionWidthOne(), explosionWidthTwo(), x,y);
 		explode();
+		broadcastBombChange();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -31,9 +32,15 @@ public class Bomb extends GameObject implements Runnable {
 			player.setCurrentBombs(player.getCurrentBombs()+1);
 		}
 		game.getBoard().clearFire();
+		broadcastBombChange();
 	}
+	
 	private void explode(){
 		this.game.getBoard().bombExplosion(this);
+	}
+	
+	private void broadcastBombChange(){
+		this.game.getBuffer().updateGameState();
 	}
 
 	/**

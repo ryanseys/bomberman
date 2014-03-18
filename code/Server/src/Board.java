@@ -147,67 +147,6 @@ public class Board {
 	public void addFire(GameObject fire){
 		this.board[fire.x()][fire.y()] = fire;
 	}
-	// will kill players in the range of fire
-	public void fire(int heightOne,int heightTwo,int widthOne, int widthTwo,int x,int y)
-	{
-		board[x][y] = new GameObject(GameObjectType.FIRE, x, y);
-		for(int i=0; i<=heightOne;i++)
-		{
-			if(board[x][y-i] instanceof Player)
-			{
-				((Player)board[x][y-i]).dies();
-				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
-			}else if(board[x][y-i] instanceof Enemy){
-				((Enemy)board[x][y-i]).dies();
-				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
-
-			}else if(isEmptySpot(x,y-i)){
-				board[x][y-i]=new GameObject(GameObjectType.FIRE, x, y-i);
-
-			}
-		}
-		for(int i=0; i<=heightTwo;i++)
-		{
-			if(board[x][y+i] instanceof Player)
-			{
-				((Player)board[x][y+i]).dies();
-				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
-			}else if(board[x][y+i] instanceof Enemy){
-				((Enemy)board[x][y+i]).dies();
-				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
-			}else if(isEmptySpot(x,y+i)){
-				board[x][y+i]=new GameObject(GameObjectType.FIRE, x, y+i);
-			}
-		}
-		for(int i=0; i<=widthOne;i++)
-		{
-			if(board[x-i][y] instanceof Player)
-			{
-				((Player)board[x-i][y]).dies();
-				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
-			}else if( board[x-i][y] instanceof Enemy){
-				((Enemy)board[x-i][y]).dies();
-				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
-			}else if(isEmptySpot(x-i,y)){
-				board[x-i][y]=new GameObject(GameObjectType.FIRE, x-i, y);
-			}
-		}
-		for(int i=0; i<=widthTwo;i++)
-		{
-			if(board[x+i][y] instanceof Player)
-			{
-				((Player)board[x+i][y]).dies();
-				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
-			}else if(board[x+i][y] instanceof Enemy){
-				((Enemy)board[x+i][y]).dies();
-				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
-			}else if(isEmptySpot(x+i,y)){
-				board[x+i][y]=new GameObject(GameObjectType.FIRE, x+i, y);
-			}
-		}
-		System.out.print(heightTwo);
-	}
-
 	//clears the fire from the map
 	public synchronized void clearFire()
 	{
@@ -240,6 +179,7 @@ public class Board {
 		}
 	}
 	//checks to see if a given location is empty
+	@SuppressWarnings("unused")
 	private boolean isEmptySpot(int x,int y)
 	{
 		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)
@@ -251,6 +191,7 @@ public class Board {
 		}
 		return false;
 	}
+	@SuppressWarnings("unused")
 	private boolean isWithinBorder(int x, int y)
 	{
 		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)

@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import org.json.JSONArray;
@@ -20,7 +18,9 @@ public class Game {
 	private int numPlayers; // Number of players in the game
 	private boolean isStarted; // If the game has started
 	private boolean isFinished; // Indicates if the game has finished
-	ThreadFactory bombFactory; // Gonna make some bombs hurr
+	private ThreadFactory bombFactory; // Gonna make some bombs hurr
+	private DoubleBuffer dblBuffer;
+
 
 	public Game() {
 		this.isStarted = false;
@@ -79,6 +79,7 @@ public class Game {
 
 		board.initBoard(players, enemies, powerups);
 		checkDoors();
+		this.dblBuffer = new DoubleBuffer(this);
 	}
 
 	// Moves the specified player in the specified direction
@@ -261,7 +262,7 @@ public class Game {
 	}
 
 	// Checks that all of the players are still alive
-	void checkPlayerAlive() {
+	private void checkPlayerAlive() {
 		int playersAlive = players.size();
 		for (Player player : players) {
 			if (!player.isAlive()) {
@@ -294,4 +295,12 @@ public class Game {
 	public void setNumPlayers(int numPlayers) {
 		this.numPlayers = numPlayers;
 	}
+	
+	/**
+	 * @return the dblBuffer
+	 */
+	public synchronized DoubleBuffer getBuffer() {
+		return dblBuffer;
+	}
+
 }
