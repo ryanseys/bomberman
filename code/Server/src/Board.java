@@ -100,36 +100,22 @@ public class Board {
 		}
 	}
 	//place a bomb behind the user
-	public synchronized Point placeBomb(Player player)
+	public synchronized boolean placeBomb(int x, int y)
 	{
-		int x=player.x(),y=player.y();
 		GameObject bombObj;
-		if(isEmptySpot(x+1,y))
+		if(isEmptySpot(x,y))
 		{
-			bombObj= new GameObject(GameObjectType.BOMB, x+1, y);
-			board[x+1][y] = bombObj;
-			return new Point(x+1,y);
-		} else if(isEmptySpot(x,y+1)){
-			bombObj= new GameObject(GameObjectType.BOMB, x, y+1);
-			board[x][y+1] = bombObj;
-			return new Point(x,y+1);
-		} else if (isEmptySpot(x-1,y)){
-			bombObj= new GameObject(GameObjectType.BOMB, x-1, y);
-			board[x-1][y] = bombObj;
-			return new Point(x-1,y);
-		} else if (isEmptySpot(x,y-1)){
-			bombObj= new GameObject(GameObjectType.BOMB, x, y-1);
-			board[x][y-1] = bombObj;
-			return new Point(x,y-1);
-		} else{
-			return null;
+			bombObj= new GameObject(GameObjectType.BOMB, x, y);
+			board[x][y] = bombObj;
+			return true;
+		}else{
+			return false;
 		}
 
 	}
 	// will kill players in the range of fire
-	public synchronized void fire(int heightOne,int heightTwo,int widthOne, int widthTwo,Point bombPlace)
+	public void fire(int heightOne,int heightTwo,int widthOne, int widthTwo,int x,int y)
 	{
-		int x=bombPlace.x,y=bombPlace.y;
 		board[x][y] = new GameObject(GameObjectType.FIRE, x, y);
 		for(int i=0; i<=heightOne;i++)
 		{
@@ -188,6 +174,7 @@ public class Board {
 		System.out.print(heightTwo);
 	}
 	
+	//clears the fire from the map
 	public synchronized void clearFire()
 	{
 		for(int i=0;i<MAX_WIDTH; i++)
@@ -218,6 +205,7 @@ public class Board {
 			board[box.x()][box.y()] = box;
 		}
 	}
+	//checks to see if a given location is empty
 	private boolean isEmptySpot(int x,int y)
 	{
 		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)
@@ -343,7 +331,10 @@ public class Board {
 			case FIRE:
 				//if the player steps into the fire
 				player.dies();
-				
+			case BOMB:
+				//board[player.x()][player.y()] = null;
+				//player.move(newX, newY);
+				//board[newX][newY] = player;
 			default:
 				// Don't go there...
 				break;
