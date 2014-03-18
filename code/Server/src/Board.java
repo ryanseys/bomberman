@@ -332,9 +332,9 @@ public class Board {
 				//if the player steps into the fire
 				player.dies();
 			case BOMB:
-				//board[player.x()][player.y()] = null;
-				//player.move(newX, newY);
-				//board[newX][newY] = player;
+				board[player.x()][player.y()] = null;
+				player.move(newX, newY);
+				board[newX][newY] = player;
 			default:
 				// Don't go there...
 				break;
