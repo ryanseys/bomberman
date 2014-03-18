@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,7 +39,7 @@ public class ClientView {
 	JButton button;
 	JPanel view;
 	JLabel gameOverLabel;
-	JLabel powerups;
+	JLabel player1,powerups, bombs;
 	JFrame frame;
 	JMenuBar menubar;
 	JMenu fileMenu;
@@ -198,18 +199,29 @@ public class ClientView {
 
 		frame.add(background);
 		panel.add(textarea);
-
+		
 		frame.setSize(380, 450);
 		frame.setResizable(false);
 		frame.setVisible(true);
 
+		player1 = new JLabel();
+		player1.setAlignmentX(JLabel.LEFT);
+		player1.setFont(font);
+		panel.add(player1);
+		player1.setVisible(false);
+	
 		gameOverLabel = new JLabel(new ImageIcon("gameover.png"));
-
 		frame.add(gameOverLabel);
 
-		/*powerups = new JLabel();
-		powerups.setFont(font);
-		panel.add(powerups);*/
+		powerups = new JLabel();
+		powerups.setAlignmentX(JLabel.LEFT);
+		powerups.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+		panel.add(powerups);
+		
+		bombs = new JLabel();
+		bombs.setAlignmentX(JLabel.LEFT);
+		bombs.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
+		panel.add(bombs);
 
 		// Handle keyboard input
 		view = ((JPanel) panel);
@@ -232,10 +244,6 @@ public class ClientView {
 		am.put("SpaceBar", new buttonAction("SpaceBar"));
 	}
 	
-	/*public void updateDisplay()
-	{
-		powerups.setText("Powerups: " + Integer.toString(client.getPowerups()));
-	}*/
 
 	public class buttonAction extends AbstractAction {
 
@@ -277,6 +285,8 @@ public class ClientView {
 			lMenuItem.setEnabled(true);
 			lMenuItem.setVisible(true);
 			gameOverLabel.setVisible(false);
+			powerups.setVisible(false);
+			bombs.setVisible(false);
 		}
 		else if((playerid < 0) && !client.isGameOn() && !client.isGameOver()) {
 			frame.setTitle("Bomberman - Spectator");
@@ -287,13 +297,18 @@ public class ClientView {
 			lMenuItem.setEnabled(false);
 			lMenuItem.setVisible(false);
 			gameOverLabel.setVisible(false);
+			powerups.setVisible(false);
+			bombs.setVisible(false);
 		}
 		else if((playerid > 0)  && client.isGameOn()) {
 			frame.setTitle("Bomberman - Player " + playerid + " - In Game");
 			background.setVisible(false);
 			textarea.setVisible(true);
 			gameOverLabel.setVisible(false);
-			//powerups.setVisible(true);
+			powerups.setVisible(true);
+			powerups.setText("Powerups: " + client.getPowerups());
+			bombs.setVisible(true);
+			bombs.setText("Bombs: " + client.getBombs());
 			connMenuItem.setText("End Game");
 			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(true);
@@ -301,28 +316,32 @@ public class ClientView {
 			lMenuItem.setToolTipText("Save");
 			lMenuItem.setEnabled(true);
 			lMenuItem.setVisible(true);
-			//updateDisplay();
-
 		}
 		else if((playerid < 0)  && client.isGameOn()) {
 			frame.setTitle("Bomberman - Spectator");
 			background.setVisible(false);
 			textarea.setVisible(true);
 			gameOverLabel.setVisible(false);
-			//powerups.setVisible(true);
+			powerups.setVisible(true);
+			bombs.setVisible(true);
+			player1.setVisible(true);
 			connMenuItem.setText("End Game");
 			connMenuItem.setToolTipText("End Game");
 			connMenuItem.setEnabled(false);
 			connMenuItem.setVisible(false);
 			lMenuItem.setEnabled(false);
 			lMenuItem.setVisible(false);
+			player1.setText("Player 1");
+			powerups.setText("Powerups: " + client.getPowerups());
+			bombs.setText("Bombs: " + client.getBombs());
 		}
 		else if(((playerid > 0)) && (client.isGameOver())) {
 			frame.setTitle("Bomberman - Player " + playerid + " - Game Over");
 			textarea.setVisible(false);
 			background.setVisible(false);
 			gameOverLabel.setVisible(true);
-			//powerups.setVisible(false);
+			powerups.setVisible(false);
+			bombs.setVisible(false);
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(true);
@@ -335,13 +354,15 @@ public class ClientView {
 			frame.setTitle("Bomberman - Game Over");
 			textarea.setVisible(false);
 			gameOverLabel.setVisible(true);
-			//powerups.setVisible(false);
+			powerups.setVisible(false);
+			bombs.setVisible(false);
 			connMenuItem.setText("Start New Game");
 			connMenuItem.setToolTipText("Start New Game");
 			connMenuItem.setEnabled(false);
 			connMenuItem.setVisible(false);
 			lMenuItem.setEnabled(false);
 			lMenuItem.setVisible(false);
+			player1.setVisible(false);
 		}
 
 		// always render the game board

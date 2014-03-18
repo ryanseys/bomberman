@@ -13,7 +13,7 @@ public class Client {
 	private ClientSender cs;
 	private DatagramSocket dsocket;
 	private int playerid = 0;
-	private int powerups;
+	private int powerups, bombs;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
 	private boolean isDebug = false;
@@ -134,7 +134,11 @@ public class Client {
 		if(resp.keySet().contains("game")) {
 			isGameOn = true;
 			this.game = resp.getJSONObject("game");
-		}	
+		}
+		if(resp.keySet().contains("players")) {
+				powerups = resp.getJSONObject("players").getJSONObject("1").getInt("powerups");
+				bombs = resp.getJSONObject("players").getJSONObject("1").getInt("bombs");
+		}
 	}
 
 	public String getGameBoardTypeLetter(int type) {
@@ -199,6 +203,10 @@ public class Client {
 
 	public int getPowerups() {
 		return powerups;
+	}
+	
+	public int getBombs() {
+		return bombs;
 	}
 
 	/**
