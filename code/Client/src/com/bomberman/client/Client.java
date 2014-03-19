@@ -238,7 +238,10 @@ public class Client {
 	}
 
 	public void loadGame(String board) {
-		send(board);
+		JSONObject game = new JSONObject();
+		game.put("game", new JSONObject(board));
+		game.put("command", "load");
+		send(game.toString());
 	}
 
 	public String getBoardToSave(){
