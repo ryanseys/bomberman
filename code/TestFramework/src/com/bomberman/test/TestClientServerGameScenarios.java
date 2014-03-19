@@ -205,7 +205,6 @@ public class TestClientServerGameScenarios {
 		String resp = c1.receive();
 
 		// should be game over
-		System.out.println("RESP: " + resp);
 		JSONObject expectedResp = new JSONObject();
 		expectedResp.put("type", "game_over");
 
@@ -221,32 +220,22 @@ public class TestClientServerGameScenarios {
 	@Test
 	public void testClientMoveIntoBoardLimitDown() {
 		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge_down.json")));
+
 		// connect
 		c1.connect("player");
-		c1.receiveNoBroadcasts();
+		c1.setState(c1.receiveNoBroadcasts());
 
 		// load board
-		JSONObject msg = new JSONObject();
-		msg.put("command", "load");
-		msg.put("game", board);
-		c1.send(msg.toString());
-		c1.receiveNoBroadcasts();
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
 
 		//start
-		msg = new JSONObject();
-		msg.put("command", "button");
-		msg.put("pid", 1);
-		msg.put("button", "start");
-		c1.send(msg.toString());
+		c1.startGame();
 
 		c1.receive();
 
 		//move down
-		msg = new JSONObject();
-		msg.put("command", "move");
-		msg.put("pid", 1);
-		msg.put("direction", "down");
-		c1.send(msg.toString());
+		c1.move(Action.DOWN);
 		String resp = c1.receive();
 
 		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), board.toString());
@@ -255,32 +244,22 @@ public class TestClientServerGameScenarios {
 	@Test
 	public void testClientMoveIntoBoardLimitLeft() {
 		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge_left.json")));
+
 		// connect
 		c1.connect("player");
-		c1.receiveNoBroadcasts();
+		c1.setState(c1.receiveNoBroadcasts());
 
 		// load board
-		JSONObject msg = new JSONObject();
-		msg.put("command", "load");
-		msg.put("game", board);
-		c1.send(msg.toString());
-		c1.receiveNoBroadcasts();
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
 
 		//start
-		msg = new JSONObject();
-		msg.put("command", "button");
-		msg.put("pid", 1);
-		msg.put("button", "start");
-		c1.send(msg.toString());
+		c1.startGame();
 
 		c1.receive();
 
 		//move down
-		msg = new JSONObject();
-		msg.put("command", "move");
-		msg.put("pid", 1);
-		msg.put("direction", "left");
-		c1.send(msg.toString());
+		c1.move(Action.LEFT);
 		String resp = c1.receive();
 
 		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), board.toString());
@@ -291,30 +270,19 @@ public class TestClientServerGameScenarios {
 		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge_up.json")));
 		// connect
 		c1.connect("player");
-		c1.receiveNoBroadcasts();
+		c1.setState(c1.receiveNoBroadcasts());
 
 		// load board
-		JSONObject msg = new JSONObject();
-		msg.put("command", "load");
-		msg.put("game", board);
-		c1.send(msg.toString());
-		c1.receiveNoBroadcasts();
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
 
 		//start
-		msg = new JSONObject();
-		msg.put("command", "button");
-		msg.put("pid", 1);
-		msg.put("button", "start");
-		c1.send(msg.toString());
+		c1.startGame();
 
 		c1.receive();
 
 		//move down
-		msg = new JSONObject();
-		msg.put("command", "move");
-		msg.put("pid", 1);
-		msg.put("direction", "up");
-		c1.send(msg.toString());
+		c1.move(Action.UP);
 		String resp = c1.receive();
 
 		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), board.toString());
@@ -323,33 +291,22 @@ public class TestClientServerGameScenarios {
 	@Test
 	public void testClientMoveIntoBoardLimitRight() {
 		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge_right.json")));
+
 		// connect
 		c1.connect("player");
-		c1.receiveNoBroadcasts();
+		c1.setState(c1.receiveNoBroadcasts());
 
 		// load board
-		JSONObject msg = new JSONObject();
-		msg.put("command", "load");
-		msg.put("game", board);
-		c1.send(msg.toString());
-		c1.receiveNoBroadcasts();
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
 
 		//start
-		msg = new JSONObject();
-		msg.put("command", "button");
-		msg.put("pid", 1);
-		msg.put("button", "start");
-		c1.send(msg.toString());
+		c1.startGame();
 
 		c1.receive();
 
 		//move down
-		msg = new JSONObject();
-		msg.put("command", "move");
-		msg.put("pid", 1);
-		msg.put("direction", "right");
-		c1.send(msg.toString());
-//		c1.flushMessages();
+		c1.move(Action.RIGHT);
 		String resp = c1.receive();
 
 		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), board.toString());
