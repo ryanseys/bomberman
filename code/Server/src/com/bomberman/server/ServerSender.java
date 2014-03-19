@@ -39,7 +39,7 @@ public class ServerSender {
 		try {
 			serverSocket.send(packet);
 		} catch (IOException e) {
-			System.out.println("Error broadcasting message");
+			System.out.println("Error broadcasting message: " + e.toString());
 			return;
 		}
 	}

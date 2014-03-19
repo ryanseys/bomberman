@@ -76,6 +76,7 @@ public class Server extends Thread {
 				addMessage(dp); // add message to message queue
 			} catch (IOException e) {
 				// socket closed most likely
+
 				return;
 			}
 		}

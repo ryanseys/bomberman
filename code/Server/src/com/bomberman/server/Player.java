@@ -1,7 +1,4 @@
 package com.bomberman.server;
-import java.util.ArrayList;
-import java.util.Collection;
-
 
 
 // Object to simulate the players
@@ -19,7 +16,7 @@ public class Player extends MovingObject {
 		this.lives = 1;
 		this.bombRange = 1;
 	}
-	
+
 	public synchronized int numPowerups(){
 		return numPowerups;
 	}
@@ -83,7 +80,7 @@ public class Player extends MovingObject {
 		}
 		return gameObj;
 	}
-	
+
 	// If a player lands on a powerup
 	public synchronized void powerup() {
 		this.incrementBombs();
