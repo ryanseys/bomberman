@@ -5,6 +5,8 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -52,6 +54,12 @@ public class ClientView {
 		this.client = c;
 		frame = new JFrame("Bomberman");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter() {
+		    @Override
+		    public void windowClosing(WindowEvent e) {
+		        client.endGame();
+		    }
+		});
 		menubar = new JMenuBar();
 		fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
@@ -198,7 +206,7 @@ public class ClientView {
 
 		frame.add(background);
 		panel.add(textarea);
-		
+
 		frame.setSize(380, 450);
 		frame.setResizable(false);
 		frame.setVisible(true);
@@ -208,7 +216,7 @@ public class ClientView {
 		player1.setFont(font);
 		panel.add(player1);
 		player1.setVisible(false);
-	
+
 		gameOverLabel = new JLabel(new ImageIcon("gameover.png"));
 		frame.add(gameOverLabel);
 
@@ -216,7 +224,7 @@ public class ClientView {
 		powerups.setAlignmentX(JLabel.LEFT);
 		powerups.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
 		panel.add(powerups);
-		
+
 		bombs = new JLabel();
 		bombs.setAlignmentX(JLabel.LEFT);
 		bombs.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
@@ -242,7 +250,7 @@ public class ClientView {
 		am.put("DownArrow", new buttonAction("DownArrow"));
 		am.put("SpaceBar", new buttonAction("SpaceBar"));
 	}
-	
+
 
 	public class buttonAction extends AbstractAction {
 

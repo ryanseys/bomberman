@@ -193,7 +193,7 @@ public class Controller extends Thread{
 		}
 		else if(buttonPressed.equals("end")){
 			if(game.isStarted()){
-				game.endGame();
+				gameOver();
 			}
 			else{
 				System.out.println("Cannot end game. It has not yet started.");
@@ -232,7 +232,7 @@ public class Controller extends Thread{
 		for(Player p : game.getPlayers()) {
 			String pid = Integer.toString(p.getType().ordinal());
 			JSONObject playerData = new JSONObject();
-			playerData.put("powerups", p.getPowerups()); 
+			playerData.put("powerups", p.getPowerups());
 			playerData.put("bombs", p.getCurrentBombs());
 			players.put(pid, playerData);
 		}
