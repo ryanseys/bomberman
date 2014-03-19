@@ -302,7 +302,6 @@ public class TestClientServerGameScenarios {
 
 		//start
 		c1.startGame();
-
 		c1.receive();
 
 		//move down
@@ -316,78 +315,53 @@ public class TestClientServerGameScenarios {
 	public void testClientPickUpItem() {
 		JSONObject boardBefore = new JSONObject(getFileContents(new File("gameboards/game_pick_up_item_before.json")));
 		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_pick_up_item_after.json")));
+
 		// connect
 		c1.connect("player");
-		c1.receiveNoBroadcasts();
+		c1.setState(c1.receiveNoBroadcasts());
 
 		// load board
-		JSONObject msg = new JSONObject();
-		msg.put("command", "load");
-		msg.put("game", boardBefore);
-		c1.send(msg.toString());
-		c1.receiveNoBroadcasts();
+		c1.loadGame(boardBefore.toString());
+		c1.setState(c1.receiveNoBroadcasts());
 
 		//start
-		msg = new JSONObject();
-		msg.put("command", "button");
-		msg.put("pid", 1);
-		msg.put("button", "start");
-		c1.send(msg.toString());
-
+		c1.startGame();
 		c1.receive();
 
-		//move up
-		msg = new JSONObject();
-		msg.put("command", "move");
-		msg.put("pid", 1);
-		msg.put("direction", "up");
-		c1.send(msg.toString());
+		//move UP
+		c1.move(Action.UP);
 		String resp = c1.receive();
 
-		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), boardAfter.toString());
+		assertEquals((new JSONObject(resp)).get("game").toString(), boardAfter.toString());
 	}
 
 	@Test
 	public void testClientTwoPlayersColliding() {
 		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_two_players.json")));
 		c1.connect("player");
-		c1.receiveNoBroadcasts();
+		c1.setState(c1.receiveNoBroadcasts());
 		c2.connect("player");
-		c2.receiveNoBroadcasts();
+		c2.setState(c2.receiveNoBroadcasts());
 
-		JSONObject msg = new JSONObject();
-		msg.put("command", "load");
-		msg.put("game", board);
-		c1.send(msg.toString());
-		c1.receiveNoBroadcasts();
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
 
-		msg = new JSONObject();
-		msg.put("command", "button");
-		msg.put("pid", 1);
-		msg.put("button", "start");
-		c1.send(msg.toString());
+		//start
+		c1.startGame();
 		c1.receive();
 
-		//move player 1
-		msg = new JSONObject();
-		msg.put("command", "move");
-		msg.put("pid", 1);
-		msg.put("direction", "down");
-		c1.send(msg.toString());
+		//move down
+		c1.move(Action.DOWN);
+		c1.receive();
 
-		// move player 2
-		msg = new JSONObject();
-		msg.put("command", "move");
-		msg.put("pid", 2);
-		msg.put("direction", "up");
-
-		c2.send(msg.toString());
+		//move p2 UP
+		c2.move(Action.UP);
+		c2.receive();
 
 		c1.flushMessages();
 		String resp = c1.receive();
 
 		// should be game over
-		System.out.println("RESP: " + resp);
 		JSONObject expectedResp = new JSONObject();
 		expectedResp.put("type", "game_over");
 
