@@ -45,6 +45,10 @@ public class Client {
 		startGame();
 	}
 
+	public void flushMessages() {
+		receivedMsgs.clear();
+	}
+
 	public void endGame() {
 		if(isGameOn){
 			JSONObject endMsg = new JSONObject();
