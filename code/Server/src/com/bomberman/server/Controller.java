@@ -97,9 +97,6 @@ public class Controller extends Thread{
 						if(command.equals("move")) {
 							if(game.isStarted()) {
 								game.playerMoved(playerID, msg.getString("direction"));
-								if(!game.isFinished()) {
-									broadcastGameState();
-								}
 							}
 							else{
 								System.out.println("Cannot move, game has not started yet");
@@ -194,7 +191,6 @@ public class Controller extends Thread{
 				game.startGame();
 				this.broadcaster = new GameBroadcaster(this.sender, this.clients, game.getBuffer());
 				this.broadcaster.start();
-				broadcastGameState();
 			}
 		}
 		else if(buttonPressed.equals("end")) {
@@ -231,26 +227,6 @@ public class Controller extends Thread{
 		String resp = isSuccess?"Success":"Failure";
 		response.put("resp", resp);
 		sender.sendMsg(response.toString(), addr, port);
-	}
-
-	// Send the current game state to all of the clients that are connected
-	private void broadcastGameState(){
-		JSONObject msg = new JSONObject();
-		msg.put("game", game.toJSON());
-		msg.put("type", "broadcast");
-
-		JSONObject players = new JSONObject();
-		for(Player p : game.getPlayers()) {
-			String pid = Integer.toString(p.getType().ordinal());
-			JSONObject playerData = new JSONObject();
-			playerData.put("powerups", p.numPowerups());
-			playerData.put("bombs", p.getCurrentBombs());
-			players.put(pid, playerData);
-		}
-		msg.put("players", players);
-		//
-		System.out.println(msg.get("game"));
-		sender.broadcastMessage(clients, msg.toString());
 	}
 
 	// Get a specific client based on their ID
