@@ -183,10 +183,43 @@ public class TestClientServerGameScenarios {
 		fail("Not implemented.");
 	}
 
-	@Ignore
 	@Test
 	public void testClientExitDoor() {
-		fail("Not implemented.");
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_beside_door.json")));
+		c1.connect("player");
+		c1.receiveNoBroadcasts();
+
+		// load board
+		JSONObject msg = new JSONObject();
+		msg.put("command", "load");
+		msg.put("game", board);
+		c1.send(msg.toString());
+		c1.receiveNoBroadcasts();
+
+		// start game
+		msg = new JSONObject();
+		msg.put("command", "button");
+		msg.put("pid", 1);
+		msg.put("button", "start");
+		c1.send(msg.toString());
+		c1.receive(); // receive new board state
+
+		// move up
+		msg = new JSONObject();
+		msg.put("command", "move");
+		msg.put("pid", 1);
+		msg.put("direction", "up");
+		c1.send(msg.toString());
+
+		c1.flushMessages();
+		String resp = c1.receive();
+
+		// should be game over
+		System.out.println("RESP: " + resp);
+		JSONObject expectedResp = new JSONObject();
+		expectedResp.put("type", "game_over");
+
+		assertEquals(resp.trim(), expectedResp.toString());
 	}
 
 	@Ignore
