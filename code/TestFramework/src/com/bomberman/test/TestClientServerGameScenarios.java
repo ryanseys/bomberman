@@ -196,8 +196,8 @@ public class TestClientServerGameScenarios {
 	}
 
 	@Test
-	public void testClientMoveIntoBoardLimit() {
-		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge.json")));
+	public void testClientMoveIntoBoardLimitDown() {
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge_down.json")));
 		// connect
 		c1.connect("player");
 		c1.receiveNoBroadcasts();
@@ -223,6 +223,111 @@ public class TestClientServerGameScenarios {
 		msg.put("command", "move");
 		msg.put("pid", 1);
 		msg.put("direction", "down");
+		c1.send(msg.toString());
+		c1.flushMessages();
+		String resp = c1.receive();
+
+		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), board.toString());
+	}
+
+	@Test
+	public void testClientMoveIntoBoardLimitLeft() {
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge_left.json")));
+		// connect
+		c1.connect("player");
+		c1.receiveNoBroadcasts();
+
+		// load board
+		JSONObject msg = new JSONObject();
+		msg.put("command", "load");
+		msg.put("game", board);
+		c1.send(msg.toString());
+		c1.receiveNoBroadcasts();
+
+		//start
+		msg = new JSONObject();
+		msg.put("command", "button");
+		msg.put("pid", 1);
+		msg.put("button", "start");
+		c1.send(msg.toString());
+
+		c1.receive();
+
+		//move down
+		msg = new JSONObject();
+		msg.put("command", "move");
+		msg.put("pid", 1);
+		msg.put("direction", "left");
+		c1.send(msg.toString());
+		c1.flushMessages();
+		String resp = c1.receive();
+
+		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), board.toString());
+	}
+
+	@Test
+	public void testClientMoveIntoBoardLimitUp() {
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge_up.json")));
+		// connect
+		c1.connect("player");
+		c1.receiveNoBroadcasts();
+
+		// load board
+		JSONObject msg = new JSONObject();
+		msg.put("command", "load");
+		msg.put("game", board);
+		c1.send(msg.toString());
+		c1.receiveNoBroadcasts();
+
+		//start
+		msg = new JSONObject();
+		msg.put("command", "button");
+		msg.put("pid", 1);
+		msg.put("button", "start");
+		c1.send(msg.toString());
+
+		c1.receive();
+
+		//move down
+		msg = new JSONObject();
+		msg.put("command", "move");
+		msg.put("pid", 1);
+		msg.put("direction", "up");
+		c1.send(msg.toString());
+		c1.flushMessages();
+		String resp = c1.receive();
+
+		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), board.toString());
+	}
+
+	@Test
+	public void testClientMoveIntoBoardLimitRight() {
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_move_into_game_edge_right.json")));
+		// connect
+		c1.connect("player");
+		c1.receiveNoBroadcasts();
+
+		// load board
+		JSONObject msg = new JSONObject();
+		msg.put("command", "load");
+		msg.put("game", board);
+		c1.send(msg.toString());
+		c1.receiveNoBroadcasts();
+
+		//start
+		msg = new JSONObject();
+		msg.put("command", "button");
+		msg.put("pid", 1);
+		msg.put("button", "start");
+		c1.send(msg.toString());
+
+		c1.receive();
+
+		//move down
+		msg = new JSONObject();
+		msg.put("command", "move");
+		msg.put("pid", 1);
+		msg.put("direction", "right");
 		c1.send(msg.toString());
 		c1.flushMessages();
 		String resp = c1.receive();
