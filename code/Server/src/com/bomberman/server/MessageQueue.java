@@ -24,7 +24,10 @@ public class MessageQueue {
 	public synchronized DatagramPacket pop() throws InterruptedException {
 		while(messageQueue.isEmpty()){
 			System.out.println("Controller waiting in MessageQueue");
-			wait();
+			wait(1000);
+			if(messageQueue.isEmpty()){
+				return(null);
+			}
 		}
 		return messageQueue.pop();
 	}

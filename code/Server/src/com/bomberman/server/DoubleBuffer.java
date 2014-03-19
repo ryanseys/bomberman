@@ -19,17 +19,28 @@ public class DoubleBuffer {
 
 	void updateGameState() {
 		synchronized (controllerBufferOne){
-			JSONObject msg;
-			if(controllerBufferOne){
-				msg = new JSONObject();
+			JSONObject msg = new JSONObject();
+			if(!game.isFinished()){
 				msg.put("game", game.toJSON());
 				msg.put("type", "broadcast");
+
+				JSONObject players = new JSONObject();
+				for(Player p : game.getPlayers()) {
+					String pid = Integer.toString(p.getType().ordinal());
+					JSONObject playerData = new JSONObject();
+					playerData.put("powerups", p.numPowerups());
+					playerData.put("bombs", p.getCurrentBombs());
+					players.put(pid, playerData);
+				}
+				msg.put("players", players);
+			}
+			else{
+				msg.put("type", "game_over");
+			}
+			if(controllerBufferOne){
 				buffer1 = msg.toString();
 				controllerBufferOne = false;
 			}else{
-				msg = new JSONObject();
-				msg.put("game", game.toJSON());
-				msg.put("type", "broadcast");
 				buffer2 = msg.toString();
 				controllerBufferOne = true;
 			}

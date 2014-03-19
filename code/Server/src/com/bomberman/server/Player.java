@@ -1,67 +1,44 @@
 package com.bomberman.server;
 import java.util.ArrayList;
+import java.util.Collection;
 
 
 
 // Object to simulate the players
 public class Player extends MovingObject {
-	private int maxBombs;     // Max number of bombs a player can hold
 	private int currentBombs; // Number of bombs that a current player has
+	private int maxBombs; // Number of bombs that a current player has
 	private int bombRange;    // The range of the bombs that the player drops
 	private int lives;        // Number of lives a player has
-	private ArrayList<Powerup> powerups;
+	private int numPowerups = 0;
 
 	public Player(int player_number, int x, int y) {
 		super(playerNumToGameObj(player_number), x, y);
-		this.maxBombs = 10;
 		this.currentBombs = 1;
+		this.maxBombs = 10;
 		this.lives = 1;
 		this.bombRange = 1;
-		powerups = new ArrayList<Powerup>();
 	}
 	
-	public void addPowerup(Powerup p){
-		powerups.add(p);
-	}
-	
-	public int getPowerups(){
-		return powerups.size();
-	}
-
-	/**
-	 * @return the maxBombs
-	 */
-	public int getMaxBombs() {
-		return maxBombs;
-	}
-
-	/**
-	 * @param maxBombs
-	 *            the maxBombs to set
-	 */
-	public void setMaxBombs(int maxBombs) {
-		this.maxBombs = maxBombs;
+	public synchronized int numPowerups(){
+		return numPowerups;
 	}
 
 	/**
 	 * @return the currentBombs
 	 */
-	public int getCurrentBombs() {
-		return currentBombs;
-	}
 
-	/**
-	 * @param currentBombs
-	 *            the currentBombs to set
-	 */
-	public void setCurrentBombs(int currentBombs) {
-		this.currentBombs = currentBombs;
+	public synchronized void dropBomb(){
+		this.currentBombs--;
+	}
+	public boolean hasBombs(){
+		return this.currentBombs > 0;
 	}
 
 	/**
 	 * @return the lives
 	 */
-	public int getLives() {
+	public synchronized int getLives() {
 		return lives;
 	}
 
@@ -69,14 +46,14 @@ public class Player extends MovingObject {
 	 * @param lives
 	 *            the lives to set
 	 */
-	public void setLives(int lives) {
+	public synchronized void setLives(int lives) {
 		this.lives = lives;
 	}
 
 	/**
 	 * @return the bombRange
 	 */
-	public int getBombRange() {
+	public synchronized int getBombRange() {
 		return bombRange;
 	}
 
@@ -84,7 +61,7 @@ public class Player extends MovingObject {
 	 * @param bombRange
 	 *            the bombRange to set
 	 */
-	public void setBombRange(int bombRange) {
+	public synchronized void setBombRange(int bombRange) {
 		this.bombRange = bombRange;
 	}
 
@@ -108,14 +85,19 @@ public class Player extends MovingObject {
 	}
 	
 	// If a player lands on a powerup
-	public void powerup() {
-		if((currentBombs + 1) > maxBombs)
-		{
-			currentBombs = maxBombs;
-		}else{
+	public synchronized void powerup() {
+		this.incrementBombs();
+		this.numPowerups++;
+		this.bombRange++;
+	}
+	public void incrementBombs(){
+		if(currentBombs < maxBombs){
 			currentBombs++;
 		}
-		this.bombRange++;
+	}
+
+	public int getCurrentBombs() {
+		return this.currentBombs;
 	}
 
 

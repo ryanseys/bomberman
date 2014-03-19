@@ -36,11 +36,15 @@ public class Controller extends Thread{
 				gameOver();
 			}
 			try {
-				datagramMsg = commandQueue.pop();
+				while(datagramMsg ==  null){
+					if(game.isFinished()) {
+						gameOver();
+					}
+					datagramMsg = commandQueue.pop();
+				}
 			} catch (Exception e) {
 				System.out.println("Error in controller retreiving message from command queue");
 			}
-
 			String message = new String(datagramMsg.getData());
 			JSONObject msg = null;
 			try {
@@ -111,7 +115,7 @@ public class Controller extends Thread{
 				}
 			}
 			if(this.game.getBuffer() != null){
-				this.game.getBuffer().updateGameState();
+//				this.game.getBuffer().updateGameState();
 			}
 		}
 	}
@@ -207,7 +211,11 @@ public class Controller extends Thread{
 			game.resetPlayer(playerID);
 		}
 		else if(buttonPressed.equals("deploy")) {
-			game.dropBomb(playerID);
+			if(game != null){
+				if(game.isStarted() && !game.isFinished()){
+					game.dropBomb(playerID);
+				}
+			}
 		}
 		else {
 			System.out.println("Invalid JSON object sent from the client.");
@@ -235,7 +243,7 @@ public class Controller extends Thread{
 		for(Player p : game.getPlayers()) {
 			String pid = Integer.toString(p.getType().ordinal());
 			JSONObject playerData = new JSONObject();
-			playerData.put("powerups", p.getPowerups());
+			playerData.put("powerups", p.numPowerups());
 			playerData.put("bombs", p.getCurrentBombs());
 			players.put(pid, playerData);
 		}

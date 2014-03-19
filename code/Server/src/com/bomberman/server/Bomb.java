@@ -23,7 +23,7 @@ public class Bomb extends GameObject implements Runnable {
 		}
 //		game.getBoard().fire(explosionHeightOne(), explosionHeightTwo(), explosionWidthOne(), explosionWidthTwo(), x,y);
 		explode();
-		broadcastBombChange();
+		game.checkGameStatus();
 
 		try {
 			Thread.sleep(1000);
@@ -32,20 +32,16 @@ public class Bomb extends GameObject implements Runnable {
 		}
 
 		synchronized(player){
-			player.setCurrentBombs(player.getCurrentBombs()+1);
+			player.incrementBombs();
 		}
 		game.getBoard().clearFire();
-		broadcastBombChange();
+		game.checkGameStatus();
 	}
 
 	private void explode(){
-		this.game.getBoard().bombExplosion(this);
+		this.game.bombExplosion(this);
+		game.checkGameStatus();
 	}
-
-	private void broadcastBombChange(){
-		this.game.getBuffer().updateGameState();
-	}
-
 	/**
 	 * @return the range
 	 */

@@ -104,9 +104,19 @@ public class Board {
 	public synchronized void placeBomb(Bomb b, int x, int y){
 			board[x][y] = b;
 	}
-	public void bombExplosion(Bomb b){
+	public synchronized void explodeBomb(Bomb b, ArrayList<Player> players, ArrayList<Enemy> enemies){
 		int i;
 		board[b.x()][b.y()] = null; // Set the bomb reference to null
+		for(Player p : players){
+			if(p.getLocation().equals(b.getLocation())){
+				p.dies();
+			}
+		}
+		for(Enemy e: enemies){
+			if(e.location.equals(b.location)){
+				e.dies();
+			}
+		}
 		ArrayList<GameObject> fire = new ArrayList<GameObject>();
 		//Explode in place
 		fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y()));
@@ -116,6 +126,11 @@ public class Board {
 				if(board[b.x()][b.y() + i] != null){
 					if(board[b.x()][b.y() + i].getType() == GameObjectType.BOX){
 						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else if(board[b.x()][b.y() + i].getType() == GameObjectType.DOOR){
+						if(door.isVisible()){
+							i = b.getRange() + 1; // Dont explode through door if it's visible
+						}
 					}
 					else{
 						fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() + i));
@@ -133,6 +148,11 @@ public class Board {
 					if(board[b.x()][b.y() - i].getType() == GameObjectType.BOX){
 						i = b.getRange() + 1; // Dont explode through box...
 					}
+					else if(board[b.x()][b.y() - i].getType() == GameObjectType.DOOR){
+						if(door.isVisible()){
+							i = b.getRange() + 1; // Dont explode through door if it's visible
+						}
+					}
 					else{
 						fire.add(new GameObject(GameObjectType.FIRE, b.x(), b.y() - i));
 					}
@@ -148,6 +168,11 @@ public class Board {
 				if(board[b.x() - i][b.y()] != null){
 					if(board[b.x() - i][b.y()].getType() == GameObjectType.BOX){
 						i = b.getRange() + 1; // Dont explode through box...
+					}
+					else if(board[b.x() - i][b.y()].getType() == GameObjectType.DOOR){
+						if(door.isVisible()){
+							i = b.getRange() + 1; // Dont explode through door if it's visible
+						}
 					}
 					else{
 						fire.add(new GameObject(GameObjectType.FIRE, b.x() - i, b.y()));
@@ -165,6 +190,11 @@ public class Board {
 					if(board[b.x() + i][b.y()].getType() == GameObjectType.BOX){
 						i = b.getRange() + 1; // Dont explode through box...
 					}
+					else if(board[b.x() + i][b.y()].getType() == GameObjectType.DOOR){
+						if(door.isVisible()){
+							i = b.getRange() + 1; // Dont explode through door if it's visible
+						}
+					}
 					else{
 						fire.add(new GameObject(GameObjectType.FIRE, b.x() + i, b.y()));
 					}
@@ -176,7 +206,8 @@ public class Board {
 		}
 		for (GameObject onFire : fire) {
 			if(board[onFire.x()][onFire.y()] != null){
-				if(board[onFire.x()][onFire.y()] instanceof Player || board[onFire.x()][onFire.y()] instanceof Enemy){
+				if((board[onFire.x()][onFire.y()] instanceof Player) || (board[onFire.x()][onFire.y()] instanceof Enemy)){
+					System.out.println("Something should die: " + board[onFire.x()][onFire.y()].getType());
 					((MovingObject) board[onFire.x()][onFire.y()]).dies();
 					addFire(onFire);
 				}
@@ -314,7 +345,7 @@ public class Board {
 		//TODO - For next milestone do this
 	}
 	// Handle player movement checks if spot is taken and by what.
-	private void playerMove(Player player, int newX, int newY){
+	private synchronized void playerMove(Player player, int newX, int newY){
 		if(board[newX][newY] == null){
 			if(board[player.x()][player.y()].getClass() != Bomb.class){
 				board[player.x()][player.y()] = null;
@@ -384,7 +415,7 @@ public class Board {
 		return height;
 	}
 	// Converts the state of the board to a 2D integer array in order to be passed to the client
-	public int[][] toIntArr(){
+	public synchronized int[][] toIntArr(){
 		System.out.println("To int arr:");
 		int[][] intArr = new int[this.width][this.height];
 		for (int x = 0; x < this.width; x++) {
@@ -397,7 +428,27 @@ public class Board {
 				else{
 					intArr[x][y] = GameObjectType.EMPTY.ordinal();
 				}
-				System.out.print(intArr[x][y]);
+				
+				// Troubleshooting print...
+				switch(intArr[x][y]){
+				case(6):
+					System.out.print("B");
+					break;
+				case(7):
+					System.out.print("D");
+					break;
+				case(8):
+					System.out.print("W");
+					break;
+				case(9):
+					System.out.print("P");
+					break;
+				case(10):
+					System.out.print("F");
+					break;
+				default:
+					System.out.print(intArr[x][y]);
+				}
 			}
 			System.out.println();
 		}

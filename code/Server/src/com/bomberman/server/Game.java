@@ -98,9 +98,15 @@ public class Game {
 		} else {
 			System.out.println("Invalid direction submitted by client!");
 		}
+		checkGameStatus();
+	}
+	public void checkGameStatus(){
 		checkPowerups();
 		checkDoors();
 		checkPlayerAlive();
+		if(this.dblBuffer != null){
+			this.dblBuffer.updateGameState();
+		}
 	}
 
 	/**
@@ -121,21 +127,23 @@ public class Game {
 
 	public void dropBomb(int playerID) {
 		Player player = getPlayer(playerID);
-		if(player.getCurrentBombs() > 0) {
-			synchronized(player){
-				System.out.println(player.getCurrentBombs());
-				player.setCurrentBombs(player.getCurrentBombs()-1);
-				System.out.println(player.getCurrentBombs());
+		synchronized(player){
+			if(player.hasBombs()) {
+				player.dropBomb();
+				System.out.println("player: " + playerID + " has dropped a bomb");
 			}
-			System.out.println("player: " + playerID + " has dropped a bomb");
-
-			Bomb bombObj = new Bomb(player, this);
-			Thread bomb = bombFactory.newThread(bombObj);
-			this.board.placeBomb(bombObj, player.x(), player.y());
-			bomb.start();
-		}else{
-			System.out.println("Player: " + player.toString() + " has run out of bombs to deploy.");
+			else{
+				System.out.println("Player: " + player.toString() + " has run out of bombs to deploy.");
+				return;
+			}
 		}
+		Bomb bombObj = new Bomb(player, this);
+		Thread bomb = bombFactory.newThread(bombObj);
+		this.board.placeBomb(bombObj, player.x(), player.y());
+		bomb.start();
+	}
+	public void bombExplosion(Bomb b){
+		this.board.explodeBomb(b, players, enemies);
 	}
 
 	// Puts the current state of the game into a JSON Object
@@ -185,6 +193,7 @@ public class Game {
 						boxes++;
 						break;
 					case ENEMY:
+						this.enemies.add(new Enemy(i,j));
 						break;
 					case PLAYER_1:
 						this.players.add(new Player(1, i, j));
@@ -233,7 +242,6 @@ public class Game {
 		for (Player player : players) {
 			for (Powerup powerup : powerups) {
 				if (player.getLocation().equals(powerup.getLocation())) {
-					player.addPowerup(powerup);
 					powerups.remove(powerup);
 					player.powerup();
 					return;
