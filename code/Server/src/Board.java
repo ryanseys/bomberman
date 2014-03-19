@@ -58,7 +58,7 @@ public class Board {
 			Point emptySpot = getEmptySpot();
 			door = new GameObject(GameObjectType.DOOR, emptySpot.getLocation().x, emptySpot.getLocation().y);
 		}
-//		door.setVisible(false); // TODO: Uncomment to hide door by default
+		door.setVisible(false); // TODO: Uncomment to hide door by default
 		board[door.x()][door.y()] = door;
 	}
 	// Place the players randomly if they aren't instantiated already

@@ -245,7 +245,7 @@ public class Game {
 	// Checks to see if any players are standing on the Door
 	private synchronized void checkDoors() {
 		GameObject door = board.getDoor();
-		if (enemies.size() == 0) {
+		if (allEnemiesDead()) {
 			door.setVisible(true);
 		}
 		for (Player player : players) {
@@ -258,6 +258,15 @@ public class Game {
 			}
 		}
 
+	}
+
+	private boolean allEnemiesDead() {
+		for(Enemy e : enemies) {
+			if(e.isAlive()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	// Checks that all of the players are still alive
