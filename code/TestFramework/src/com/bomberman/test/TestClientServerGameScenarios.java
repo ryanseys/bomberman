@@ -118,17 +118,14 @@ public class TestClientServerGameScenarios {
 
 	@Test
 	public void testClientLoadBoard() throws InterruptedException {
-		JSONObject board1 = new JSONObject(getFileContents(new File("gameboards/game1.json")));
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game1.json")));
 		c1.connect("player");
-		String resp = c1.receiveNoBroadcasts();
+		c1.setState(c1.receiveNoBroadcasts());
+
 		// load board
-		JSONObject msg = new JSONObject();
-		msg.put("command", "load");
-		msg.put("game", board1);
-		System.out.println(msg.toString());
-		c1.send(msg.toString());
-		// receive board load command response
-		resp = c1.receiveNoBroadcasts();
+		c1.loadGame(board.toString());
+		String resp = c1.receiveNoBroadcasts();
+
 		JSONObject expResp = new JSONObject();
 		expResp.put("type", "response");
 		expResp.put("resp", "Success");
@@ -137,27 +134,19 @@ public class TestClientServerGameScenarios {
 
 	@Test
 	public void testClientLoadBoardStartGame() throws InterruptedException {
-		JSONObject board1 = new JSONObject(getFileContents(new File("gameboards/game1.json")));
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game1.json")));
 		c1.connect("player");
-		String resp = c1.receiveNoBroadcasts();
+		c1.setState(c1.receiveNoBroadcasts());
 
 		// load board
-		JSONObject msg = new JSONObject();
-		msg.put("command", "load");
-		msg.put("game", board1);
-		c1.send(msg.toString());
+		c1.loadGame(board.toString());
+		c1.receiveNoBroadcasts();
 
 		// receive board load command response
-		resp = c1.receiveNoBroadcasts();
-		msg = new JSONObject();
-		msg.put("command", "button");
-		msg.put("pid", 1);
-		msg.put("button", "start");
-		c1.send(msg.toString());
-
-		resp = c1.receive();
-		System.out.println(resp);
-		assertEquals(board1.toString(), (new JSONObject(resp)).get("game").toString());
+		// start game
+		c1.startGame();
+		String resp = c1.receive(); // receive new board state
+		assertEquals(board.toString(), (new JSONObject(resp)).get("game").toString());
 	}
 
 	@Ignore
