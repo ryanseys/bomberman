@@ -356,22 +356,62 @@ public class TestClientServerGameScenarios {
 
 		c1.receive();
 
-		//move down
+		//move up
 		msg = new JSONObject();
 		msg.put("command", "move");
 		msg.put("pid", 1);
 		msg.put("direction", "up");
 		c1.send(msg.toString());
-//		c1.flushMessages();
 		String resp = c1.receive();
 
 		assertEquals((new JSONObject(resp)).get("game").toString().replace('5', '0'), boardAfter.toString());
 	}
 
-	@Ignore
 	@Test
 	public void testClientTwoPlayersColliding() {
-		fail("Not implemented.");
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_two_players.json")));
+		c1.connect("player");
+		c1.receiveNoBroadcasts();
+		c2.connect("player");
+		c2.receiveNoBroadcasts();
+
+		JSONObject msg = new JSONObject();
+		msg.put("command", "load");
+		msg.put("game", board);
+		c1.send(msg.toString());
+		c1.receiveNoBroadcasts();
+
+		msg = new JSONObject();
+		msg.put("command", "button");
+		msg.put("pid", 1);
+		msg.put("button", "start");
+		c1.send(msg.toString());
+		c1.receive();
+
+		//move player 1
+		msg = new JSONObject();
+		msg.put("command", "move");
+		msg.put("pid", 1);
+		msg.put("direction", "down");
+		c1.send(msg.toString());
+
+		// move player 2
+		msg = new JSONObject();
+		msg.put("command", "move");
+		msg.put("pid", 2);
+		msg.put("direction", "up");
+
+		c2.send(msg.toString());
+
+		c1.flushMessages();
+		String resp = c1.receive();
+
+		// should be game over
+		System.out.println("RESP: " + resp);
+		JSONObject expectedResp = new JSONObject();
+		expectedResp.put("type", "game_over");
+
+		assertEquals(resp.trim(), expectedResp.toString());
 	}
 
 	@Ignore
