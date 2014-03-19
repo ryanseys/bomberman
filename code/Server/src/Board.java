@@ -316,7 +316,7 @@ public class Board {
 	private void playerMove(Player player, int newX, int newY){
 		if(board[newX][newY] == null){
 			if(board[player.x()][player.y()].getClass() != Bomb.class){
-				board[player.x()][player.y()] = null;	
+				board[player.x()][player.y()] = null;
 			}
 			player.move(newX, newY);
 			board[newX][newY] = player;

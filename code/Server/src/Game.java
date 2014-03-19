@@ -127,7 +127,7 @@ public class Game {
 				System.out.println(player.getCurrentBombs());
 			}
 			System.out.println("player: " + playerID + " has dropped a bomb");
-			
+
 			Bomb bombObj = new Bomb(player, this);
 			Thread bomb = bombFactory.newThread(bombObj);
 			this.board.placeBomb(bombObj, player.x(), player.y());
@@ -303,7 +303,7 @@ public class Game {
 	public void setNumPlayers(int numPlayers) {
 		this.numPlayers = numPlayers;
 	}
-	
+
 	/**
 	 * @return the dblBuffer
 	 */

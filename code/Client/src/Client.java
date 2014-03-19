@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -7,10 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Client {
-	private MessageQueue toSendMsgs;
 	private MessageQueue receivedMsgs;
 	private ClientReceiver cr;
-	private ClientSender cs;
 	private DatagramSocket dsocket;
 	private int playerid = 0;
 	private int powerups, bombs;
@@ -18,18 +18,15 @@ public class Client {
 	private boolean gameOver = false;
 	private boolean isDebug = false;
 	private JSONObject game = null; // State of the game
+	private InetAddress server_ip;
+	private int server_port;
 
 	public Client(String IPAddress, int port) throws SocketException, UnknownHostException, InterruptedException {
-		this.toSendMsgs = new MessageQueue();
 		this.receivedMsgs = new MessageQueue();
 		dsocket = new DatagramSocket();
-
-		// sender and receiver must use the same socket!
-		cs = new ClientSender(toSendMsgs, InetAddress.getByName(IPAddress), port, dsocket);
 		cr = new ClientReceiver(receivedMsgs, dsocket);
-
-		// start the threads for receiving and sending
-		cs.start();
+		this.server_ip = InetAddress.getByName(IPAddress);
+		this.server_port = port;
 		cr.start();
 	}
 
@@ -61,11 +58,12 @@ public class Client {
 	 * Send a message to the server
 	 * @param msg String message to send
 	 */
-	public void send(String msg) {
-		if(isDebug) System.out.println("Sending message: " + msg);
-		synchronized(toSendMsgs) {
-			toSendMsgs.add(msg);
-			toSendMsgs.notify();
+	public void send(String s) {
+		DatagramPacket data = new DatagramPacket(s.getBytes(), s.length(), server_ip, server_port);
+		try {
+			dsocket.send(data);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -102,9 +100,7 @@ public class Client {
 
 	public void quit() throws InterruptedException {
 		cr.requestQuit();
-		cs.requestQuit();
 		cr.join();
-		cs.join();
 	}
 
 	public void resetServer() {
@@ -204,7 +200,7 @@ public class Client {
 	public int getPowerups() {
 		return powerups;
 	}
-	
+
 	public int getBombs() {
 		return bombs;
 	}
