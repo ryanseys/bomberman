@@ -157,7 +157,7 @@ public class TestClientServerGameScenarios {
 
 		resp = c1.receive();
 		System.out.println(resp);
-		assertEquals(board1.toString(), (new JSONObject(resp)).get("game").toString().replace('5', '0'));
+		assertEquals(board1.toString(), (new JSONObject(resp)).get("game").toString());
 	}
 
 	@Ignore
@@ -397,6 +397,7 @@ public class TestClientServerGameScenarios {
 	@Ignore
 	@Test
 	public void testClientDeployBomb() {
+
 		fail("Not implemented.");
 	}
 

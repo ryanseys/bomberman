@@ -29,6 +29,7 @@ public class Game {
 		this.numPlayers = 0;
 		this.powerups = new ArrayList<Powerup>();
 		this.players = new ArrayList<Player>();
+		this.enemies = new ArrayList<Enemy>();
 		this.bombFactory = new BombFactory(this);
 	}
 
@@ -63,7 +64,6 @@ public class Game {
 	// TODO: There should be a way to specify players initial locations manually
 	// rather than randomly
 	public void startGame() {
-		this.enemies = new ArrayList<Enemy>();
 		this.isStarted = true;
 		if (board == null) {
 			this.board = new Board(DEFAULT_BLOCKS); // TODO decide on size of
