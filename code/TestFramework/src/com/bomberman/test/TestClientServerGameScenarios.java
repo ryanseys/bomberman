@@ -412,8 +412,32 @@ public class TestClientServerGameScenarios {
 		//move UP
 		c1.move(Action.UP);
 		String resp = c1.receive();
+		c1.setState(resp);
 
 		assertEquals((new JSONObject(resp)).get("game").toString(), boardAfter.toString());
+	}
+
+	@Test
+	public void testClientPickUpPowerup() {
+		JSONObject boardBefore = new JSONObject(getFileContents(new File("gameboards/game_pick_up_item_before.json")));
+
+		// connect
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		// load board
+		c1.loadGame(boardBefore.toString());
+		c1.setState(c1.receiveNoBroadcasts());
+
+		//start
+		c1.startGame();
+		c1.receive();
+
+		//move UP
+		c1.move(Action.UP);
+		c1.setState(c1.receive());
+
+		assertEquals(c1.getPowerups(), 1);
 	}
 
 	@Test
