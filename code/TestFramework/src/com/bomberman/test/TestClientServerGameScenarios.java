@@ -584,12 +584,6 @@ public class TestClientServerGameScenarios {
 
 	@Ignore
 	@Test
-	public void testClientGetPowerup() {
-		fail("Not implemented.");
-	}
-
-	@Ignore
-	@Test
 	public void testClientRunIntoEnemy() {
 		fail("Not implemented.");
 	}
