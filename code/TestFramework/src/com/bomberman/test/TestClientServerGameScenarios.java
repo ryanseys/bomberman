@@ -401,12 +401,6 @@ public class TestClientServerGameScenarios {
 		fail("Not implemented.");
 	}
 
-	@Ignore
-	@Test
-	public void testClientBombKillEnemy() {
-
-	}
-
 	@Test
 	public void testClientBombKillOtherPlayerGameOver() {
 		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_kill_p2_with_bomb_before.json")));

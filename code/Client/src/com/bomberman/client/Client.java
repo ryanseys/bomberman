@@ -151,8 +151,8 @@ public class Client {
 			this.game = resp.getJSONObject("game");
 		}
 		if(resp.keySet().contains("players")) {
-				powerups = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("powerups");
-				bombs = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("bombs");
+				powerups = resp.getJSONObject("players").getJSONObject("1").getInt("powerups");
+				bombs = resp.getJSONObject("players").getJSONObject("1").getInt("bombs");
 		}
 	}
 
