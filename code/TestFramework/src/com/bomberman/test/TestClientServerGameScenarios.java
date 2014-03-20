@@ -166,28 +166,88 @@ public class TestClientServerGameScenarios {
 		assertEquals(board.toString(), (new JSONObject(resp)).get("game").toString());
 	}
 
-	@Ignore
 	@Test
 	public void testClientMoveDown() {
-		fail("Not implemented.");
+		JSONObject boardBefore = new JSONObject(getFileContents(new File("gameboards/game_move_down_before.json")));
+		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_move_down_after.json")));
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		// load board
+		c1.loadGame(boardBefore.toString());
+		c1.receiveNoBroadcasts();
+
+		// start game
+		c1.startGame();
+		c1.receive(); // receive new board state
+
+		c1.move(Action.DOWN);
+		String resp = c1.receive();
+
+		assertEquals(boardAfter.toString(), (new JSONObject(resp)).get("game").toString());
 	}
 
-	@Ignore
 	@Test
 	public void testClientMoveUp() {
-		fail("Not implemented.");
+		JSONObject boardBefore = new JSONObject(getFileContents(new File("gameboards/game_move_up_before.json")));
+		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_move_up_after.json")));
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		// load board
+		c1.loadGame(boardBefore.toString());
+		c1.receiveNoBroadcasts();
+
+		// start game
+		c1.startGame();
+		c1.receive(); // receive new board state
+
+		c1.move(Action.UP);
+		String resp = c1.receive();
+
+		assertEquals(boardAfter.toString(), (new JSONObject(resp)).get("game").toString());
 	}
 
-	@Ignore
 	@Test
 	public void testClientMoveRight() {
-		fail("Not implemented.");
+		JSONObject boardBefore = new JSONObject(getFileContents(new File("gameboards/game_move_right_before.json")));
+		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_move_right_after.json")));
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		// load board
+		c1.loadGame(boardBefore.toString());
+		c1.receiveNoBroadcasts();
+
+		// start game
+		c1.startGame();
+		c1.receive(); // receive new board state
+
+		c1.move(Action.RIGHT);
+		String resp = c1.receive();
+
+		assertEquals(boardAfter.toString(), (new JSONObject(resp)).get("game").toString());
 	}
 
-	@Ignore
 	@Test
 	public void testClientMoveLeft() {
-		fail("Not implemented.");
+		JSONObject boardBefore = new JSONObject(getFileContents(new File("gameboards/game_move_left_before.json")));
+		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_move_left_after.json")));
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		// load board
+		c1.loadGame(boardBefore.toString());
+		c1.receiveNoBroadcasts();
+
+		// start game
+		c1.startGame();
+		c1.receive(); // receive new board state
+
+		c1.move(Action.LEFT);
+		String resp = c1.receive();
+
+		assertEquals(boardAfter.toString(), (new JSONObject(resp)).get("game").toString());
 	}
 
 	@Test
@@ -217,10 +277,25 @@ public class TestClientServerGameScenarios {
 		assertEquals(resp.trim(), expectedResp.toString());
 	}
 
-	@Ignore
 	@Test
-	public void testClientMoveIntoBox() {
-		fail("Not implemented.");
+	public void testClientMoveDownIntoBox() {
+		JSONObject boardBefore = new JSONObject(getFileContents(new File("gameboards/game_move_into_block_before.json")));
+		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_move_into_block_after.json")));
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		// load board
+		c1.loadGame(boardBefore.toString());
+		c1.receiveNoBroadcasts();
+
+		// start game
+		c1.startGame();
+		c1.receive(); // receive new board state
+
+		c1.move(Action.DOWN);
+		String resp = c1.receive();
+
+		assertEquals(boardAfter.toString(), (new JSONObject(resp)).get("game").toString());
 	}
 
 	@Test
