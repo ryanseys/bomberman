@@ -1,5 +1,11 @@
 package com.bomberman.client;
 public class ClientMain {
+
+	/**
+	 * Create a client and client view. Used to play the game for real.
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		final int SERVER_PORT = 5000;
 
