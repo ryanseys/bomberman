@@ -151,9 +151,9 @@ public class Client {
 			this.game = resp.getJSONObject("game");
 		}
 		if(resp.keySet().contains("players")) {
-				powerups = resp.getJSONObject("players").getJSONObject("1").getInt("powerups");
-				bombs = resp.getJSONObject("players").getJSONObject("1").getInt("bombs");
-		} //works only for one player for now
+				powerups = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("powerups");
+				bombs = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("bombs");
+		}
 	}
 
 	public String getGameBoardTypeLetter(int type) {
@@ -187,14 +187,16 @@ public class Client {
 		moveMsg.put("pid", playerid);
 		send(moveMsg.toString());
 	}
-	public void deployBomb(Action act)
-	{
+
+	public void deployBomb() {
+		System.out.println("Player " + playerid +" deploying bomb!");
 		JSONObject bombMsg = new JSONObject();
 		bombMsg.put("command", "button");
-		bombMsg.put("button", actions[act.ordinal()]);
+		bombMsg.put("button", actions[Action.BOMB.ordinal()]);
 		bombMsg.put("pid", playerid);
 		send(bombMsg.toString());
 	}
+
 	/**
 	 * Get the state of the game
 	 * @return String representation of the game state

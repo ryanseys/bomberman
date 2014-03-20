@@ -357,11 +357,42 @@ public class TestClientServerGameScenarios {
 		assertEquals(resp.trim(), expectedResp.toString());
 	}
 
-	@Ignore
 	@Test
 	public void testClientDeployBomb() {
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_blow_up_enemy_before.json")));
+		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_blow_up_enemy.json")));
+		//connect
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
 
-		fail("Not implemented.");
+		//load
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
+
+		//start
+		c1.startGame();
+		c1.receive();
+
+		c1.deployBomb();
+
+		c1.move(Action.LEFT);
+		c1.receive();
+
+		c1.move(Action.LEFT);
+		c1.receive();
+
+		// wait for bomb to explode
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		//flush messages
+		c1.flushMessages();
+		String resp = c1.receive();
+		String gameResult = (new JSONObject(resp)).get("game").toString();
+		assertEquals(boardAfter.toString(), gameResult);
 	}
 
 	@Ignore

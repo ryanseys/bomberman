@@ -109,6 +109,7 @@ public class Server extends Thread {
 	public DatagramPacket receive() throws IOException {
 		DatagramPacket recPacket = new DatagramPacket(recData, recData.length);
 		serverSocket.receive(recPacket);
+		recData = new byte[2048];
 		return recPacket;
 	}
 }

@@ -274,7 +274,7 @@ public class ClientView {
 				} else if (cmd.equalsIgnoreCase("DownArrow")) {
 					client.move(Action.DOWN);
 				} else if (cmd.equalsIgnoreCase("SpaceBar")){
-					client.deployBomb(Action.BOMB);
+					client.deployBomb();
 				}
 			}
 		}

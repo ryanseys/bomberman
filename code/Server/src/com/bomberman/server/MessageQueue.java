@@ -14,7 +14,7 @@ public class MessageQueue {
 	// Add a message to the end of the queue, synchronized
 	// so that a message isn't added while the controller is reading
 	public synchronized void add(DatagramPacket message) {
-		System.out.println("MessageQueue: adding a message");
+		System.out.println("MessageQueue: adding a message: " + new String(message.getData()));
 		messageQueue.add(message);
 		notify();
 	}
