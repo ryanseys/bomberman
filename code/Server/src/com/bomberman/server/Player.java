@@ -6,14 +6,12 @@ public class Player extends MovingObject {
 	private int currentBombs; // Number of bombs that a current player has
 	private int maxBombs; // Number of bombs that a current player has
 	private int bombRange;    // The range of the bombs that the player drops
-	private int lives;        // Number of lives a player has
 	private int numPowerups = 0;
 
 	public Player(int player_number, int x, int y) {
 		super(playerNumToGameObj(player_number), x, y);
 		this.currentBombs = 1;
 		this.maxBombs = 10;
-		this.lives = 1;
 		this.bombRange = 1;
 	}
 
@@ -30,21 +28,6 @@ public class Player extends MovingObject {
 	}
 	public boolean hasBombs(){
 		return this.currentBombs > 0;
-	}
-
-	/**
-	 * @return the lives
-	 */
-	public synchronized int getLives() {
-		return lives;
-	}
-
-	/**
-	 * @param lives
-	 *            the lives to set
-	 */
-	public synchronized void setLives(int lives) {
-		this.lives = lives;
 	}
 
 	/**

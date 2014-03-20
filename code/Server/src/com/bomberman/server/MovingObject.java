@@ -3,10 +3,12 @@ package com.bomberman.server;
 public abstract class MovingObject extends GameObject {
 
 	private boolean isAlive;  // If the player is alive
-
+	private int lives;        // Number of lives a player has
+	
 	public MovingObject(GameObjectType type, int x, int y) {
 		super(type, x, y);
 		setAlive(true);
+		this.lives = 1;
 	}
 
 	// Move to a new position
@@ -15,9 +17,15 @@ public abstract class MovingObject extends GameObject {
 	}
 
 	public void dies() {
-		this.setVisible(false);
-		this.setAlive(false);
-		this.move(-1, -1);
+		this.lives--;
+		if(lives == 0){
+			this.setVisible(false);
+			this.setAlive(false);
+			this.move(-1, -1);
+		}
+		else{
+			System.out.println("HOW YOU STILL ALIVE!!!");
+		}
 	}
 
 	/**
@@ -32,5 +40,12 @@ public abstract class MovingObject extends GameObject {
 	 */
 	public void setAlive(boolean isAlive) {
 		this.isAlive = isAlive;
+	}
+	
+	/**
+	 * @return the lives
+	 */
+	public synchronized int getLives() {
+		return lives;
 	}
 }

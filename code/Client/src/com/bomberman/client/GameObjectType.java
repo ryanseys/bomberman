@@ -15,5 +15,6 @@ public enum GameObjectType{
 	BOMB,        // 6
 	DOOR,        // 7
 	BOX,         // 8
-	POWERUP;     // 9
+	POWERUP,     // 9
+	FIRE;		 // 10
 }

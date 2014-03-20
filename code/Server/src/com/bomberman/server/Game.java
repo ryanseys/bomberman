@@ -69,15 +69,12 @@ public class Game {
 			this.board = new Board(DEFAULT_BLOCKS); // TODO decide on size of
 													// board and # boxes
 		}
-		System.out.println("NUM PLAYERS: " + numPlayers + " players.size: "
-				+ this.players.size());
 		while (this.players.size() < this.numPlayers) {
 			this.players.add((new Player(this.players.size() + 1, -1, -1)));
 		}
 		while (this.numPlayers > this.players.size()) {
 			this.players.remove(this.players.size() - 1);
 		}
-
 		board.initBoard(players, enemies, powerups);
 		checkDoors();
 		this.dblBuffer = new DoubleBuffer(this);
@@ -87,6 +84,9 @@ public class Game {
 	public synchronized void playerMoved(int playerID, String direction) {
 		System.out.println("player: " + playerID + " moved " + direction);
 		Player player = getPlayer(playerID);
+		if(!player.isAlive()){
+			return;
+		}
 		if (direction.equals("up")) {
 			board.moveUp(player);
 		} else if (direction.equals("down")) {

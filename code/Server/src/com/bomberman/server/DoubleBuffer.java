@@ -13,6 +13,16 @@ public class DoubleBuffer {
 		this.game = game;
 		msg.put("game", game.toJSON());
 		msg.put("type", "broadcast");
+		JSONObject players = new JSONObject();
+		for(Player p : game.getPlayers()) {
+			String pid = Integer.toString(p.getType().ordinal());
+			JSONObject playerData = new JSONObject();
+			playerData.put("powerups", p.numPowerups());
+			playerData.put("bombs", p.getCurrentBombs());
+			playerData.put("lives", p.getLives());
+			players.put(pid, playerData);
+		}
+		msg.put("players", players);
 		this.buffer2 = msg.toString();
 		controllerBufferOne = true;
 	}
@@ -30,6 +40,7 @@ public class DoubleBuffer {
 					JSONObject playerData = new JSONObject();
 					playerData.put("powerups", p.numPowerups());
 					playerData.put("bombs", p.getCurrentBombs());
+					playerData.put("lives", p.getLives());
 					players.put(pid, playerData);
 				}
 				msg.put("players", players);

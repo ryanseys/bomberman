@@ -6,6 +6,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.swing.JLabel;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,7 +16,9 @@ public class Client {
 	private ClientReceiver cr;
 	private DatagramSocket dsocket;
 	private int playerid = 0;
-	private int powerups, bombs;
+	private int powerups;
+	private int bombs;
+	private int lives = 1;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
 	private boolean isDebug = false;
@@ -151,8 +155,9 @@ public class Client {
 			this.game = resp.getJSONObject("game");
 		}
 		if(resp.keySet().contains("players")) {
-				powerups = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("powerups");
-				bombs = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("bombs");
+				this.powerups = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("powerups");
+				this.bombs = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("bombs");
+				this.lives = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("lives");
 		}
 	}
 
@@ -251,5 +256,11 @@ public class Client {
 		board.put("game",this.game);
 		board.put("command", "load");
 		return board.toString();
+	}
+	/**
+	 * @return the lives
+	 */
+	public int getLives() {
+		return this.lives;
 	}
 }
