@@ -6,8 +6,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import javax.swing.JLabel;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
