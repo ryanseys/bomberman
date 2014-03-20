@@ -3,15 +3,21 @@ package com.bomberman.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
 
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import com.bomberman.client.Action;
 import com.bomberman.client.Client;
@@ -20,12 +26,13 @@ import com.bomberman.server.Server;
 public class TestClientServerGameScenarios {
 	private String SERVER_ADDR = "localhost";
 	private int SERVER_PORT = 5000;
+	@Rule public TestName testName = new TestName(); // Requires junit 4.7
 
 	Client c1 = null;
 	Client c2 = null;
 	Client c3 = null;
 	Client c4 = null;
-
+	String logDir = "log/";
 	Server server;
 
 	private String getFileContents(File file) {
@@ -49,6 +56,16 @@ public class TestClientServerGameScenarios {
 		c2 = new Client(SERVER_ADDR, SERVER_PORT);
 		c3 = new Client(SERVER_ADDR, SERVER_PORT);
 		c4 = new Client(SERVER_ADDR, SERVER_PORT);
+
+		// Redirects System.out.println to a file :D
+		try {
+			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(logDir +
+					this.getClass().getSimpleName() + "-" + // this class name (yay reflection!)
+					testName.getMethodName() + "-" + // append the test method name
+					(new Date()).getTime() + ".txt")), true));
+		} catch (Exception e) {
+		     e.printStackTrace();
+		}
 	}
 
 	@After

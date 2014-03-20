@@ -2,13 +2,22 @@ package com.bomberman.test;
 
 import static org.junit.Assert.assertTrue;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 
 import com.bomberman.server.Server;
 
 public class TestServer {
+	@Rule public TestName testName = new TestName(); // Requires junit 4.7
+	String logDir = "log/";
 	Server server;
 
 	@Before
@@ -18,6 +27,15 @@ public class TestServer {
 	 */
 	public void setUp() throws Exception {
 		server = new Server(); // create and start server
+		// Redirects System.out.println to a file :D
+		try {
+			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(logDir +
+					this.getClass().getSimpleName() + "-" + // this class name (yay reflection!)
+					testName.getMethodName() + "-" + // append the test method name
+					(new Date()).getTime() + ".txt")), true));
+		} catch (Exception e) {
+		     e.printStackTrace();
+		}
 	}
 
 	@After
