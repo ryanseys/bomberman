@@ -50,7 +50,11 @@ public class ClientView {
 	JLabel background;
 	JMenuItem eMenuItem;
 
-
+	/**
+	 * Create a GUI view for the client! It's awesome!
+	 * @param c client object used to connect to server
+	 * @throws IOException
+	 */
 	public ClientView (Client c) throws IOException {
 		this.client = c;
 		frame = new JFrame("Bomberman");
@@ -252,7 +256,10 @@ public class ClientView {
 		am.put("SpaceBar", new buttonAction("SpaceBar"));
 	}
 
-
+	/**
+	 * When you hit a button on the keyboard,
+	 * an event will fire and be handled here.
+	 */
 	public class buttonAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -280,6 +287,9 @@ public class ClientView {
 		}
 	}
 
+	/**
+	 * Render the GUI awesomeness state.
+	 */
 	public void render() {
 		int playerid = client.getPlayerID();
 

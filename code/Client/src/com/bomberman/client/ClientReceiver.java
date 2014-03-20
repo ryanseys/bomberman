@@ -18,6 +18,9 @@ public class ClientReceiver extends Thread {
 	}
 
 	@Override
+	/**
+	 * Thread that receives messages and adds them to a shared queue.
+	 */
 	public void run() {
 		while(!shouldQuit) {
 			receiveData = new byte[1024];
@@ -33,6 +36,7 @@ public class ClientReceiver extends Thread {
 				}
 			}
 
+			// add to the message queue (synced)
 			synchronized(recMsgQ) {
 				recMsgQ.add(new String((data.getData())));
 				recMsgQ.notify();
