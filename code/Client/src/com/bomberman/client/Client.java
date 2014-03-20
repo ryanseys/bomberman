@@ -31,6 +31,10 @@ public class Client {
 		cr.start();
 	}
 
+	/**
+	 * Start a new game on the server.
+	 * Must have connected first and have a player id.
+	 */
 	public void startGame() {
 		isGameOn = true;
 		JSONObject startMsg = new JSONObject();
@@ -40,15 +44,25 @@ public class Client {
 		send(startMsg.toString());
 	}
 
+	/**
+	 * Create a new game.
+	 */
 	public void newGame() {
 		gameOver = false;
 		startGame();
 	}
 
+	/**
+	 * Flush all the messages from the received messages queue.
+	 */
 	public void flushMessages() {
 		receivedMsgs.clear();
 	}
 
+	/**
+	 * End the game by sending a message to the server
+	 * telling it that we want to end the game.
+	 */
 	public void endGame() {
 		if(isGameOn){
 			JSONObject endMsg = new JSONObject();
@@ -73,7 +87,7 @@ public class Client {
 	}
 
 	/**
-	 * Receive a message from the server
+	 * Receive a message from the server (including broadcasts)
 	 * @return String message received
 	 */
 	public String receive() {
@@ -93,6 +107,11 @@ public class Client {
 		return s;
 	}
 
+	/**
+	 * Receive messages that are not broadcast messages.
+	 *
+	 * @return The first message received that isnt a broadcast
+	 */
 	public String receiveNoBroadcasts() {
 		boolean isBroadcast = true;
 		String msg = "";
@@ -117,11 +136,21 @@ public class Client {
 		send(connMsg.toString());
 	}
 
+	/**
+	 * Quit the client receiving of messages by
+	 * terminating the client receiver.
+	 *
+	 * @throws InterruptedException
+	 */
 	public void quit() throws InterruptedException {
 		cr.requestQuit();
 		cr.join();
 	}
 
+	/**
+	 * Request to the server that it reset its state
+	 * To be typically used for debugging and testing.
+	 */
 	public void resetServer() {
 		JSONObject resetMsg = new JSONObject();
 		resetMsg.put("command", "reset");
@@ -156,6 +185,12 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Get the board cell letter. 1 is P1,
+	 * 2 = P2, B is bomb, F is fire for example
+	 * @param type the integer value of the game object type
+	 * @return the String representation of that game object type
+	 */
 	public String getGameBoardTypeLetter(int type) {
 		switch(type) {
 		case 6:
@@ -167,6 +202,11 @@ public class Client {
 		}
 	}
 
+	/**
+	 * Stringify the board so that we can display this to the view.
+	 * @param board board to stringify
+	 * @return string representation of the board.
+	 */
 	public String stringifyBoard(JSONArray board) {
 		String result = "";
 		for(int col = 0; col < board.length(); col++) {
@@ -180,6 +220,10 @@ public class Client {
 
 	String[] actions = {"up", "down", "right", "left", "deploy"};
 
+	/**
+	 * Move the player client in a specific direction.
+	 * @param d Action type of the direction you want to go. Options are UP, DOWN, LEFT, RIGHT
+	 */
 	public void move(Action d) {
 		JSONObject moveMsg = new JSONObject();
 		moveMsg.put("command", "move");
@@ -188,6 +232,10 @@ public class Client {
 		send(moveMsg.toString());
 	}
 
+	/**
+	 * Deploy (drop) a bomb where the client player
+	 * is currently standing on the game board.
+	 */
 	public void deployBomb() {
 		System.out.println("Player " + playerid +" deploying bomb!");
 		JSONObject bombMsg = new JSONObject();
@@ -206,39 +254,78 @@ public class Client {
 		return board;
 	}
 
+	/**
+	 * Returns the id of the client.
+	 * -1 is spectator,
+	 * positive number is player
+	 * 0 is not connected.
+	 * @return int representation of the client id
+	 */
 	public int getPlayerID() {
 		return playerid;
 	}
 
+	/**
+	 * Returns whether a game is currently in progress (not game over, not lobby)
+	 * @return true if game on, false otherwise
+	 */
 	public boolean isGameOn() {
 		return isGameOn;
 	}
 
+	/**
+	 * Returns whether the game of the client is over.
+	 * @return true if game over, false otherwise
+	 */
 	public boolean isGameOver() {
 		return gameOver;
 	}
 
+	/**
+	 * Get the number of powerups that the player has.
+	 * @return int of the number of powerups
+	 */
 	public int getPowerups() {
 		return powerups;
 	}
 
+	/**
+	 * Return the number of bombs that the client (player) has.
+	 * @return int of the number of bombs
+	 */
 	public int getBombs() {
 		return bombs;
 	}
 
 	/**
-	 * @return the isPlayer
+	 * Returns whether the client is a player.
+	 * @return true if player, false otherwise.
 	 */
 	public boolean isPlayer() {
 		return this.playerid > 0;
 	}
+
+	/**
+	 * Returns whether the client is a spectator.
+	 * @return true if spectator, false otherwise
+	 */
 	public boolean isSpectator() {
 		return this.playerid < 0;
 	}
-	public boolean isConnected(){
+
+	/**
+	 * Returns whether the client is connected
+	 * as either a spectator or a player.
+	 * @return true if connected, false otherwise.
+	 */
+	public boolean isConnected() {
 		return this.playerid != 0;
 	}
 
+	/**
+	 * Load a game from a string representation of a board.
+	 * @param board String representation of board
+	 */
 	public void loadGame(String board) {
 		JSONObject game = new JSONObject();
 		game.put("game", new JSONObject(board));
@@ -246,6 +333,11 @@ public class Client {
 		send(game.toString());
 	}
 
+	/**
+	 * Get the string representation of the board to save
+	 * to a file so that we can load it back in later.
+	 * @return String representation of board
+	 */
 	public String getBoardToSave(){
 		JSONObject board = new JSONObject();
 		board.put("game",this.game);
