@@ -265,7 +265,7 @@ public class TestClientServerGameScenarios {
 		// move up
 		c1.move(Action.UP);
 
-		c1.flushMessages();
+//		c1.flushMessages();
 		String resp = c1.receive();
 
 		// should be game over
