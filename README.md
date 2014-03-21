@@ -31,7 +31,7 @@ Adjust the Java Build Path to include `lib/JSON.jar` as a jar.
 
 ### Running the server
 
-Run the main in Server.java
+Run the main in ServerMain.java
 
 ### Running GUI Client
 
@@ -129,14 +129,10 @@ with an updated board state, but will instead broadcast a `{“type":"game_over"
 
 ## Testing & Test Framework
 
-You can see Testcases.md in the root folder of this project. 
-
-To run tests, run Server.java. Then run TestMain.java. It will run all the tests and output the results to the console. It will also write a more detailed output to log files in the `/log` directory in the Client folder.
+To run the tests, we have a JUnit system in place to run the units tests. All JUnit tests are within the TestFramework folder, which can be run easily.
 
 Notes
 ===
 #####From the project description:
-- The sending of the periodic update must proceed concurrently with ongoing
-processing of player controls. The game state must be double-buffered.
 
-- The door is hidden by default until number of enemies is 0 or it is stepped on, in Milestone 1, since there are no enemies, the door is never hidden.
+- The door is hidden by default until number of enemies is 0 or it is stepped on, in Milestone 1, since there are no enemies, the door is never hidden. By default, in Milestone 2 and for testing purposes, the door is also not hidden.
