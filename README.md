@@ -39,7 +39,9 @@ Run the main in ClientMain.java (after running the server)
 
 ### Running the Tests
 
-Run the main in TestMain.java (after running the server)
+Add TestFramework in `/code` folder as a new project. Add the other projects (Server and Client) as part of the TestFramework project by right clicking the project in the sidebar --> Properties --> Java Build Path --> Projects Tab and add both projects. Then in the Libraries tab, add **JUnit 4**.
+
+Then just run the project as JUnit tests. If any tests fail, file a bug.
 
 ## Messaging Format (JSON)
 
