@@ -1,7 +1,6 @@
 package com.bomberman.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -14,7 +13,6 @@ import java.util.Date;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -511,12 +509,6 @@ public class TestClientServerGameScenarios {
 		assertEquals(boardAfter.toString(), gameResult);
 	}
 
-	@Ignore
-	@Test
-	public void testClientBombNotDestroyBlock() {
-		fail("Not implemented.");
-	}
-
 	@Test
 	public void testClientBombKillOtherPlayerGameOver() {
 		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_kill_p2_with_bomb_before.json")));
@@ -606,15 +598,4 @@ public class TestClientServerGameScenarios {
 		assertEquals(boardAfter.toString(), gameResult);
 	}
 
-	@Ignore
-	@Test
-	public void testClientRunIntoEnemy() {
-		fail("Not implemented.");
-	}
-
-	@Ignore
-	@Test
-	public void testClientRevealDoor() {
-		fail("Not implemented.");
-	}
 }
