@@ -45,7 +45,7 @@ public class ClientView {
 	JLabel bombs;
 	JLabel  lives;
 	JLabel player1;
-	
+
 	JFrame frame;
 	JMenuBar menubar;
 	JMenu fileMenu;
@@ -66,7 +66,9 @@ public class ClientView {
 		frame.addWindowListener(new WindowAdapter() {
 		    @Override
 		    public void windowClosing(WindowEvent e) {
-		        client.endGame();
+		    	if(client.isPlayer() && client.isGameOn()) {
+					client.endGame();
+				}
 		    }
 		});
 		menubar = new JMenuBar();
@@ -84,7 +86,9 @@ public class ClientView {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				try {
-					client.quit();
+					if(client.isPlayer() && client.isGameOn()) {
+						client.quit();
+					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -225,7 +229,7 @@ public class ClientView {
 		player1.setFont(font);
 		panel.add(player1);
 		player1.setVisible(false);
-		
+
 
 		gameOverLabel = new JLabel(new ImageIcon("gameover.png"));
 		frame.add(gameOverLabel);
@@ -239,7 +243,7 @@ public class ClientView {
 		bombs.setAlignmentX(JLabel.LEFT);
 		bombs.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
 		panel.add(bombs);
-		
+
 		lives = new JLabel();
 		lives.setAlignmentX(JLabel.LEFT);
 		lives.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 16));
@@ -357,7 +361,7 @@ public class ClientView {
 			lMenuItem.setToolTipText("Save");
 			lMenuItem.setEnabled(true);
 			lMenuItem.setVisible(true);
-			
+
 		}
 		else if((playerid < 0)  && client.isGameOn()) {
 			frame.setTitle("Bomberman - Spectator");
