@@ -72,7 +72,7 @@ public class Server extends Thread {
 		while(true) {
 			try {
 				DatagramPacket dp = receive(); // blocking wait
-				System.out.println("Server received a packet!");
+//				System.out.println("Server received a packet!");
 				addMessage(dp); // add message to message queue
 			} catch (IOException e) {
 				// socket closed most likely

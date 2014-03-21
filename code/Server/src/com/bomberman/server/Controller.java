@@ -64,7 +64,7 @@ public class Controller extends Thread{
 				serverResp(false, datagramMsg.getAddress(), datagramMsg.getPort());
 			}
 			if((command != null) && (msg != null)) {
-				System.out.println("Controller handling command: \"" + command + "\"");
+//				System.out.println("Controller handling command: \"" + command + "\"");
 				if(command.equals("reset")) {
 					// reset the game
 					this.game = new Game();

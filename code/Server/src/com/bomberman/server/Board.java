@@ -207,7 +207,7 @@ public class Board {
 		for (GameObject onFire : fire) {
 			if(board[onFire.x()][onFire.y()] != null){
 				if((board[onFire.x()][onFire.y()] instanceof Player) || (board[onFire.x()][onFire.y()] instanceof Enemy)){
-					System.out.println("Something should die: " + board[onFire.x()][onFire.y()].getType());
+					System.out.println("Just died: " + board[onFire.x()][onFire.y()].getType());
 					((MovingObject) board[onFire.x()][onFire.y()]).dies();
 					addFire(onFire);
 				}
@@ -416,7 +416,7 @@ public class Board {
 	}
 	// Converts the state of the board to a 2D integer array in order to be passed to the client
 	public synchronized int[][] toIntArr(){
-		System.out.println("To int arr:");
+//		System.out.println("To in t arr:");
 		int[][] intArr = new int[this.width][this.height];
 		for (int x = 0; x < this.width; x++) {
 			for (int y = 0; y < this.height; y++) {
@@ -430,27 +430,27 @@ public class Board {
 				}
 				
 				// Troubleshooting print...
-				switch(intArr[x][y]){
-				case(6):
-					System.out.print("B");
-					break;
-				case(7):
-					System.out.print("D");
-					break;
-				case(8):
-					System.out.print("W");
-					break;
-				case(9):
-					System.out.print("P");
-					break;
-				case(10):
-					System.out.print("F");
-					break;
-				default:
-					System.out.print(intArr[x][y]);
-				}
+//				switch(intArr[x][y]){
+//				case(6):
+//					System.out.print("B");
+//					break;
+//				case(7):
+//					System.out.print("D");
+//					break;
+//				case(8):
+//					System.out.print("W");
+//					break;
+//				case(9):
+//					System.out.print("P");
+//					break;
+//				case(10):
+//					System.out.print("F");
+//					break;
+//				default:
+//					System.out.print(intArr[x][y]);
+//				}
 			}
-			System.out.println();
+//			System.out.println();
 		}
 		return intArr;
 	}

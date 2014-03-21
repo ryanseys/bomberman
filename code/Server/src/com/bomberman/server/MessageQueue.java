@@ -14,7 +14,7 @@ public class MessageQueue {
 	// Add a message to the end of the queue, synchronized
 	// so that a message isn't added while the controller is reading
 	public synchronized void add(DatagramPacket message) {
-		System.out.println("MessageQueue: adding a message: " + new String(message.getData()));
+//		System.out.println("MessageQueue: adding a message: " + new String(message.getData()));
 		messageQueue.add(message);
 		notify();
 	}
@@ -23,7 +23,7 @@ public class MessageQueue {
 	// for something to be added to the list.
 	public synchronized DatagramPacket pop() throws InterruptedException {
 		while(messageQueue.isEmpty()){
-			System.out.println("Controller waiting in MessageQueue");
+//			System.out.println("Controller waiting in MessageQueue");
 			wait(1000);
 			if(messageQueue.isEmpty()){
 				return(null);
