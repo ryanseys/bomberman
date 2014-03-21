@@ -598,4 +598,28 @@ public class TestClientServerGameScenarios {
 		assertEquals(boardAfter.toString(), gameResult);
 	}
 
+	@Test
+	public void testRunIntoEnemyGameOver() {
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_run_into_enemy.json")));
+		//connect p1
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		//load
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
+
+		//start
+		c1.startGame();
+		c1.receive();
+
+		c1.move(Action.UP);
+
+		String resp = c1.receiveNoBroadcasts();
+		JSONObject expectedResp = new JSONObject();
+		expectedResp.put("type", "game_over");
+
+		assertEquals(resp.trim(), expectedResp.toString());
+	}
+
 }
