@@ -1,5 +1,6 @@
 package com.bomberman.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedOutputStream;
@@ -79,6 +80,9 @@ public class TestGame {
 	public void testGetBufferStateTwice() {
 		game.addPlayer();
 		game.startGame();
-		assertTrue(game.getBuffer().getState() == game.getBuffer().getState());
+		String state1 = game.getBuffer().getState();
+		game.getBuffer().updateGameState();
+		String state2 = game.getBuffer().getState();
+		assertEquals(state1, state2);
 	}
 }

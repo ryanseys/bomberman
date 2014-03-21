@@ -8,6 +8,10 @@ public class DoubleBuffer {
 	private Boolean controllerBufferOne;
 	private Game game;
 
+	/**
+	 * Create a double buffer which stores the state of the game
+	 * @param game Game to store state of.
+	 */
 	public DoubleBuffer(Game game) {
 		JSONObject msg = new JSONObject();
 		this.game = game;
@@ -27,7 +31,10 @@ public class DoubleBuffer {
 		controllerBufferOne = true;
 	}
 
-	void updateGameState() {
+	/**
+	 * Update the game state in the double buffer
+	 */
+	public void updateGameState() {
 		synchronized (controllerBufferOne){
 			JSONObject msg = new JSONObject();
 			if(!game.isFinished()){
