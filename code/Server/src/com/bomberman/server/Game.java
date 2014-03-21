@@ -21,6 +21,7 @@ public class Game {
 	private boolean isFinished; // Indicates if the game has finished
 	private ThreadFactory bombFactory; // Gonna make some bombs hurr
 	private DoubleBuffer dblBuffer;
+	private int winnerId = -1; // Id of the player that wins
 
 
 	public Game() {
@@ -193,7 +194,7 @@ public class Game {
 						boxes++;
 						break;
 					case ENEMY:
-						this.enemies.add(new Enemy(i,j));
+						this.enemies.add(new Enemy(i,j, this.players, this.board));
 						break;
 					case PLAYER_1:
 						this.players.add(new Player(1, i, j));
@@ -260,6 +261,7 @@ public class Game {
 			if (player.getLocation().equals(door.getLocation())) {
 				// TODO - Handle end of game scenario...
 				if (door.isVisible()) {
+					winnerId = player.getPlayerNum();
 					endGame();
 					return;
 				}
@@ -319,4 +321,10 @@ public class Game {
 		return dblBuffer;
 	}
 
+	/**
+	 * @return the winnerId
+	 */
+	public int getWinnerId() {
+		return winnerId;
+	}
 }

@@ -54,6 +54,10 @@ public class DoubleBuffer {
 			}
 			else{
 				msg.put("type", "game_over");
+				int winner = game.getWinnerId();
+				if(winner > 0){
+					msg.put("winner", winner);	
+				}
 			}
 			if(controllerBufferOne){
 				buffer1 = msg.toString();

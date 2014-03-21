@@ -32,7 +32,7 @@ public class ServerSender {
 		if(port < 0) {
 			return;
 		}
-//		System.out.println("Sending message from server: " + message + "to: " + IP + ":" + port);
+		System.out.println("Sending message from server: " + message + "to: " + IP + ":" + port);
 		byte[] msg = message.getBytes();
 
 		DatagramPacket packet = new DatagramPacket(msg, msg.length, IP, port);

@@ -122,14 +122,20 @@ public class Controller extends Thread{
 	// a new one. The number of players is preserved
 	// so that they can all keep playing.
 	private void gameOver() {
+		JSONObject msg = new JSONObject();
+		msg.put("type", "game_over");
+		int winner = game.getWinnerId();
+		if(winner > 0){
+			msg.put("winner", winner);	
+		}
+		sender.broadcastMessage(clients, msg.toString());
+		
 		// reset the game saving number of players
 		int numPlayers = game.getNumPlayers();
 		this.game = new Game();
 		game.setNumPlayers(numPlayers);
 		broadcaster.requestQuit();
-		JSONObject msg = new JSONObject();
-		msg.put("type", "game_over");
-		sender.broadcastMessage(clients, msg.toString());
+
 	}
 
 	/******* Helper functions to handle incoming message*******/

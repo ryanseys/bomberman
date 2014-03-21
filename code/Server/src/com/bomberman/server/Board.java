@@ -49,7 +49,7 @@ public class Board {
 	public void initBoard(ArrayList<Player> players, ArrayList<Enemy> enemies, ArrayList<Powerup> powerups){
 		initBoxes();
 		initPlayers(players);
-		initEnemies(enemies);
+		initEnemies(enemies, players);
 		initPowerups(powerups);
 		placeDoor();
 	}
@@ -74,12 +74,12 @@ public class Board {
 		}
 	}
 	// Place the enemies randomly if they aren't instantiated already
-	private void initEnemies(ArrayList<Enemy> enemies){
+	private void initEnemies(ArrayList<Enemy> enemies, ArrayList<Player> players){
 		Point emptySpot;
 		Enemy enemy;
 		while(enemies.size() < Game.NUM_ENEMIES){
 			emptySpot = getEmptySpot();
-			enemy = new Enemy(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			enemy = new Enemy(emptySpot.getLocation().x, emptySpot.getLocation().y, players, this);
 			enemies.add(enemy);
 		}
 		for (Enemy e : enemies) {
@@ -252,10 +252,9 @@ public class Board {
 		}
 	}
 	//checks to see if a given location is empty
-	@SuppressWarnings("unused")
-	private boolean isEmptySpot(int x,int y)
+	public boolean isEmptySpot(int x,int y)
 	{
-		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)
+		if(isWithinBorder(x,y))
 		{
 			return false;
 		}else if(board[x][y]==null)
@@ -264,7 +263,7 @@ public class Board {
 		}
 		return false;
 	}
-	@SuppressWarnings("unused")
+	// Check spot is in bounds
 	private boolean isWithinBorder(int x, int y)
 	{
 		if(x>=MAX_WIDTH || y>=MAX_HEIGHT ||x<0 || y<0)
