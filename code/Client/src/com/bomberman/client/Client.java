@@ -182,9 +182,16 @@ public class Client {
 			this.game = resp.getJSONObject("game");
 		}
 		if(resp.keySet().contains("players")) {
+			if(this.isPlayer()){
 				this.powerups = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("powerups");
 				this.bombs = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("bombs");
 				this.lives = resp.getJSONObject("players").getJSONObject("" + playerid).getInt("lives");
+			}
+			else{
+				this.powerups = resp.getJSONObject("players").getJSONObject("1").getInt("powerups");
+				this.bombs = resp.getJSONObject("players").getJSONObject("1").getInt("bombs");
+				this.lives = resp.getJSONObject("players").getJSONObject("1").getInt("lives");
+			}
 		}
 	}
 
