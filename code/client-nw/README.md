@@ -4,6 +4,10 @@ Bomberman client made with [node-webkit][nw]
 
 Written in JavaScript, HTML and CSS
 
+## Binaries
+
+Mac OS X - [download](https://www.dropbox.com/s/7lzil5vgqhljcfx/Bomberman.app.zip)
+
 ## Usage
 
 1. Install [node-webkit][nw]
@@ -22,10 +26,5 @@ zip app.nw index.html package.json bomberman.js bomberman.css bomberman.png game
 ![Lobby](http://i.imgur.com/gAmXAks.png)
 ![In game](http://i.imgur.com/SV6EOc9.png)
 ![Game over](http://i.imgur.com/IjoHw8S.png)
-
-## Binaries
-
-Binaries will be built for Mac OS X. They are too big to store in version control.
-
 
 [nw]: https://github.com/rogerwang/node-webkit
