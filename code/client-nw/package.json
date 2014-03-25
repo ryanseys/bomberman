@@ -1,0 +1,16 @@
+{
+  "name": "Bomberman",
+  "main": "index.html",
+  "window": {
+    "show": true,
+    "toolbar": false,
+    "frame": true,
+    "position": "center",
+    "width": 360,
+    "height": 300,
+    "min_width": 360,
+    "min_height": 300,
+    "max_width": 360,
+    "max_height": 300
+  }
+}

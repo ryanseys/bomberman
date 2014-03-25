@@ -1,0 +1,41 @@
+.buttons {
+  position: absolute;
+  bottom: 0;
+}
+
+#board {
+  font-size: 14pt;
+  font-family: monospace;
+}
+
+button {
+  font-family: 'Pontano Sans', sans-serif;
+}
+
+.radiolabel {
+  font-family: 'Pontano Sans', sans-serif;
+}
+
+.startimg {
+  width: 70%;
+  margin: auto;
+}
+
+.startlabel {
+  font-family: monospace;
+  font-size: xx-large;
+  position: absolute;
+  right: 25px;
+  top: 25px;
+  font-weight: bold;
+}
+
+#gameoverStuff {
+  display: none;
+}
+
+.gameoverimg {
+  width: 100%;
+}
+
+html, body { overflow: hidden; }

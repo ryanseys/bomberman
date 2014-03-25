@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bomberman</title>
+    <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="bomberman.css">
+  </head>
+  <script src="bomberman.js"></script>
+  <body>
+    <div id="startStuff">
+      <div class="startlabel">Bomberman!</div>
+      <img class="startimg" src="bomberman.png">
+    </div>
+    <div id="gameoverStuff">
+      <img class="gameoverimg" src="gameover.png">
+    </div>
+    <div id="board"></div>
+    <div class='buttons'>
+      <span class="radiolabel">Player</span><input id="radioplayer" type="radio" name="group1" value="Player" checked>
+      <span class="radiolabel">Spectator</span><input id="radiospec" type="radio" name="group1" value="Spectator">
+      <button type="button" id="connectStartButton" onclick="connect();" tabindex="-1">Connect</button>
+      <button type="button" onclick="resetServer();">Reset Server</button>
+    </div>
+  </body>
+</html>
