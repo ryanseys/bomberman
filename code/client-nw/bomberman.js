@@ -163,6 +163,7 @@ function render() {
       document.getElementById('radioplayer').disabled = true;
       document.getElementById('radiospec').disabled = true;
       document.getElementById('startStuff').style.display = "none";
+      document.getElementById('gameoverStuff').style.display = "none";
       document.getElementById('connectStartButton').innerHTML = "End Game";
       document.title = "Bomberman - Player " + playerid + " - In Game";
     }
