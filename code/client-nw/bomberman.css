@@ -11,10 +11,10 @@
 button {
   font-family: 'Pontano Sans', sans-serif;
 }
-
+/*
 .radiolabel {
   font-family: 'Pontano Sans', sans-serif;
-}
+}*/
 
 .startimg {
   width: 70%;
@@ -38,4 +38,15 @@ button {
   width: 100%;
 }
 
-html, body { overflow: hidden; }
+html, body {
+  overflow: hidden;
+  font-family: 'Pontano Sans', sans-serif;
+}
+
+#labels {
+  display:none;
+  width:100%;
+  position:absolute;
+  bottom: 25px;
+  text-align: center;
+}
