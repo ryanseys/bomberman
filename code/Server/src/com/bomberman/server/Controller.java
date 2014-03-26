@@ -66,6 +66,7 @@ public class Controller extends Thread{
 			if((command != null) && (msg != null)) {
 //				System.out.println("Controller handling command: \"" + command + "\"");
 				if(command.equals("reset")) {
+					gameOver(); // kill broadcaster
 					// reset the game
 					this.game = new Game();
 					// We could take these out and keep the current clients... Maybe as
@@ -126,10 +127,10 @@ public class Controller extends Thread{
 		msg.put("type", "game_over");
 		int winner = game.getWinnerId();
 		if(winner > 0){
-			msg.put("winner", winner);	
+			msg.put("winner", winner);
 		}
 		sender.broadcastMessage(clients, msg.toString());
-		
+
 		// reset the game saving number of players
 		int numPlayers = game.getNumPlayers();
 		this.game = new Game();
