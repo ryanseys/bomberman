@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public class Game {
 	// Currently we need to limit number of players to 2
-	public static int MAX_PLAYERS = 2; // Max number of players per game
+	public static int MAX_PLAYERS = 4; // Max number of players per game
 	public static int MAX_POWERUPS = 1; // Max number of powerups per game
 	public static int NUM_ENEMIES = 2; // Number of enemies per game
 	private static final int DEFAULT_BLOCKS = 8; // Default number of blocks on the map
