@@ -2,9 +2,13 @@ package com.bomberman.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Date;
 
 import org.json.JSONObject;
 import org.junit.After;
@@ -51,15 +55,15 @@ public class TestClientServerGameScenarios {
 		c3 = new Client(SERVER_ADDR, SERVER_PORT);
 		c4 = new Client(SERVER_ADDR, SERVER_PORT);
 
-		// Redirects System.out.println to a file :D
-//		try {
-//			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(logDir +
-//					this.getClass().getSimpleName() + "-" + // this class name (yay reflection!)
-//					testName.getMethodName() + "-" + // append the test method name
-//					(new Date()).getTime() + ".txt")), true));
-//		} catch (Exception e) {
-//		     e.printStackTrace();
-//		}
+//		 Redirects System.out.println to a file :D
+		try {
+			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(logDir +
+					this.getClass().getSimpleName() + "-" + // this class name (yay reflection!)
+					testName.getMethodName() + "-" + // append the test method name
+					(new Date()).getTime() + ".txt")), true));
+		} catch (Exception e) {
+		     e.printStackTrace();
+		}
 	}
 
 	@After
@@ -643,7 +647,6 @@ public class TestClientServerGameScenarios {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
