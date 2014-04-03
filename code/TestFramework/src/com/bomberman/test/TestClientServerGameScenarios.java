@@ -635,9 +635,34 @@ public class TestClientServerGameScenarios {
 		c1.startGame();
 		c1.receive();
 
+		double startTime = 0;
+		double endTime = 0;
+		double duration;
+		double max_dur = -1;
+		double min_dur = -1;
+		double avg_dur = -1;
+		double total_dur = 0;
+		int count = 0;
+
 		for(int i = 0; i < 1000; i++) {
+			startTime = System.nanoTime();
 			c1.move(Action.UP);
 			c1.move(Action.DOWN);
+			endTime = System.nanoTime();
+			duration = endTime - startTime;
+
+			total_dur += duration;
+			count++;
+
+			if(max_dur == -1 || max_dur < duration) {
+				max_dur = duration;
+			}
+
+			if(min_dur == -1 || min_dur > duration) {
+				min_dur = duration;
+			}
+
+			avg_dur = total_dur/count;
 		}
 
 		try {
@@ -645,6 +670,11 @@ public class TestClientServerGameScenarios {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		System.out.println("Total duration: " + (total_dur / 1000000) + " milliseconds");
+		System.out.println("Minimun duration: " + (min_dur/ 1000000) + " milliseconds");
+		System.out.println("Maximum duration: " + (max_dur/ 1000000) + " milliseconds");
+		System.out.println("Average duration: " + (avg_dur/ 1000000) + " milliseconds");
 
 		System.out.println("Done!");
 		c1.flushMessages();
@@ -670,9 +700,34 @@ public class TestClientServerGameScenarios {
 		c1.startGame();
 		c1.receive();
 
+		double startTime = 0;
+		double endTime = 0;
+		double duration;
+		double max_dur = -1;
+		double min_dur = -1;
+		double avg_dur = -1;
+		double total_dur = 0;
+		int count = 0;
+
 		for(int i = 0; i < 100; i++) {
+			startTime = System.nanoTime();
 			c1.move(Action.UP);
 			c1.move(Action.DOWN);
+			endTime = System.nanoTime();
+			duration = endTime - startTime;
+
+			total_dur += duration;
+			count++;
+
+			if(max_dur == -1 || max_dur < duration) {
+				max_dur = duration;
+			}
+
+			if(min_dur == -1 || min_dur > duration) {
+				min_dur = duration;
+			}
+
+			avg_dur = total_dur/count;
 		}
 
 		try {
@@ -680,6 +735,11 @@ public class TestClientServerGameScenarios {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		System.out.println("Total duration: " + (total_dur / 1000000) + " milliseconds");
+		System.out.println("Minimun duration: " + (min_dur/ 1000000) + " milliseconds");
+		System.out.println("Maximum duration: " + (max_dur/ 1000000) + " milliseconds");
+		System.out.println("Average duration: " + (avg_dur/ 1000000) + " milliseconds");
 
 		System.out.println("Done!");
 		c1.flushMessages();
