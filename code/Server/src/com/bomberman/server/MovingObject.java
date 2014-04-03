@@ -23,7 +23,7 @@ public abstract class MovingObject extends GameObject {
 		this.location.setLocation(x, y);
 	}
 
-	public void dies() {
+	public synchronized void dies() {
 		this.lives--;
 		if(lives == 0){
 			this.setVisible(false);

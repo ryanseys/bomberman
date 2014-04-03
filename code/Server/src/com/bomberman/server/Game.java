@@ -73,6 +73,10 @@ public class Game {
 		while (this.players.size() < this.numPlayers) {
 			this.players.add((new Player(this.players.size() + 1, -1, -1)));
 		}
+		while(this.enemies.size() < NUM_ENEMIES){
+			Enemy enemy = new Enemy(this , players, this.board);
+			enemies.add(enemy);
+		}
 		while (this.numPlayers > this.players.size()) {
 			this.players.remove(this.players.size() - 1);
 		}
@@ -85,7 +89,7 @@ public class Game {
 	public synchronized void playerMoved(int playerID, String direction) {
 		System.out.println("player: " + playerID + " moved " + direction);
 		Player player = getPlayer(playerID);
-		if(!player.isAlive()){
+		if(!player.isAlive() || isFinished){
 			return;
 		}
 		if (direction.equals("up")) {
@@ -118,6 +122,11 @@ public class Game {
 	}
 
 	public synchronized void endGame() {
+		for (Enemy e : this.enemies) {
+			if(e.isAlive()){
+				e.dies();
+			}
+		}
 		this.isFinished = true;
 	}
 
@@ -194,7 +203,8 @@ public class Game {
 						boxes++;
 						break;
 					case ENEMY:
-						this.enemies.add(new Enemy(i,j, this.players, this.board));
+						this.enemies.add(new Enemy(this, this.players, this.board));
+						this.enemies.get(this.enemies.size() - 1).move(i,j);
 						break;
 					case PLAYER_1:
 						this.players.add(new Player(1, i, j));

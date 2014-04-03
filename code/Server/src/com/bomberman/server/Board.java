@@ -49,7 +49,7 @@ public class Board {
 	public void initBoard(ArrayList<Player> players, ArrayList<Enemy> enemies, ArrayList<Powerup> powerups){
 		initBoxes();
 		initPlayers(players);
-		initEnemies(enemies, players);
+		initEnemies(enemies);
 		initPowerups(powerups);
 		placeDoor();
 	}
@@ -74,16 +74,15 @@ public class Board {
 		}
 	}
 	// Place the enemies randomly if they aren't instantiated already
-	private void initEnemies(ArrayList<Enemy> enemies, ArrayList<Player> players){
+	private void initEnemies(ArrayList<Enemy> enemies){
 		Point emptySpot;
-		Enemy enemy;
-		while(enemies.size() < Game.NUM_ENEMIES){
-			emptySpot = getEmptySpot();
-			enemy = new Enemy(emptySpot.getLocation().x, emptySpot.getLocation().y, players, this);
-			enemies.add(enemy);
-		}
-		for (Enemy e : enemies) {
-			board[e.x()][e.y()] = e;
+		for (Enemy enemy : enemies) {
+			if(enemy.x() < 0 || enemy.y() < 0){
+				emptySpot = getEmptySpot();
+				enemy.move(emptySpot.getLocation().x, emptySpot.getLocation().y);
+			}
+			(new Thread(enemy)).start();
+			board[enemy.x()][enemy.y()] = enemy;
 		}
 	}
 	// Place the powerups randomly if they aren't instantiated already
@@ -288,80 +287,61 @@ public class Board {
 		return new Point(x,y);
 	}
 	// Handle a game object moving up
-	public void moveUp(MovingObject obj) {
+	public synchronized void moveUp(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
 		if(onBoard(x, y - 1)){
-			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
-				playerMove((Player) obj, x, y - 1);
-			}
-			else{
-				enemyMove((Enemy) obj, x, y - 1);
-			}
+			move(obj, x, y - 1);
 		}
 	}
 	// Handle a game object moving down
-	public void moveDown(MovingObject obj) {
+	public synchronized void moveDown(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
 		if(onBoard(x, y + 1)){
-			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
-				playerMove((Player) obj, x, y + 1);
-			}
-			else{
-				enemyMove((Enemy) obj, x, y + 1);
-			}
+			move(obj, x, y + 1);
 		}
 	}
 	// Handle a game object moving left
-	public void moveLeft(MovingObject obj) {
+	public synchronized void moveLeft(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
 		if(onBoard(x - 1, y)){
-			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
-				playerMove((Player) obj, x - 1, y);
-			}
-			else{
-				enemyMove((Enemy) obj, x - 1, y);
-			}
+			move(obj, x - 1, y);
 		}
 	}
 	// Handle a game object moving right
-	public void moveRight(MovingObject obj) {
+	public synchronized void moveRight(MovingObject obj) {
 		int x = obj.x();
 		int y = obj.y();
 		if(onBoard(x + 1, y)){
-			if(obj.getType().ordinal() <= GameObjectType.PLAYER_4.ordinal()){
-				playerMove((Player) obj, x + 1, y);
-			}
-			else{
-				enemyMove((Enemy) obj, x + 1, y);
-			}
+			move(obj, x + 1, y);
 		}
 	}
-	// Handle enemy movement
-	private void enemyMove(Enemy enemy, int newX, int newY){
-		//TODO - For next milestone do this
-	}
+
 	// Handle player movement checks if spot is taken and by what.
-	private synchronized void playerMove(Player player, int newX, int newY){
+	private synchronized void move(MovingObject movingObj, int newX, int newY){
 		if(board[newX][newY] == null){
-			if(board[player.x()][player.y()].getClass() != Bomb.class){
-				board[player.x()][player.y()] = null;
+			if(board[movingObj.x()][movingObj.y()].getClass() != Bomb.class){
+				board[movingObj.x()][movingObj.y()] = null;
 			}
-			player.move(newX, newY);
-			board[newX][newY] = player;
+			movingObj.move(newX, newY);
+			board[newX][newY] = movingObj;
 		}
 		else{
 			if(board[newX][newY].getType().ordinal() <= GameObjectType.ENEMY.ordinal()){
+				board[movingObj.x()][movingObj.y()] = null;
 				((MovingObject) board[newX][newY]).dies();
-				player.dies();
+				movingObj.dies();
+				board[newX][newY] = null;
+				return;
 			}
 			switch(board[newX][newY].getType()){
 			case DOOR:
-				board[player.x()][player.y()] = null;
-				player.move(newX, newY);
-				board[newX][newY] = player;
+				
+				board[movingObj.x()][movingObj.y()] = null;
+				movingObj.move(newX, newY);
+				board[newX][newY] = movingObj;
 				// Handle player on door in game.
 				break;
 			case EMPTY:
@@ -372,14 +352,14 @@ public class Board {
 				System.out.println("Empty Game Object... Check Board.java");
 				break;
 			case POWERUP:
-				board[player.x()][player.y()] = null;
-				player.move(newX, newY);
-				board[newX][newY] = player;
+				board[movingObj.x()][movingObj.y()] = null;
+				movingObj.move(newX, newY);
+				board[newX][newY] = movingObj;
 				// Handle player on powerup in game.
 				break;
 			case FIRE:
 				//if the player steps into the fire
-				player.dies();
+				movingObj.dies();
 				break;
 //			case BOMB:
 //				board[player.x()][player.y()] = null;
@@ -394,7 +374,7 @@ public class Board {
 	}
 
 	// Returns whether the new location is on the board
-	private boolean onBoard(int x, int y){
+	private synchronized boolean onBoard(int x, int y){
 		boolean xValid = (x >= 0) && (x < this.width);
 		boolean yValid = (y >= 0) && (y < this.height);
 		return xValid && yValid;
