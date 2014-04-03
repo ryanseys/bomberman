@@ -2,13 +2,9 @@ package com.bomberman.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Date;
 
 import org.json.JSONObject;
 import org.junit.After;
@@ -56,14 +52,14 @@ public class TestClientServerGameScenarios {
 		c4 = new Client(SERVER_ADDR, SERVER_PORT);
 
 //		 Redirects System.out.println to a file :D
-		try {
-			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(logDir +
-					this.getClass().getSimpleName() + "-" + // this class name (yay reflection!)
-					testName.getMethodName() + "-" + // append the test method name
-					(new Date()).getTime() + ".txt")), true));
-		} catch (Exception e) {
-		     e.printStackTrace();
-		}
+//		try {
+//			System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(logDir +
+//					this.getClass().getSimpleName() + "-" + // this class name (yay reflection!)
+//					testName.getMethodName() + "-" + // append the test method name
+//					(new Date()).getTime() + ".txt")), true));
+//		} catch (Exception e) {
+//		     e.printStackTrace();
+//		}
 	}
 
 	@After
@@ -649,6 +645,106 @@ public class TestClientServerGameScenarios {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		System.out.println("Done!");
+		c1.flushMessages();
+		String resp = c1.receive();
+		String gameResult = (new JSONObject(resp)).get("game").toString();
+		assertEquals(boardAfter.toString(), gameResult);
+	}
+
+	@Test
+	public void testScalabilityMove100() {
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_scalability.json")));
+		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_scalability.json")));
+
+		//connect p1
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		//load
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
+
+		//start
+		c1.startGame();
+		c1.receive();
+
+		for(int i = 0; i < 100; i++) {
+			c1.move(Action.UP);
+			c1.move(Action.DOWN);
+		}
+
+		try {
+			Thread.sleep(500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Done!");
+		c1.flushMessages();
+		String resp = c1.receive();
+		String gameResult = (new JSONObject(resp)).get("game").toString();
+		assertEquals(boardAfter.toString(), gameResult);
+	}
+
+	@Test
+	public void testScalabilityMove10000Perf() {
+		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_scalability.json")));
+		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_scalability.json")));
+
+		//connect p1
+		c1.connect("player");
+		c1.setState(c1.receiveNoBroadcasts());
+
+		//load
+		c1.loadGame(board.toString());
+		c1.setState(c1.receiveNoBroadcasts());
+
+		//start
+		c1.startGame();
+		c1.receive();
+
+		double startTime = 0;
+		double endTime = 0;
+		double duration;
+		double max_dur = -1;
+		double min_dur = -1;
+		double avg_dur = -1;
+		double total_dur = 0;
+		int count = 0;
+
+		for(int i = 0; i < 10000; i++) {
+			startTime = System.nanoTime();
+			c1.move(Action.UP);
+			c1.move(Action.DOWN);
+			endTime = System.nanoTime();
+			duration = endTime - startTime;
+
+			total_dur += duration;
+			count++;
+
+			if(max_dur == -1 || max_dur < duration) {
+				max_dur = duration;
+			}
+
+			if(min_dur == -1 || min_dur > duration) {
+				min_dur = duration;
+			}
+
+			avg_dur = total_dur/count;
+		}
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Total duration: " + (total_dur / 1000000) + " milliseconds");
+		System.out.println("Minimun duration: " + (min_dur/ 1000000) + " milliseconds");
+		System.out.println("Maximum duration: " + (max_dur/ 1000000) + " milliseconds");
+		System.out.println("Average duration: " + (avg_dur/ 1000000) + " milliseconds");
 
 		System.out.println("Done!");
 		c1.flushMessages();
