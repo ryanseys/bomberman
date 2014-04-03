@@ -387,6 +387,12 @@ public class ClientView {
 			frame.setTitle("Bomberman - Player " + playerid + " - Game Over");
 			textarea.setVisible(false);
 			background.setVisible(false);
+			if(client.isWinner()){
+				gameOverLabel.setIcon(new ImageIcon("winner.png"));
+			}
+			else{
+				gameOverLabel.setIcon(new ImageIcon("gameover.png"));
+			}
 			gameOverLabel.setVisible(true);
 			powerups.setVisible(false);
 			bombs.setVisible(false);

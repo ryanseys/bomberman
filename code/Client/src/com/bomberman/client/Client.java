@@ -17,6 +17,7 @@ public class Client {
 	private int powerups;
 	private int bombs;
 	private int lives = 1;
+	private int winner = -1;
 	private boolean isGameOn = false;
 	private boolean gameOver = false;
 	private boolean isDebug = false;
@@ -168,6 +169,7 @@ public class Client {
 		JSONObject resp = new JSONObject(s);
 
 		if(resp.getString("type").equals("game_over")) {
+			winner = resp.has("winner") ? resp.getInt("winner"): -1;
 			isGameOn = false;
 			gameOver = true;
 		}
@@ -359,5 +361,9 @@ public class Client {
 	 */
 	public int getLives() {
 		return this.lives;
+	}
+	
+	public boolean isWinner(){
+		return this.playerid == this.winner;
 	}
 }
