@@ -106,10 +106,11 @@ public class TestClientServerGameScenarios {
 
 		// receive message for p2
 		String msg2 = c3.receiveNoBroadcasts();
-		JSONObject expectedResp = new JSONObject();
-		expectedResp.put("type", "player_join");
-		expectedResp.put("resp", "Failure");
-		assertEquals(msg2.trim(), expectedResp.toString().trim());
+		JSONObject expectedResp2 = new JSONObject();
+		expectedResp2.put("pid", 3);
+		expectedResp2.put("type", "player_join");
+		expectedResp2.put("resp", "Success");
+		assertEquals(msg2.trim(), expectedResp2.toString().trim());
 	}
 
 	@Test
@@ -121,10 +122,11 @@ public class TestClientServerGameScenarios {
 
 		// receive message for p2
 		String msg2 = c4.receiveNoBroadcasts();
-		JSONObject expectedResp = new JSONObject();
-		expectedResp.put("type", "player_join");
-		expectedResp.put("resp", "Failure");
-		assertEquals(msg2.trim(), expectedResp.toString().trim());
+		JSONObject expectedResp2 = new JSONObject();
+		expectedResp2.put("pid", 4);
+		expectedResp2.put("type", "player_join");
+		expectedResp2.put("resp", "Success");
+		assertEquals(msg2.trim(), expectedResp2.toString().trim());
 	}
 
 	@Test
@@ -749,13 +751,25 @@ public class TestClientServerGameScenarios {
 	}
 
 	@Test
-	public void testScalabilityMove10000Perf() {
+	public void testScalabilityMove10000Perf4Players() {
 		JSONObject board = new JSONObject(getFileContents(new File("gameboards/game_scalability.json")));
 		JSONObject boardAfter = new JSONObject(getFileContents(new File("gameboards/game_scalability.json")));
 
 		//connect p1
 		c1.connect("player");
 		c1.setState(c1.receiveNoBroadcasts());
+
+		//connect p2
+		c2.connect("player");
+		c2.setState(c2.receiveNoBroadcasts());
+
+		//connect p3
+		c3.connect("player");
+		c3.setState(c3.receiveNoBroadcasts());
+
+		//connect p4
+		c4.connect("player");
+		c4.setState(c4.receiveNoBroadcasts());
 
 		//load
 		c1.loadGame(board.toString());
@@ -812,5 +826,4 @@ public class TestClientServerGameScenarios {
 		String gameResult = (new JSONObject(resp)).get("game").toString();
 		assertEquals(boardAfter.toString(), gameResult);
 	}
-
 }
