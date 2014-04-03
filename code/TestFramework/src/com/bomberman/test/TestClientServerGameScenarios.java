@@ -268,6 +268,7 @@ public class TestClientServerGameScenarios {
 
 		// should be game over
 		JSONObject expectedResp = new JSONObject();
+		expectedResp.put("winner", 1);
 		expectedResp.put("type", "game_over");
 
 		assertEquals(resp.trim(), expectedResp.toString());
