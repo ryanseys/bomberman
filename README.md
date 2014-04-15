@@ -1,10 +1,6 @@
-bomberman
-=========
+# Bomberman
 
 Bomberman UDP client/server game written in Java
-
-Code
-===
 
 ## Usage
 
